@@ -111,7 +111,7 @@ begin
   SDivide:= False;
   APart1:= AStr;
   APart2:= EmptyStr;
-  N:= SPos(ADivideSymbol, AStr);
+  N:= SPos(AStr, ADivideSymbol);
   if N>0 then
   begin
     APart1:= SCopy(AStr,1, N-1);
