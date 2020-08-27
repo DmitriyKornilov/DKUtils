@@ -1,0 +1,62 @@
+object VMShowForm: TVMShowForm
+  Left = 479
+  Height = 350
+  Top = 252
+  Width = 718
+  ClientHeight = 350
+  ClientWidth = 718
+  Position = poScreenCenter
+  LCLVersion = '1.8.4.0'
+  object VectorGrid: TStringGrid
+    Left = 0
+    Height = 304
+    Top = 0
+    Width = 718
+    Align = alClient
+    BorderStyle = bsNone
+    ColCount = 1
+    Columns = <    
+      item
+        Alignment = taCenter
+        Title.Alignment = taCenter
+        Title.Font.Style = [fsBold]
+        Title.Caption = 'Индекс'
+        Width = 200
+      end>
+    DefaultColWidth = 50
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goSmoothScroll]
+    ParentFont = False
+    TabOrder = 0
+    TitleFont.Style = [fsBold]
+    TitleStyle = tsNative
+    Cells = (
+      1
+      0
+      0
+      'Индекс'
+    )
+  end
+  object ButtonPanel1: TButtonPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideBottom.Control = Owner
+    Left = 6
+    Height = 34
+    Top = 310
+    Width = 706
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = 'Закрыть'
+    CloseButton.DefaultCaption = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Отмена'
+    CancelButton.DefaultCaption = False
+    TabOrder = 1
+    ShowButtons = [pbClose]
+  end
+end
