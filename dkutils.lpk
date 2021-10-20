@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="DKUtils"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Dmitriy Kornilov"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="source"/>
+        <OtherUnitFiles Value="source"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="source\dk_const.pas"/>
+        <UnitName Value="DK_Const"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_dateutils.pas"/>
+        <UnitName Value="DK_DateUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_dialogs.pas"/>
+        <UnitName Value="DK_Dialogs"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_lclstrrus.pas"/>
+        <UnitName Value="DK_LCLStrRus"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_matrix.pas"/>
+        <UnitName Value="DK_Matrix"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_priceutils.pas"/>
+        <UnitName Value="DK_PriceUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_sqlutils.pas"/>
+        <UnitName Value="DK_SQLUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_strutils.pas"/>
+        <UnitName Value="DK_StrUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_textutils.pas"/>
+        <UnitName Value="DK_TextUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_vector.pas"/>
+        <UnitName Value="DK_Vector"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_vmshow.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_vmshow.pas"/>
+        <UnitName Value="DK_VMShow"/>
+      </Item>
+      <Item>
+        <Filename Value="source\lclstrconsts.lrs"/>
+        <Type Value="LRS"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
