@@ -7,16 +7,6 @@ interface
 uses
   {Classes, SysUtils, Forms,} Controls, Graphics;
 
-type
-  TFontLike = (flArial, flTimes, flCourier);
-
-  function FontLikeToName(const AFontLike: TFontLike): String;
-  procedure LoadFontParams(const AFontHandle: QWord;
-                           const APixelsPerInch: Integer;
-                           out AFontName: String; out AFontSize: Single);
-
-implementation
-
 const
   ARIAL_FONTS: array [0..2] of String =
     ('Arial', 'Liberation Sans', 'Nimbus Sans L');
@@ -26,6 +16,28 @@ const
 
   COURIER_FONTS: array [0..2] of String =
     ('Courier New', 'Liberation Mono', 'Nimbus Mono L');
+
+type
+  TFontLike = (flArial, flTimes, flCourier);
+
+  function FontLikeToName(const AFontLike: TFontLike): String;
+  procedure LoadFontFromControl(const AControl: TControl;
+                              out AFontName: String; out AFontSize: Single);
+
+implementation
+
+procedure LoadFontParams(const AFontHandle: QWord; const APixelsPerInch: Integer;
+                      out AFontName: String; out AFontSize: Single);
+var
+  FD: TFontData;
+begin
+  FD:= GetFontData(AFontHandle);
+  AFontName:= FD.Name;
+  AFontSize:= FD.Height*72/APixelsPerInch;
+  {$IFDEF WINDOWS}
+  AFontSize:= -AFontSize;
+  {$ENDIF}
+end;
 
 function FontLikeToName(const AFontLike: TFontLike): String;
   function GetName(const ANames: array of String): String;
@@ -47,19 +59,6 @@ begin
   end;
   if Result=EmptyStr then
     Result:= GetFontData(Screen.SystemFont.Reference.Handle).Name;
-end;
-
-procedure LoadFontParams(const AFontHandle: QWord; const APixelsPerInch: Integer;
-                      out AFontName: String; out AFontSize: Single);
-var
-  FD: TFontData;
-begin
-  FD:= GetFontData(AFontHandle);
-  AFontName:= FD.Name;
-  AFontSize:= FD.Height*72/APixelsPerInch;
-  {$IFDEF WINDOWS}
-  AFontSize:= -AFontSize;
-  {$ENDIF}
 end;
 
 procedure LoadFontFromControl(const AControl: TControl;
