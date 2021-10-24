@@ -68,6 +68,10 @@
         <Filename Value="source\lclstrconsts.lrs"/>
         <Type Value="LRS"/>
       </Item>
+      <Item>
+        <Filename Value="source\dk_fonts.pas"/>
+        <UnitName Value="DK_Fonts"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

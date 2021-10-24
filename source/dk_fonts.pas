@@ -5,7 +5,7 @@ unit DK_Fonts;
 interface
 
 uses
-  {Classes, SysUtils, Forms,} Controls, Graphics;
+  {Classes,} SysUtils, Forms, Controls, Graphics;
 
 const
   ARIAL_FONTS: array [0..2] of String =
@@ -64,7 +64,7 @@ end;
 procedure LoadFontFromControl(const AControl: TControl;
                               out AFontName: String; out AFontSize: Single);
 begin
-  FontParamsLoad(AControl.Font.Reference.Handle,
+  LoadFontParams(AControl.Font.Reference.Handle,
                  AControl.Font.PixelsPerInch, AFontName, AFontSize);
 end;
 
