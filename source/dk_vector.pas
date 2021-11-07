@@ -42,6 +42,7 @@ type
   function VCreateInt(const V: array of Integer): TIntVector;
   function VCreateInt64(const V: array of Int64): TInt64Vector;
   function VCreateStr(const V: array of String): TStrVector;
+  function VCreateStr(const S: TStrings): TStrVector;
   function VCreateDbl(const V: array of Double): TDblVector;
   function VCreateDate(const V: array of TDate): TDateVector;
   function VCreateBool(const V: array of Boolean): TBoolVector;
@@ -493,6 +494,15 @@ begin
   Result:= nil;
   for i:= Low(V) to High(V) do
     VAppend(Result, V[i]);
+end;
+
+function VCreateStr(const S: TStrings): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to S.Count-1 do
+    VAppend(Result, S[i]);
 end;
 
 function VCreateDbl(const V: array of Double): TDblVector;
