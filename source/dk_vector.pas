@@ -42,7 +42,6 @@ type
   function VCreateInt(const V: array of Integer): TIntVector;
   function VCreateInt64(const V: array of Int64): TInt64Vector;
   function VCreateStr(const V: array of String): TStrVector;
-  function VCreateStr(const S: TStrings): TStrVector;
   function VCreateDbl(const V: array of Double): TDblVector;
   function VCreateDate(const V: array of TDate): TDateVector;
   function VCreateBool(const V: array of Boolean): TBoolVector;
@@ -213,6 +212,10 @@ type
   function VFloatToStr(const V: TDblVector): TStrVector;
   function VDateToStr(const V: TDateVector): TStrVector;
   function VFormatDateTime(const FormatStr: String; const V: TDateVector; Options: TFormatDateTimeOptions = []): TStrVector;
+
+  {СТРОКОВЫЙ ВЕКТОР И СПИСОК}
+  function VFromStrings(const S: TStrings): TStrVector;
+  procedure VToStrings(const V: TStrVector; const S: TStrings);
 
   {СУММА/КОНКАТЕНАЦИЯ}
   function VSum(const V1,V2: TIntVector)  : TIntVector;
@@ -494,15 +497,6 @@ begin
   Result:= nil;
   for i:= Low(V) to High(V) do
     VAppend(Result, V[i]);
-end;
-
-function VCreateStr(const S: TStrings): TStrVector;
-var
-  i: Integer;
-begin
-  Result:= nil;
-  for i:= 0 to S.Count-1 do
-    VAppend(Result, S[i]);
 end;
 
 function VCreateDbl(const V: array of Double): TDblVector;
@@ -2366,6 +2360,26 @@ begin
     for i:=0 to High(V) do
       Result[i]:= FormatDateTime(FormatStr, V[i], Options);
   end;
+end;
+
+{СТРОКОВЫЙ ВЕКТОР И СПИСОК}
+function VFromStrings(const S: TStrings): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to S.Count-1 do
+    VAppend(Result, S[i]);
+end;
+
+procedure VToStrings(const V: TStrVector; const S: TStrings);
+var
+  i: Integer;
+begin
+  if not Assigned(S) then Exit;
+  S.Clear;
+  for i:= 0 to High(V) do
+    S.Append(V[i]);
 end;
 
 {ДЛЯ ВЕКТОРА ДАТ}
