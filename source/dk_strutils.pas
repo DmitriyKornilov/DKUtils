@@ -10,6 +10,7 @@ uses
 type
   TSymbolType = (stUnknown, stPunctuation, stSeparator, stVowel, stConsonant, stSpecial);
 
+  function SSetUTF8(const AStr: String): String;
   function SLength(const AStr: String): Integer;
   function SUpper(const AStr: String): String;
   function SLower(const AStr: String): String;
@@ -38,6 +39,16 @@ type
   function SHeight(const AStr, AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): Integer;
 
 implementation
+
+function SSetUTF8(const AStr: String): String;
+var
+  Raw: RawByteString;
+begin
+  Raw:= AStr;
+  SetCodePage(Raw, CP_NONE, False);
+  SetCodePage(Raw, CP_UTF8, True);
+  Result:= Raw;
+end;
 
 function SLength(const AStr: String): Integer;
 begin
