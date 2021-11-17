@@ -5,7 +5,7 @@ unit DK_Vector;
 interface
 
 uses
-  Classes, SysUtils, DateUtils, Graphics, DK_Const, DK_DateUtils;
+  Classes, SysUtils, DateUtils, Graphics, DK_Const, DK_DateUtils, DK_StrUtils;
 
 type
   TIntVector   = array of Integer;
@@ -216,6 +216,10 @@ type
   {СТРОКОВЫЙ ВЕКТОР И СПИСОК}
   function VFromStrings(const S: TStrings): TStrVector;
   procedure VToStrings(const V: TStrVector; const S: TStrings);
+
+  {СТРОКОВЫЙ ВЕКТОР И СТРОКА}
+  function VStrToVector(const Str, Delimiter: String): TStrVector;
+  function VVectorToStr(const V: TStrVector; const Delimiter: String): String;
 
   {СУММА/КОНКАТЕНАЦИЯ}
   function VSum(const V1,V2: TIntVector)  : TIntVector;
@@ -2380,6 +2384,53 @@ begin
   S.Clear;
   for i:= 0 to High(V) do
     S.Append(V[i]);
+end;
+
+{СТРОКОВЫЙ ВЕКТОР И СТРОКА}
+
+function VStrToVector(const Str, Delimiter: String): TStrVector;
+var
+  S: String;
+  n, LDelimiter: Integer;
+begin
+  Result:= nil;
+  if SLength(Str)=0 then Exit;
+
+  LDelimiter:= SLength(Delimiter);
+  if (LDelimiter=0) then
+  begin
+    VAppend(Result, Str);
+    Exit;
+  end;
+
+  S:= Str;
+  n:= SPos(S, Delimiter);
+  while n>0 do
+  begin
+    if n=1 then
+      S:= SDel(S, 1, LDelimiter)
+    else begin
+      VAppend(Result, SCopy(S, 1, n-1));
+      S:= SDel(S, 1, n+LDelimiter-1);
+    end;
+    n:= SPos(S, Delimiter);
+  end;
+
+  if SLength(S)>0 then
+    VAppend(Result, S);
+
+
+end;
+
+function VVectorToStr(const V: TStrVector; const Delimiter: String): String;
+var
+  i: Integer;
+begin
+  Result:= EmptyStr;
+  if VIsNil(V) then Exit;
+  Result:= V[0];
+  for i:= 1 to High(V) do
+    Result:= Result + Delimiter + V[i];
 end;
 
 {ДЛЯ ВЕКТОРА ДАТ}
