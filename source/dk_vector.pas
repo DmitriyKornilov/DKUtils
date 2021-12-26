@@ -64,7 +64,8 @@ type
 
   procedure VChangeIf(var V: TIntVector;   const IfValue, NewValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1);
   procedure VChangeIf(var V: TInt64Vector; const IfValue, NewValue: Int64; FromIndex: Integer=-1; ToIndex: Integer=-1);
-  procedure VChangeIf(var V: TStrVector;   const IfValue, NewValue: String; FromIndex: Integer=-1; ToIndex: Integer=-1);
+  procedure VChangeIf(var V: TStrVector;   const IfValue, NewValue: String; FromIndex: Integer=-1; ToIndex: Integer=-1;
+                      const ACaseSensitivity: Boolean = True);
   procedure VChangeIf(var V: TDateVector;  const IfValue, NewValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1);
   procedure VChangeIf(var V: TBoolVector;  const IfValue, NewValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1);
   procedure VChangeIf(var V: TColorVector; const IfValue, NewValue: TColor; FromIndex: Integer=-1; ToIndex: Integer=-1);
@@ -158,7 +159,8 @@ type
   {ПОИСК В ВЕКТОРЕ}
   function VIndexOf(const V: TIntVector;   const FindValue: Integer): Integer;
   function VIndexOf(const V: TInt64Vector; const FindValue: Int64):   Integer;
-  function VIndexOf(const V: TStrVector;   const FindValue: String):  Integer;
+  function VIndexOf(const V: TStrVector;   const FindValue: String;
+                    const ACaseSensitivity: Boolean = True):  Integer;
   function VIndexOf(const V: TDateVector;  const FindValue: TDate):   Integer;
   function VIndexOf(const V: TBoolVector;  const FindValue: Boolean): Integer;
   function VIndexOf(const V: TColorVector; const FindValue: TColor):  Integer;
@@ -166,7 +168,8 @@ type
   {УНИКАЛЬНЫЕ ЗНАЧЕНИЯ}
   function VUnique(const V: TIntVector): TIntVector;
   function VUnique(const V: TInt64Vector): TInt64Vector;
-  function VUnique(const V: TStrVector): TStrVector;
+  function VUnique(const V: TStrVector;
+                   const ACaseSensitivity: Boolean = True): TStrVector;
   function VUnique(const V: TDateVector): TDateVector;
   function VUnique(const V: TColorVector): TColorVector;
 
@@ -180,19 +183,22 @@ type
   {НАИМЕНЬШЕЕ ЗНАЧЕНИЕ}
   function VMin(const V: TIntVector):   Integer;
   function VMin(const V: TInt64Vector): Int64;
-  function VMin(const V: TStrVector):   String;
+  function VMin(const V: TStrVector;
+                const ACaseSensitivity: Boolean = True):   String;
   function VMin(const V: TDateVector):  TDate;
 
   {НАИБОЛЬШЕЕ ЗНАЧЕНИЕ}
   function VMax(const V: TIntVector):   Integer;
   function VMax(const V: TInt64Vector): Int64;
-  function VMax(const V: TStrVector):   String;
+  function VMax(const V: TStrVector;
+                const ACaseSensitivity: Boolean = True):   String;
   function VMax(const V: TDateVector):  TDate;
 
   {КОЛ-ВО ЗНАЧЕНИЙ, РАВНЫХ ЗАДАННОМУ}
   function VCountIf(const V: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIf(const V: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
-  function VCountIf(const V: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VCountIf(const V: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
+                    const ACaseSensitivity: Boolean = True): Integer;
   function VCountIf(const V: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIf(const V: TBoolVector;  const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIf(const V: TColorVector; const IfValue: TColor;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -200,7 +206,8 @@ type
   {КОЛ-ВО ЗНАЧЕНИЙ, НЕ РАВНЫХ ЗАДАННОМУ}
   function VCountIfNot(const V: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIfNot(const V: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
-  function VCountIfNot(const V: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VCountIfNot(const V: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
+                       const ACaseSensitivity: Boolean = True): Integer;
   function VCountIfNot(const V: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIfNot(const V: TBoolVector;  const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIfNot(const V: TColorVector; const IfValue: TColor;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -234,22 +241,26 @@ type
 
   function VSumIf(const V: TIntVector; const IfVector: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIf(const V: TIntVector; const IfVector: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
-  function VSumIf(const V: TIntVector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VSumIf(const V: TIntVector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
+                  const ACaseSensitivity: Boolean = True): Integer;
   function VSumIf(const V: TIntVector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIf(const V: TIntVector; const IfVector: TBoolVector;  const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIf(const V: TInt64Vector; const IfVector: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
   function VSumIf(const V: TInt64Vector; const IfVector: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
-  function VSumIf(const V: TInt64Vector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
+  function VSumIf(const V: TInt64Vector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
+                  const ACaseSensitivity: Boolean = True): Int64;
   function VSumIf(const V: TInt64Vector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
   function VSumIf(const V: TInt64Vector; const IfVector: TBoolVector;  const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
 
   function VSumIfNot(const V: TIntVector; const IfVector: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIfNot(const V: TIntVector; const IfVector: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
-  function VSumIfNot(const V: TIntVector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VSumIfNot(const V: TIntVector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
+                     const ACaseSensitivity: Boolean = True): Integer;
   function VSumIfNot(const V: TIntVector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIfNot(const V: TInt64Vector; const IfVector: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
   function VSumIfNot(const V: TInt64Vector; const IfVector: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
-  function VSumIfNot(const V: TInt64Vector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
+  function VSumIfNot(const V: TInt64Vector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
+                     const ACaseSensitivity: Boolean = True): Int64;
   function VSumIfNot(const V: TInt64Vector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
 
   function VMult(const V1,V2: TIntVector): TIntVector;
@@ -608,13 +619,26 @@ begin
       if V[i]=IfValue then V[i]:= NewValue;
 end;
 
-procedure VChangeIf(var V: TStrVector;   const IfValue, NewValue: String; FromIndex: Integer=-1; ToIndex: Integer=-1);
+procedure VChangeIf(var V: TStrVector;
+                   const IfValue, NewValue: String;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   const ACaseSensitivity: Boolean = True);
 var
   i: Integer;
+  S1, S2: String;
 begin
-  if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
-    for i:= FromIndex to ToIndex do
-      if V[i]=IfValue then V[i]:= NewValue;
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  S2:= IfValue;
+  if not ACaseSensitivity then
+    S2:= SUpper(S2);
+  for i:= FromIndex to ToIndex do
+  begin
+    S1:= V[i];
+    if not ACaseSensitivity then
+      S1:= SUpper(S1);
+    if S1=S2 then
+      V[i]:= NewValue;
+  end;
 end;
 
 procedure VChangeIf(var V: TDateVector;  const IfValue, NewValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1);
@@ -1496,14 +1520,22 @@ begin
   end;
 end;
 
-function VIndexOf(const V: TStrVector; const FindValue: String): Integer;
+function VIndexOf(const V: TStrVector; const FindValue: String;
+                  const ACaseSensitivity: Boolean = True): Integer;
 var
   i: Integer;
+  S1, S2: String;
 begin
   Result:= -1;
+  S1:= FindValue;
+  if not ACaseSensitivity then
+    S1:= SUpper(S1);
   for i := 0 to High(V) do
   begin
-    if V[i]=FindValue then
+    S2:= V[i];
+    if not ACaseSensitivity then
+      S2:= SUpper(S2);
+    if S1=S2 then
     begin
       Result:= i;
       Exit;
@@ -1582,14 +1614,15 @@ begin
   end;
 end;
 
-function VUnique(const V: TStrVector): TStrVector;
+function VUnique(const V: TStrVector;
+                 const ACaseSensitivity: Boolean = True): TStrVector;
 var
   i: Integer;
 begin
   Result:= nil;
   for i:= 0 to High(V) do
   begin
-    if VIndexOf(Result, V[i])=-1 then
+    if VIndexOf(Result, V[i], ACaseSensitivity)=-1 then
       VAppend(Result, V[i]);
   end;
 end;
@@ -1746,13 +1779,27 @@ begin
 end;
 
 
-function VMin(const V: TStrVector): String;
+function VMin(const V: TStrVector; const ACaseSensitivity: Boolean = True): String;
 var
   i: Integer;
+  S1, S2: String;
 begin
+  //Result:= V[0];
+  //for i:=1 to High(V) do
+  //  if V[i]<Result then Result:= V[i];
   Result:= V[0];
   for i:=1 to High(V) do
-    if V[i]<Result then Result:= V[i];
+  begin
+    S1:= V[i];
+    S2:= Result;
+    if not ACaseSensitivity then
+    begin
+      S1:= SUpper(S1);
+      S2:= SUpper(S2);
+    end;
+    if S1<S2 then
+      Result:= V[i];
+  end;
 end;
 
 function VMin(const V: TDateVector): TDate;
@@ -1784,13 +1831,26 @@ begin
     if V[i]>Result then Result:= V[i];
 end;
 
-function VMax(const V: TStrVector): String;
+function VMax(const V: TStrVector; const ACaseSensitivity: Boolean = True): String;
 var
   i: Integer;
 begin
+  //Result:= V[0];
+  //for i:=1 to High(V) do
+  //  if V[i]>Result then Result:= V[i];
   Result:= V[0];
   for i:=1 to High(V) do
-    if V[i]>Result then Result:= V[i];
+  begin
+    S1:= V[i];
+    S2:= Result;
+    if not ACaseSensitivity then
+    begin
+      S1:= SUpper(S1);
+      S2:= SUpper(S2);
+    end;
+    if S1>S2 then
+      Result:= V[i];
+  end;
 end;
 
 function VMax(const V: TDateVector): TDate;
@@ -1824,14 +1884,26 @@ begin
     if V[i]=IfValue then Inc(Result);
 end;
 
-function VCountIf(const V: TStrVector; const IfValue: String; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+function VCountIf(const V: TStrVector; const IfValue: String;
+                  FromIndex: Integer=-1; ToIndex: Integer=-1;
+                  const ACaseSensitivity: Boolean = True): Integer;
 var
   i: Integer;
+  S1, S2: String;
 begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  S2:= IfValue;
+  if not ACaseSensitivity then
+    S2:= SUpper(S2);
   for i := FromIndex to ToIndex do
-    if V[i]=IfValue then Inc(Result);
+  begin
+    S1:= V[i];
+    if not ACaseSensitivity then
+      S1:= SUpper(S1);
+    if S1=S2 then
+      Inc(Result);
+  end;
 end;
 
 function VCountIf(const V: TDateVector; const IfValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -1886,14 +1958,26 @@ begin
     if V[i]<>IfValue then Inc(Result);
 end;
 
-function VCountIfNot(const V: TStrVector; const IfValue: String; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+function VCountIfNot(const V: TStrVector; const IfValue: String;
+                     FromIndex: Integer=-1; ToIndex: Integer=-1;
+                     const ACaseSensitivity: Boolean = True): Integer;
 var
   i: Integer;
+  S1, S2: String;
 begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  S2:= IfValue;
+  if not ACaseSensitivity then
+    S2:= SUpper(S2);
   for i := FromIndex to ToIndex do
-    if V[i]<>IfValue then Inc(Result);
+  begin
+    S1:= V[i];
+    if not ACaseSensitivity then
+      S1:= SUpper(S1);
+    if S1<>S2 then
+      Inc(Result);
+  end;
 end;
 
 function VCountIfNot(const V: TDateVector; const IfValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -2091,15 +2175,26 @@ begin
 end;
 
 function VSumIf(const V: TIntVector; const IfVector: TStrVector; const IfValue: String;
-                FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+                FromIndex: Integer=-1; ToIndex: Integer=-1;
+                const ACaseSensitivity: Boolean = True): Integer;
 var
   i: Integer;
+  S1, S2: String;
 begin
   Result:= 0;
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  S2:= IfValue;
+  if not ACaseSensitivity then
+    S2:= SUpper(S2);
   for i:=FromIndex to ToIndex do
-    if IfVector[i]=IfValue then Result:= Result + V[i];
+  begin
+    S1:= IfVector[i];
+    if not ACaseSensitivity then
+      S1:= SUpper(S1);
+    if S1=S2 then
+      Result:= Result + V[i];
+  end;
 end;
 
 function VSumIf(const V: TIntVector; const IfVector: TDateVector; const IfValue: TDate;
@@ -2151,15 +2246,26 @@ begin
 end;
 
 function VSumIf(const V: TInt64Vector; const IfVector: TStrVector; const IfValue: String;
-                FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
+                FromIndex: Integer=-1; ToIndex: Integer=-1;
+                const ACaseSensitivity: Boolean = True): Int64;
 var
   i: Integer;
+  S1, S2: String;
 begin
   Result:= 0;
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  S2:= IfValue;
+  if not ACaseSensitivity then
+    S2:= SUpper(S2);
   for i:=FromIndex to ToIndex do
-    if IfVector[i]=IfValue then Result:= Result + V[i];
+  begin
+    S1:= IfVector[i];
+    if not ACaseSensitivity then
+      S1:= SUpper(S1);
+    if S1=S2 then
+      Result:= Result + V[i];
+  end;
 end;
 
 function VSumIf(const V: TInt64Vector; const IfVector: TDateVector; const IfValue: TDate;
@@ -2204,17 +2310,28 @@ function VSumIfNot(const V: TIntVector; const IfVector: TInt64Vector; const IfVa
                    FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 var
   i: Integer;
+  S1, S2: String;
 begin
   Result:= 0;
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  S2:= IfValue;
+  if not ACaseSensitivity then
+    S2:= SUpper(S2);
   for i:=FromIndex to ToIndex do
-    if IfVector[i]<>IfValue then Result:= Result + V[i];
+  begin
+    S1:= IfVector[i];
+    if not ACaseSensitivity then
+      S1:= SUpper(S1);
+    if S1<>S2 then
+      Result:= Result + V[i];
+  end;
 end;
 
 
 function VSumIfNot(const V: TIntVector; const IfVector: TStrVector; const IfValue: String;
-                   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   const ACaseSensitivity: Boolean = True): Integer;
 var
   i: Integer;
 begin
@@ -2261,15 +2378,26 @@ begin
 end;
 
 function VSumIfNot(const V: TInt64Vector; const IfVector: TStrVector; const IfValue: String;
-                   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   const ACaseSensitivity: Boolean = True): Int64;
 var
   i: Integer;
+  S1, S2: String;
 begin
   Result:= 0;
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  S2:= IfValue;
+  if not ACaseSensitivity then
+    S2:= SUpper(S2);
   for i:=FromIndex to ToIndex do
-    if IfVector[i]<>IfValue then Result:= Result + V[i];
+  begin
+    S1:= IfVector[i];
+    if not ACaseSensitivity then
+      S1:= SUpper(S1);
+    if S1<>S2 then
+      Result:= Result + V[i];
+  end;
 end;
 
 function VSumIfNot(const V: TInt64Vector; const IfVector: TDateVector; const IfValue: TDate;
