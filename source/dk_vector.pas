@@ -1834,6 +1834,7 @@ end;
 function VMax(const V: TStrVector; const ACaseSensitivity: Boolean = True): String;
 var
   i: Integer;
+  S1, S2: String;
 begin
   //Result:= V[0];
   //for i:=1 to High(V) do
@@ -2310,9 +2311,23 @@ function VSumIfNot(const V: TIntVector; const IfVector: TInt64Vector; const IfVa
                    FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 var
   i: Integer;
-  S1, S2: String;
 begin
   Result:= 0;
+  if Length(V)<>Length(IfVector) then Exit;
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  for i:=FromIndex to ToIndex do
+    if IfVector[i]<>IfValue then Result:= Result + V[i];
+end;
+
+
+function VSumIfNot(const V: TIntVector; const IfVector: TStrVector; const IfValue: String;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   const ACaseSensitivity: Boolean = True): Integer;
+var
+  i: Integer;
+  S1, S2: String;
+begin
+   Result:= 0;
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   S2:= IfValue;
@@ -2326,20 +2341,6 @@ begin
     if S1<>S2 then
       Result:= Result + V[i];
   end;
-end;
-
-
-function VSumIfNot(const V: TIntVector; const IfVector: TStrVector; const IfValue: String;
-                   FromIndex: Integer=-1; ToIndex: Integer=-1;
-                   const ACaseSensitivity: Boolean = True): Integer;
-var
-  i: Integer;
-begin
-  Result:= 0;
-  if Length(V)<>Length(IfVector) then Exit;
-  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
-  for i:=FromIndex to ToIndex do
-    if IfVector[i]<>IfValue then Result:= Result + V[i];
 end;
 
 function VSumIfNot(const V: TIntVector; const IfVector: TDateVector; const IfValue: TDate;
