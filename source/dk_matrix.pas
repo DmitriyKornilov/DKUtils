@@ -122,6 +122,13 @@ type
   function MMaxLength(const M: TDblMatrix): Integer;
   function MMaxLength(const M: TBoolMatrix): Integer;
 
+  {ДЛИНЫ ВЕКТОРОВ МАТРИЦЫ}
+  function MLengths(const M: TIntMatrix): TIntVector;
+  function MLengths(const M: TInt64Matrix): TIntVector;
+  function MLengths(const M: TStrMatrix): TIntVector;
+  function MLengths(const M: TDblMatrix): TIntVector;
+  function MLengths(const M: TBoolMatrix): TIntVector;
+
 implementation
 
 
@@ -985,6 +992,53 @@ begin
   for i:= 0 to High(M) do
     if Length(M[i])>Result then
       Result:= Length(M[i]);
+end;
+
+//MLengths
+
+function MLengths(const M: TIntMatrix): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    VAppend(Length(M[i]));
+end;
+
+function MLengths(const M: TInt64Matrix): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    VAppend(Length(M[i]));
+end;
+
+function MLengths(const M: TStrMatrix): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    VAppend(Length(M[i]));
+end;
+
+function MLengths(const M: TDblMatrix): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    VAppend(Length(M[i]));
+end;
+
+function MLengths(const M: TBoolMatrix): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    VAppend(Length(M[i]));
 end;
 
 end.
