@@ -129,6 +129,15 @@ type
   function MLengths(const M: TDblMatrix): TIntVector;
   function MLengths(const M: TBoolMatrix): TIntVector;
 
+  {ПРЕОБРАЗОВНИЕ К СТРОКОВОЙ МАТРИЦЕ}
+  function MIntToStr(const M: TIntMatrix): TStrMatrix;
+  function MIntToStr(const M: TInt64Matrix): TStrMatrix;
+  function MBoolToStr(const M: TBoolMatrix): TStrMatrix;
+  function MFloatToStr(const M: TDblMatrix): TStrMatrix;
+  function MDateToStr(const M: TDateMatrix): TStrMatrix;
+  function MFormatDateTime(const FormatStr: String; const M: TDateMatrix; Options: TFormatDateTimeOptions = []): TStrMatrix;
+
+
 implementation
 
 
@@ -1002,7 +1011,7 @@ var
 begin
   Result:= nil;
   for i:= 0 to High(M) do
-    VAppend(Length(M[i]));
+    VAppend(Result, Length(M[i]));
 end;
 
 function MLengths(const M: TInt64Matrix): TIntVector;
@@ -1011,7 +1020,7 @@ var
 begin
   Result:= nil;
   for i:= 0 to High(M) do
-    VAppend(Length(M[i]));
+    VAppend(Result, Length(M[i]));
 end;
 
 function MLengths(const M: TStrMatrix): TIntVector;
@@ -1020,7 +1029,7 @@ var
 begin
   Result:= nil;
   for i:= 0 to High(M) do
-    VAppend(Length(M[i]));
+    VAppend(Result, Length(M[i]));
 end;
 
 function MLengths(const M: TDblMatrix): TIntVector;
@@ -1029,7 +1038,7 @@ var
 begin
   Result:= nil;
   for i:= 0 to High(M) do
-    VAppend(Length(M[i]));
+    VAppend(Result, Length(M[i]));
 end;
 
 function MLengths(const M: TBoolMatrix): TIntVector;
@@ -1038,8 +1047,69 @@ var
 begin
   Result:= nil;
   for i:= 0 to High(M) do
-    VAppend(Length(M[i]));
+    VAppend(Result, Length(M[i]));
 end;
+
+function MIntToStr(const M: TIntMatrix): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, VIntToStr(M[i]));
+end;
+
+function MIntToStr(const M: TInt64Matrix): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, VIntToStr(M[i]));
+end;
+
+function MBoolToStr(const M: TBoolMatrix): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, VBoolToStr(M[i]));
+end;
+
+function MFloatToStr(const M: TDblMatrix): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, VFloatToStr(M[i]));
+end;
+
+function MDateToStr(const M: TDateMatrix): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, VDateToStr(M[i]));
+end;
+
+function MFormatDateTime(const FormatStr: String; const M: TDateMatrix; Options: TFormatDateTimeOptions = []): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, VFormatDateTime(FormatStr, M[i], Options));
+end;
+
 
 end.
 
