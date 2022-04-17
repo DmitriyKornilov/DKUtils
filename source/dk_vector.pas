@@ -219,6 +219,7 @@ type
   function VFloatToStr(const V: TDblVector): TStrVector;
   function VDateToStr(const V: TDateVector): TStrVector;
   function VFormatDateTime(const FormatStr: String; const V: TDateVector; Options: TFormatDateTimeOptions = []): TStrVector;
+  function VTrim(const V: TStrVector): TStrVector;
 
   {СТРОКОВЫЙ ВЕКТОР И СПИСОК}
   function VFromStrings(const S: TStrings): TStrVector;
@@ -2493,6 +2494,15 @@ begin
     for i:=0 to High(V) do
       Result[i]:= FormatDateTime(FormatStr, V[i], Options);
   end;
+end;
+
+function VTrim(const V: TStrVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(V) do
+    VAppend(Result, STrim(V[i]));
 end;
 
 {СТРОКОВЫЙ ВЕКТОР И СПИСОК}
