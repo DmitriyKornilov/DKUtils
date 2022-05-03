@@ -1525,18 +1525,11 @@ function VIndexOf(const V: TStrVector; const FindValue: String;
                   const ACaseSensitivity: Boolean = True): Integer;
 var
   i: Integer;
-  S1, S2: String;
 begin
   Result:= -1;
-  S1:= FindValue;
-  if not ACaseSensitivity then
-    S1:= SUpper(S1);
   for i := 0 to High(V) do
   begin
-    S2:= V[i];
-    if not ACaseSensitivity then
-      S2:= SUpper(S2);
-    if S1=S2 then
+    if SSame(V[i], FindValue, ACaseSensitivity) then
     begin
       Result:= i;
       Exit;
