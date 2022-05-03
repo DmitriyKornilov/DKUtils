@@ -165,6 +165,19 @@ type
   function VIndexOf(const V: TBoolVector;  const FindValue: Boolean): Integer;
   function VIndexOf(const V: TColorVector; const FindValue: TColor):  Integer;
 
+  {ПОЗИЦИЯ ДЛЯ ВСТАВКИ В УПОРЯДОЧЕННОМ ВЕКТОРЕ}
+  function VInsOfAsc(const V: TIntVector;   const InsValue: Integer): Integer;
+  function VInsOfAsc(const V: TInt64Vector; const InsValue: Int64):   Integer;
+  function VInsOfAsc(const V: TStrVector;   const InsValue: String;
+                     const ACaseSensitivity: Boolean = True):  Integer;
+  function VInsOfAsc(const V: TDateVector; const InsValue: TDate):    Integer;
+
+  function VInsOfDesc(const V: TIntVector;   const InsValue: Integer): Integer;
+  function VInsOfDesc(const V: TInt64Vector; const InsValue: Int64):   Integer;
+  function VInsOfDesc(const V: TStrVector;   const InsValue: String;
+                      const ACaseSensitivity: Boolean = True):  Integer;
+  function VInsOfDesc(const V: TDateVector; const InsValue: TDate):    Integer;
+
   {УНИКАЛЬНЫЕ ЗНАЧЕНИЯ}
   function VUnique(const V: TIntVector): TIntVector;
   function VUnique(const V: TInt64Vector): TInt64Vector;
@@ -1575,6 +1588,200 @@ begin
   for i := 0 to High(V) do
   begin
     if V[i]=FindValue then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+//VInsOfAsc
+
+function VInsOfAsc(const V: TIntVector;   const InsValue: Integer): Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
+  if InsValue<V[0] then Exit;
+  if InsValue>=V[High(V)] then
+  begin
+    Result:= High(V)+1;
+    Exit;
+  end;
+  for i:= 1 to High(V) do
+  begin
+    if InsValue<V[i] then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+function VInsOfAsc(const V: TInt64Vector; const InsValue: Int64):   Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
+  if InsValue<V[0] then Exit;
+  if InsValue>=V[High(V)] then
+  begin
+    Result:= High(V)+1;
+    Exit;
+  end;
+  for i:= 1 to High(V) do
+  begin
+    if InsValue<V[i] then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+function VInsOfAsc(const V: TStrVector;   const InsValue: String;
+                   const ACaseSensitivity: Boolean = True):  Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
+
+  if SCompare(InsValue, V[0], ACaseSensitivity)<0 then Exit;
+
+  if SCompare(InsValue, V[High(V)], ACaseSensitivity)>=0 then
+  begin
+    Result:= High(V)+1;
+    Exit;
+  end;
+
+  for i:= 1 to High(V) do
+  begin
+    if SCompare(InsValue, V[i], ACaseSensitivity)<0 then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+function VInsOfAsc(const V: TDateVector; const InsValue: TDate):   Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
+
+  if CompareDate(InsValue, V[0])<0 then Exit;
+
+  if CompareDate(InsValue, V[High(V)])>=0 then
+  begin
+    Result:= High(V)+1;
+    Exit;
+  end;
+
+  for i:= 1 to High(V) do
+  begin
+    if CompareDate(InsValue, V[i])<0 then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+//VInsOfDesc
+
+function VInsOfDesc(const V: TIntVector;   const InsValue: Integer): Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
+  if InsValue>V[0] then Exit;
+  if InsValue<=V[High(V)] then
+  begin
+    Result:= High(V)+1;
+    Exit;
+  end;
+  for i:= 1 to High(V) do
+  begin
+    if InsValue>V[i] then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+function VInsOfDesc(const V: TInt64Vector; const InsValue: Int64):   Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
+  if InsValue>V[0] then Exit;
+  if InsValue<=V[High(V)] then
+  begin
+    Result:= High(V)+1;
+    Exit;
+  end;
+  for i:= 1 to High(V) do
+  begin
+    if InsValue>V[i] then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+function VInsOfDesc(const V: TStrVector;   const InsValue: String;
+                    const ACaseSensitivity: Boolean = True):  Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
+
+  if SCompare(InsValue, V[0], ACaseSensitivity)>0 then Exit;
+
+  if SCompare(InsValue, V[High(V)], ACaseSensitivity)<=0 then
+  begin
+    Result:= High(V)+1;
+    Exit;
+  end;
+
+  for i:= 1 to High(V) do
+  begin
+    if SCompare(InsValue, V[i], ACaseSensitivity)>0 then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+function VInsOfDesc(const V: TDateVector; const InsValue: TDate):    Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
+
+  if CompareDate(InsValue, V[0])>0 then Exit;
+
+  if CompareDate(InsValue, V[High(V)])<=0 then
+  begin
+    Result:= High(V)+1;
+    Exit;
+  end;
+
+  for i:= 1 to High(V) do
+  begin
+    if CompareDate(InsValue, V[i])>0 then
     begin
       Result:= i;
       Exit;
