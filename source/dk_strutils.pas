@@ -18,7 +18,8 @@ type
   function SCut(const AStr: String; const ALeftCount, ARightCount: Integer): String;
   function SCutRight(const AStr: String; const ACount: Integer): String;
   function SCutLeft(const AStr: String; const ACount: Integer): String;
-  function SSame(const AStr1, AStr2: String): Boolean;
+  function SSame(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Boolean;
+  function SCompare(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Integer;
   function SPos(const AStr, AValue: String; const AStartPos: Integer = 1): Integer;
   function SCopy(const AStr: String; const AStart, AEnd: Integer): String;
   function SCopyCount(const AStr: String; const AStart, ACount: Integer): String;
@@ -85,9 +86,17 @@ begin
   Result:= SCopyCount(AStr, ACount+1, SLength(AStr));
 end;
 
-function SSame(const AStr1, AStr2: String): Boolean;
+function SSame(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Boolean;
 begin
-  Result:= UTF8CompareStr(AStr1, AStr2)=0;
+  Result:= SCompare(AStr1, AStr2, ACaseSensitivity)=0;
+end;
+
+function SCompare(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Integer;
+begin
+  if ACaseSensitivity then
+    Result:= UTF8CompareStr(AStr1, AStr2)
+  else
+    Result:= UTF8CompareStr(SUpper(AStr1), SUpper(AStr2));
 end;
 
 function SPos(const AStr, AValue: String; const AStartPos: Integer = 1): Integer;
