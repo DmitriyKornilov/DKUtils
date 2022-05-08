@@ -282,7 +282,8 @@ type
   function VMult(const V1: TStrVector; const V2: TIntVector): TStrVector;
 
   {ДЛЯ ЦЕЛОЧИСЛЕННОГО ВЕКТОРА}
-  function VOrder(const MaxValue: Integer): TIntVector; //{1,2,3,...,MaxValue}
+  function VOrder(const MaxValue: Integer;
+                  const AZeroFirst: Boolean = False): TIntVector; //{[0],1,2,3,...,MaxValue}
 
   {ДЛЯ УПОРЯДОЧЕННОГО ВЕКТОРА ДАТ}
   function VCrossInd(const V: TDateVector; const ABeginDate, AEndDate: TDate; out I1,I2: Integer): Boolean;
@@ -2215,12 +2216,12 @@ end;
 
 //VOrder
 
-function VOrder(const MaxValue: Integer): TIntVector;
+function VOrder(const MaxValue: Integer; const AZeroFirst: Boolean = False): TIntVector;
 var
   i: Integer;
 begin
   Result:= nil;
-  for i:= 1 to MaxValue do
+  for i:= 1-Ord(AZeroFirst) to MaxValue do
     VAppend(Result, i);
 end;
 
