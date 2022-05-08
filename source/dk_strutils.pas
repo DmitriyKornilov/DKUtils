@@ -31,6 +31,8 @@ type
   function SSymbolLast(const AStr: String): String;
   function SDigit(const AStr: String; const ASymbolPos: Integer): Byte;
   function SRedLine(const ASpacesCount: Integer): String;
+  function SFillRight(const AStr: String; const ANeedLength: Integer): String;
+  function SFillLeft(const AStr: String; const ANeedLength: Integer): String;
   function SSymbolType(const ASymbol: String): TSymbolType;
   function SSymbolType(const AStr: String; const ASymbolPos: Integer): TSymbolType;
   function SFont(const AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): TFont;
@@ -169,6 +171,28 @@ begin
   Result:= EmptyStr;
   for i:= 1 to ASpacesCount do
     Result:= Result + SYMBOL_SPACE;
+end;
+
+function SFillRight(const AStr: String; const ANeedLength: Integer): String;
+var
+  n: Integer;
+begin
+  n:= ANeedLength - Length(AStr);
+  if n<=0 then
+    Result:= AStr
+  else
+    Result:= AStr + SRedLine(n);
+end;
+
+function SFillLeft(const AStr: String; const ANeedLength: Integer): String;
+var
+  n: Integer;
+begin
+  n:= ANeedLength - Length(AStr);
+  if n<=0 then
+    Result:= AStr
+  else
+    Result:= SRedLine(n) + AStr;
 end;
 
 function SSymbolType(const ASymbol: String): TSymbolType;
