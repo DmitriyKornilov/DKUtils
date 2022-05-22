@@ -28,6 +28,7 @@ uses
   procedure QParamInt64(const AParamName: String; const AParamValue: Int64);
   procedure QParamStr(const AParamName: String; const AParamValue: String);
   procedure QParamDT(const AParamName: String; const AParamValue: TDateTime);
+  procedure QParamFloat(const AParamName: String; const AParamValue: Double);
   function QIsNull(const AFieldName: String): Boolean;
   function QIsEmpty: Boolean;
   function QEOF: Boolean;
@@ -36,6 +37,7 @@ uses
   function QFieldInt64(const AFieldName: String): Int64;
   function QFieldStr(const AFieldName: String): String;
   function QFieldDT(const AFieldName: String): TDateTime;
+  function QFieldFloat(const AFieldName: String): Double;
 
   {SQL Utils}
   function SqlSpaces(const AStr: String): String;
@@ -188,6 +190,11 @@ begin
   SqlUtilsQuery.ParamByName(AParamName).AsDateTime:= AParamValue;
 end;
 
+procedure QParamFloat(const AParamName: String; const AParamValue: Double);
+begin
+  SqlUtilsQuery.ParamByName(AParamName).AsFloat:= AParamValue;
+end;
+
 function QFieldInt(const AFieldName: String): Integer;
 begin
   Result:= 0;
@@ -214,6 +221,13 @@ begin
   Result:= 0;
   if not QIsNull(AFieldName) then
     Result:= SqlUtilsQuery.FieldByName(AFieldName).AsDateTime;
+end;
+
+function QFieldFloat(const AFieldName: String): Double;
+begin
+  Result:= 0;
+  if not QIsNull(AFieldName) then
+    Result:= SqlUtilsQuery.FieldByName(AFieldName).AsFloat;
 end;
 
 {SQL Utils}
