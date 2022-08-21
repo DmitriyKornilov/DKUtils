@@ -317,6 +317,8 @@ type
   function CheckIndex(const MaxIndex, Ind: Integer): Boolean;
   function CheckIndexes(const MaxIndex, Ind1, Ind2: Integer): Boolean;
 
+  function VIsTrue(const V: TBoolVector): Boolean;
+
 implementation
 
 //проверка диапазона индексов
@@ -341,6 +343,21 @@ end;
 function CheckIndexes(const MaxIndex, Ind1, Ind2: Integer): Boolean;
 begin
   Result:= CheckIndex(MaxIndex, Ind1) and CheckIndex(MaxIndex, Ind2) and (Ind1<>Ind2);
+end;
+
+function VIsTrue(const V: TBoolVector): Boolean;
+var
+  i: Integer;
+begin
+  Result:= False;
+  for i:= 0 to High(V) do
+  begin
+    if V[i] then
+    begin
+      Result:= True;
+      break;
+    end;
+  end;
 end;
 
 //VDim
