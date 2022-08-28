@@ -53,7 +53,7 @@ uses
   function SqlINSERT(const ATableName: String; const AFields: array of String;
                      const AORExpression: String = SYMBOL_EMPTY): String;
   function SqlUPDATE(const ATableName: String; const AFields: array of String): String;
-
+  function SqlEsc(const AStr: String): String;
 
 implementation
 
@@ -357,6 +357,12 @@ begin
     else
       Result:= Result + SYMBOL_SPACE;
   end;
+end;
+
+function SqlEsc(const AStr: String): String;
+begin
+  Result:= StringReplace(AStr, ' ', '', [rfReplaceAll]);
+  Result:= ' [' + Result + '] ';
 end;
 
 
