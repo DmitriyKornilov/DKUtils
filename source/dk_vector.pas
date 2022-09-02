@@ -292,6 +292,12 @@ type
   function VCountBefore(const V: TDateVector; const ADate: TDate): Integer;
   function VCountAfter(const V: TDateVector; const ADate: TDate): Integer;
 
+  {ОБРАЩЕНИЕ ПОРЯДКА ЭЛЕМЕНТОВ}
+  procedure VReverse(const V: TIntVector);
+  procedure VReverse(const V: TInt64Vector);
+  procedure VReverse(const V: TDateVector);
+  procedure VReverse(const V: TStrVector);
+
   {СОРТИРОВКА}
   procedure VSort(const V: TStrVector; out Indexes: TIntVector;
                   const Desc: Boolean = False);
@@ -3068,6 +3074,52 @@ begin
   VCopy(V, TmpV);
   for i:= 0 to High(Indexes) do
     V[i]:= TmpV[Indexes[i]];
+end;
+
+//VReverse
+
+procedure VReverse(const V: TIntVector);
+var
+  TmpV: TIntVector;
+  i, n: Integer;
+begin
+  TmpV:= VCut(V);
+  n:= High(V);
+  for i:= n downto 0 do
+    V[n-i]:= TmpV[i];
+end;
+
+procedure VReverse(const V: TInt64Vector);
+var
+  TmpV: TInt64Vector;
+  i, n: Integer;
+begin
+  TmpV:= VCut(V);
+  n:= High(V);
+  for i:= n downto 0 do
+    V[n-i]:= TmpV[i];
+end;
+
+procedure VReverse(const V: TDateVector);
+var
+  TmpV: TDateVector;
+  i, n: Integer;
+begin
+  TmpV:= VCut(V);
+  n:= High(V);
+  for i:= n downto 0 do
+    V[n-i]:= TmpV[i];
+end;
+
+procedure VReverse(const V: TStrVector);
+var
+  TmpV: TStrVector;
+  i, n: Integer;
+begin
+  TmpV:= VCut(V);
+  n:= High(V);
+  for i:= n downto 0 do
+    V[n-i]:= TmpV[i];
 end;
 
 end.
