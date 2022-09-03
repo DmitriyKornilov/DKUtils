@@ -29,6 +29,13 @@ uses
   procedure QParamStr(const AParamName: String; const AParamValue: String);
   procedure QParamDT(const AParamName: String; const AParamValue: TDateTime);
   procedure QParamFloat(const AParamName: String; const AParamValue: Double);
+
+  procedure QParamsInt(const AParamValues: array of Integer);
+  procedure QParamsInt64(const AParamValues: array of Int64);
+  procedure QParamsStr(const AParamValues: array of String);
+  procedure QParamsDT(const AParamValues: array of TDateTime);
+  procedure QParamsFloat(const AParamValues: array of Double);
+
   function QIsNull(const AFieldName: String): Boolean;
   function QIsEmpty: Boolean;
   function QEOF: Boolean;
@@ -46,14 +53,11 @@ uses
   function SqlOR(const AExpressions: array of String): String;
   function SqlAND(const AExpressions: array of String): String;
   function SqlCROSS(const AMin1, AMax1, AMin2, AMax2: String): String;
-  function SqlSELECT(const AFields: array of String;
-                     const ATableName: String; const ATablePseud: String = SYMBOL_EMPTY): String;
-  function SqlSELECT(const AFieldsList, ATableName: String;
-                     const ATablePseud: String = SYMBOL_EMPTY): String;
   function SqlINSERT(const ATableName: String; const AFields: array of String;
                      const AORExpression: String = SYMBOL_EMPTY): String;
   function SqlUPDATE(const ATableName: String; const AFields: array of String): String;
-  function SqlEsc(const AStr: String): String;
+  function SqlIN(const ATablePseud, AFieldName: String; const AValuesCount: Integer): String;
+  function SqlEsc(const AStr: String; const ANeedSpaces: Boolean = True): String;
 
 implementation
 
@@ -195,6 +199,51 @@ begin
   SqlUtilsQuery.ParamByName(AParamName).AsFloat:= AParamValue;
 end;
 
+procedure QParamsInt(const AParamValues: array of Integer);
+var
+  i: Integer;
+begin
+  if Length(AParamValues)=0 then Exit;
+  for i:= 0 to High(AParamValues) do
+      QParamInt('Value' + IntToStr(i+1), AParamValues[i]);
+end;
+
+procedure QParamsInt64(const AParamValues: array of Int64);
+var
+  i: Integer;
+begin
+  if Length(AParamValues)=0 then Exit;
+  for i:= 0 to High(AParamValues) do
+      QParamInt64('Value' + IntToStr(i+1), AParamValues[i]);
+end;
+
+procedure QParamsStr(const AParamValues: array of String);
+var
+  i: Integer;
+begin
+  if Length(AParamValues)=0 then Exit;
+  for i:= 0 to High(AParamValues) do
+      QParamStr('Value' + IntToStr(i+1), AParamValues[i]);
+end;
+
+procedure QParamsDT(const AParamValues: array of TDateTime);
+var
+  i: Integer;
+begin
+  if Length(AParamValues)=0 then Exit;
+  for i:= 0 to High(AParamValues) do
+      QParamDT('Value' + IntToStr(i+1), AParamValues[i]);
+end;
+
+procedure QParamsFloat(const AParamValues: array of Double);
+var
+  i: Integer;
+begin
+  if Length(AParamValues)=0 then Exit;
+  for i:= 0 to High(AParamValues) do
+      QParamFloat('Value' + IntToStr(i+1), AParamValues[i]);
+end;
+
 function QFieldInt(const AFieldName: String): Integer;
 begin
   Result:= 0;
@@ -246,15 +295,22 @@ begin
 end;
 
 // SqlExprList(['A AS AName', 'B', 'C']) --> ' A AS AName, B, C '
-function SqlExprList(const AExpressions: array of String): String;
+function SqlExprList(const AExpressions: array of String; const ANeedEsc: Boolean = False): String;
 var
   i: Integer;
+  S: String;
 begin
   Result:= EmptyStr;
   if Length(AExpressions)=0 then Exit;
-  Result:= AExpressions[0] ;
+  S:= AExpressions[0];
+  if ANeedEsc then S:= SqlEsc(S);
+  Result:= S;
   for i:= 1 to High(AExpressions) do
-      Result:= Result + SYMBOL_COMMA + SYMBOL_SPACE + AExpressions[i];
+  begin
+    S:= AExpressions[i];
+    if ANeedEsc then S:= SqlEsc(S);
+    Result:= Result + SYMBOL_COMMA + SYMBOL_SPACE + S;
+  end;
   Result:= SqlSpaces(Result);
 end;
 
@@ -309,37 +365,14 @@ begin
                   SqlAND([SqlExprLogic(AMin1, '>=', AMin2), SqlExprLogic(AMax1, '<=', AMax2)])]);
 end;
 
-function SqlSELECT(const AFields: array of String;
-  const ATableName: String; const ATablePseud: String = SYMBOL_EMPTY): String;
-begin
-  Result:= 'SELECT';
-  if Length(AFields)=0 then
-    Result:= Result + ' * '
-  else
-    Result:= Result + SqlExprList(AFields);
-  Result:= Result + ' FROM ' + ATableName;
-  if ATablePseud<>SYMBOL_EMPTY then
-    Result:= Result + SYMBOL_SPACE + ATablePseud;
-  Result:= Result + SYMBOL_SPACE;
-end;
-
-function SqlSELECT(const AFieldsList, ATableName: String;
-                   const ATablePseud: String = SYMBOL_EMPTY): String;
-begin
-  Result:= 'SELECT ' + AFieldsList + ' FROM ' + ATableName;
-  if ATablePseud<>SYMBOL_EMPTY then
-    Result:= Result + SYMBOL_SPACE + ATablePseud;
-  Result:= Result + SYMBOL_SPACE;
-end;
-
 function SqlINSERT(const ATableName: String; const AFields: array of String;
   const AORExpression: String): String;
 begin
   Result:= 'INSERT';
   if AORExpression<>SYMBOL_EMPTY then
     Result:= Result + ' OR ' + AORExpression;
-  Result:= Result + ' INTO ' + ATableName +
-           SqlBrackets(SqlExprList(AFields)) + ' VALUES ' +
+  Result:= Result + ' INTO ' + SqlEsc(ATableName) +
+           SqlBrackets(SqlExprList(AFields, True)) + ' VALUES ' +
            SqlParamList(AFields);
 end;
 
@@ -348,10 +381,10 @@ function SqlUPDATE(const ATableName: String;
 var
   i: Integer;
 begin
-  Result:= 'UPDATE' + SYMBOL_SPACE + ATableName + SYMBOL_SPACE + 'SET';
+  Result:= 'UPDATE' + SYMBOL_SPACE + SqlEsc(ATableName) + SYMBOL_SPACE + 'SET';
   for i:= 0 to High(AFields) do
   begin
-    Result:= Result + SYMBOL_SPACE + AFields[i] + '=:' + AFields[i];
+    Result:= Result + SYMBOL_SPACE + SqlEsc(AFields[i]) + '=:' + AFields[i];
     if i<High(AFields) then
       Result:= Result + SYMBOL_COMMA
     else
@@ -359,10 +392,30 @@ begin
   end;
 end;
 
-function SqlEsc(const AStr: String): String;
+function SqlIN(const ATablePseud, AFieldName: String; const AValuesCount: Integer): String;
+var
+  i: Integer;
+  S: String;
+begin
+  Result:= EmptyStr;
+  if (AValuesCount<=0) or (AFieldName=EmptyStr) then Exit;
+  S:= EmptyStr;
+  if ATablePseud<>EmptyStr then
+    S:= SqlEsc(ATablePseud, False) + '.';
+  S:= S + SqlEsc(AFieldName, False);
+
+  Result:= ' (' + S + ' IN (:Value1';
+  for i:= 1 to AValuesCount-1 do
+    Result:= Result + ', :Value' + IntToStr(i+1);
+  Result:= Result + ')) ';
+end;
+
+function SqlEsc(const AStr: String; const ANeedSpaces: Boolean = True): String;
 begin
   Result:= StringReplace(AStr, ' ', '', [rfReplaceAll]);
-  Result:= ' [' + Result + '] ';
+  Result:= '[' + Result + ']';
+  if ANeedSpaces then
+    Result:= SqlSpaces(Result);
 end;
 
 
