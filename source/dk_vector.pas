@@ -324,6 +324,9 @@ type
   function CheckIndexes(const MaxIndex, Ind1, Ind2: Integer): Boolean;
 
   function VIsTrue(const V: TBoolVector): Boolean;
+  function VIsFalse(const V: TBoolVector): Boolean;
+  function VIsAllTrue(const V: TBoolVector): Boolean;
+  function VIsAllFalse(const V: TBoolVector): Boolean;
 
 implementation
 
@@ -351,19 +354,39 @@ begin
   Result:= CheckIndex(MaxIndex, Ind1) and CheckIndex(MaxIndex, Ind2) and (Ind1<>Ind2);
 end;
 
-function VIsTrue(const V: TBoolVector): Boolean;
+function VIsIncludes(const V: TBoolVector; const AValue: Boolean): Boolean;
 var
   i: Integer;
 begin
   Result:= False;
   for i:= 0 to High(V) do
   begin
-    if V[i] then
+    if V[i]=AValue then
     begin
       Result:= True;
       break;
     end;
   end;
+end;
+
+function VIsTrue(const V: TBoolVector): Boolean;
+begin
+  Result:= VIsIncludes(V, True);
+end;
+
+function VIsFalse(const V: TBoolVector): Boolean;
+begin
+  Result:= VIsIncludes(V, False);
+end;
+
+function VIsAllTrue(const V: TBoolVector): Boolean;
+begin
+  Result:= not VIsFalse(V);
+end;
+
+function VIsAllFalse(const V: TBoolVector): Boolean;
+begin
+  Result:= not VIsTrue(V);
 end;
 
 //VDim
