@@ -299,14 +299,10 @@ type
   procedure VReverse(const V: TStrVector);
 
   {СОРТИРОВКА}
-  procedure VSort(const V: TStrVector; out Indexes: TIntVector;
-                  const Desc: Boolean = False);
-  procedure VSort(const V: TIntVector; out Indexes: TIntVector;
-                  const Desc: Boolean = False);
-  procedure VSort(const V: TInt64Vector; out Indexes: TIntVector;
-                  const Desc: Boolean = False);
-  procedure VSort(const V: TDateVector; out Indexes: TIntVector;
-                  const Desc: Boolean = False);
+  procedure VSort(const V: TStrVector; out Indexes: TIntVector; const Desc: Boolean = False);
+  procedure VSort(const V: TIntVector; out Indexes: TIntVector; const Desc: Boolean = False);
+  procedure VSort(const V: TInt64Vector; out Indexes: TIntVector; const Desc: Boolean = False);
+  procedure VSort(const V: TDateVector; out Indexes: TIntVector;  const Desc: Boolean = False);
   procedure VSort(var V: TStrVector; const Desc: Boolean = False);
   procedure VSort(var V: TIntVector; const Desc: Boolean = False);
   procedure VSort(var V: TInt64Vector; const Desc: Boolean = False);
@@ -1395,7 +1391,7 @@ end;
 
 procedure VIns(var V: TDblVector; const Ind: Integer; const Value: Double);
 var
-  V1, V2: TDateVector;
+  V1, V2: TDblVector;
 begin
   if Ind=Length(V) then
   begin

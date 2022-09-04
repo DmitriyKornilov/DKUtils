@@ -15,30 +15,58 @@ type
   TDateMatrix  = type TDblMatrix;
   TBoolMatrix  = array of TBoolVector;
 
+  TIntMatrix3D   = array of TIntMatrix;
+  TInt64Matrix3D = array of TInt64Matrix;
+  TStrMatrix3D   = array of TStrMatrix;
+  TDblMatrix3D   = array of TDblMatrix;
+  TDateMatrix3D  = type TDblMatrix3D;
+  TBoolMatrix3D  = array of TBoolMatrix;
+
   {РАЗМЕРЫ}
   procedure MDim(var M: TIntMatrix;   const Size1, Size2: Integer; const DefaultValue: Integer = VECTOR_INT_DEFAULT_VALUE);
-  procedure MDim(var M: TInt64Matrix; const Size1, Size2: Integer; const DefaultValue: Integer = VECTOR_INT64_DEFAULT_VALUE);
+  procedure MDim(var M: TInt64Matrix; const Size1, Size2: Integer; const DefaultValue: Int64 = VECTOR_INT64_DEFAULT_VALUE);
   procedure MDim(var M: TStrMatrix;   const Size1, Size2: Integer; const DefaultValue: String = VECTOR_STR_DEFAULT_VALUE);
   procedure MDim(var M: TDblMatrix;   const Size1, Size2: Integer; const DefaultValue: Double = VECTOR_DBL_DEFAULT_VALUE);
   procedure MDim(var M: TBoolMatrix;  const Size1, Size2: Integer; const DefaultValue: Boolean = VECTOR_BOOL_DEFAULT_VALUE);
+  procedure MDim(var M: TIntMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: Integer = VECTOR_INT_DEFAULT_VALUE);
+  procedure MDim(var M: TInt64Matrix3D; const Size1, Size2, Size3: Integer; const DefaultValue: Int64 = VECTOR_INT64_DEFAULT_VALUE);
+  procedure MDim(var M: TStrMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: String = VECTOR_STR_DEFAULT_VALUE);
+  procedure MDim(var M: TDblMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: Double = VECTOR_DBL_DEFAULT_VALUE);
+  procedure MDim(var M: TBoolMatrix3D;  const Size1, Size2, Size3: Integer; const DefaultValue: Boolean = VECTOR_BOOL_DEFAULT_VALUE);
 
   procedure MDim(var M: TIntMatrix;   const Size: Integer; const DefaultVector: TIntVector = nil);
   procedure MDim(var M: TInt64Matrix; const Size: Integer; const DefaultVector: TInt64Vector = nil);
   procedure MDim(var M: TStrMatrix;   const Size: Integer; const DefaultVector: TStrVector = nil);
-  procedure MDim(var M: TDblMatrix;   const Size: Integer; const DefaultVector: TDateVector = nil);
+  procedure MDim(var M: TDblMatrix;   const Size: Integer; const DefaultVector: TDblVector = nil);
   procedure MDim(var M: TBoolMatrix;  const Size: Integer; const DefaultVector: TBoolVector = nil);
+  procedure MDim(var M: TIntMatrix3D;   const Size: Integer; const DefaultMatrix: TIntMatrix = nil);
+  procedure MDim(var M: TInt64Matrix3D; const Size: Integer; const DefaultMatrix: TInt64Matrix = nil);
+  procedure MDim(var M: TStrMatrix3D;   const Size: Integer; const DefaultMatrix: TStrMatrix = nil);
+  procedure MDim(var M: TDblMatrix3D;   const Size: Integer; const DefaultMatrix: TDblMatrix = nil);
+  procedure MDim(var M: TBoolMatrix3D;  const Size: Integer; const DefaultMatrix: TBoolMatrix = nil);
 
   procedure MReDim(var M: TIntMatrix;   const Size1, Size2: Integer; const DefaultValue: Integer = VECTOR_INT_DEFAULT_VALUE);
-  procedure MReDim(var M: TInt64Matrix; const Size1, Size2: Integer; const DefaultValue: Integer = VECTOR_INT64_DEFAULT_VALUE);
+  procedure MReDim(var M: TInt64Matrix; const Size1, Size2: Integer; const DefaultValue: Int64 = VECTOR_INT64_DEFAULT_VALUE);
   procedure MReDim(var M: TStrMatrix;   const Size1, Size2: Integer; const DefaultValue: String = VECTOR_STR_DEFAULT_VALUE);
   procedure MReDim(var M: TDblMatrix;   const Size1, Size2: Integer; const DefaultValue: Double = VECTOR_DBL_DEFAULT_VALUE);
   procedure MReDim(var M: TBoolMatrix;  const Size1, Size2: Integer; const DefaultValue: Boolean = VECTOR_BOOL_DEFAULT_VALUE);
+  procedure MReDim(var M: TIntMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: Integer = VECTOR_INT_DEFAULT_VALUE);
+  procedure MReDim(var M: TInt64Matrix3D; const Size1, Size2, Size3: Integer; const DefaultValue: Int64 = VECTOR_INT64_DEFAULT_VALUE);
+  procedure MReDim(var M: TStrMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: String = VECTOR_STR_DEFAULT_VALUE);
+  procedure MReDim(var M: TDblMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: Double = VECTOR_DBL_DEFAULT_VALUE);
+  procedure MReDim(var M: TBoolMatrix3D;  const Size1, Size2, Size3: Integer; const DefaultValue: Boolean = VECTOR_BOOL_DEFAULT_VALUE);
 
   procedure MReDim(var M: TIntMatrix;   const Size: Integer; const DefaultVector: TIntVector = nil);
   procedure MReDim(var M: TInt64Matrix; const Size: Integer; const DefaultVector: TInt64Vector = nil);
   procedure MReDim(var M: TStrMatrix;   const Size: Integer; const DefaultVector: TStrVector = nil);
-  procedure MReDim(var M: TDblMatrix;   const Size: Integer; const DefaultVector: TDateVector = nil);
+  procedure MReDim(var M: TDblMatrix;   const Size: Integer; const DefaultVector: TDblVector = nil);
   procedure MReDim(var M: TBoolMatrix;  const Size: Integer; const DefaultVector: TBoolVector = nil);
+  procedure MReDim(var M: TIntMatrix3D;   const Size: Integer; const DefaultMatrix: TIntMatrix = nil);
+  procedure MReDim(var M: TInt64Matrix3D; const Size: Integer; const DefaultMatrix: TInt64Matrix = nil);
+  procedure MReDim(var M: TStrMatrix3D;   const Size: Integer; const DefaultMatrix: TStrMatrix = nil);
+  procedure MReDim(var M: TDblMatrix3D;   const Size: Integer; const DefaultMatrix: TDblMatrix = nil);
+  procedure MReDim(var M: TBoolMatrix3D;  const Size: Integer; const DefaultMatrix: TBoolMatrix = nil);
+
 
   {ПЕРЕСТАНОВКА МЕСТАМИ ДВУХ ВЕКТОРОВ}
   procedure MSwap(var M: TIntMatrix;   const Index1, Index2: Integer);
@@ -47,6 +75,13 @@ type
   procedure MSwap(var M: TDblMatrix;   const Index1, Index2: Integer);
   procedure MSwap(var M: TBoolMatrix;  const Index1, Index2: Integer);
 
+  {ПЕРЕСТАНОВКА МЕСТАМИ ДВУХ МАТРИЦ}
+  procedure MSwap(var M: TIntMatrix3D;   const Index1, Index2: Integer);
+  procedure MSwap(var M: TInt64Matrix3D; const Index1, Index2: Integer);
+  procedure MSwap(var M: TStrMatrix3D;   const Index1, Index2: Integer);
+  procedure MSwap(var M: TDblMatrix3D;   const Index1, Index2: Integer);
+  procedure MSwap(var M: TBoolMatrix3D;  const Index1, Index2: Integer);
+
   {УДАЛЕНИЕ ВЕКТОРОВ}
   procedure MDel(var M: TIntMatrix;   const Index1: Integer; Index2: Integer = -1);
   procedure MDel(var M: TInt64Matrix; const Index1: Integer; Index2: Integer = -1);
@@ -54,12 +89,25 @@ type
   procedure MDel(var M: TDblMatrix;   const Index1: Integer; Index2: Integer = -1);
   procedure MDel(var M: TBoolMatrix;  const Index1: Integer; Index2: Integer = -1);
 
+  {УДАЛЕНИЕ МАТРИЦ}
+  procedure MDel(var M: TIntMatrix3D;   const Index1: Integer; Index2: Integer = -1);
+  procedure MDel(var M: TInt64Matrix3D; const Index1: Integer; Index2: Integer = -1);
+  procedure MDel(var M: TStrMatrix3D;   const Index1: Integer; Index2: Integer = -1);
+  procedure MDel(var M: TDblMatrix3D;   const Index1: Integer; Index2: Integer = -1);
+  procedure MDel(var M: TBoolMatrix3D;  const Index1: Integer; Index2: Integer = -1);
+
   {СРЕЗ}
   function MCut(const M: TIntMatrix;   FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix;
   function MCut(const M: TInt64Matrix; FromIndex: Integer=-1; ToIndex: Integer=-1): TInt64Matrix;
   function MCut(const M: TStrMatrix;   FromIndex: Integer=-1; ToIndex: Integer=-1): TStrMatrix;
   function MCut(const M: TDblMatrix;   FromIndex: Integer=-1; ToIndex: Integer=-1): TDblMatrix;
   function MCut(const M: TBoolMatrix;  FromIndex: Integer=-1; ToIndex: Integer=-1): TBoolMatrix;
+  function MCut(const M: TIntMatrix3D;   FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix3D;
+  function MCut(const M: TInt64Matrix3D; FromIndex: Integer=-1; ToIndex: Integer=-1): TInt64Matrix3D;
+  function MCut(const M: TStrMatrix3D;   FromIndex: Integer=-1; ToIndex: Integer=-1): TStrMatrix3D;
+  function MCut(const M: TDblMatrix3D;   FromIndex: Integer=-1; ToIndex: Integer=-1): TDblMatrix3D;
+  function MCut(const M: TBoolMatrix3D;  FromIndex: Integer=-1; ToIndex: Integer=-1): TBoolMatrix3D;
+
 
   {СЦЕПЛЕНИЕ}
   function MAdd(var M1,M2: TIntMatrix)  : TIntMatrix;
@@ -67,6 +115,11 @@ type
   function MAdd(var M1,M2: TStrMatrix)  : TStrMatrix;
   function MAdd(var M1,M2: TDblMatrix)  : TDblMatrix;
   function MAdd(var M1,M2: TBoolMatrix) : TBoolMatrix;
+  function MAdd(var M1,M2: TIntMatrix3D)  : TIntMatrix3D;
+  function MAdd(var M1,M2: TInt64Matrix3D): TInt64Matrix3D;
+  function MAdd(var M1,M2: TStrMatrix3D)  : TStrMatrix3D;
+  function MAdd(var M1,M2: TDblMatrix3D)  : TDblMatrix3D;
+  function MAdd(var M1,M2: TBoolMatrix3D) : TBoolMatrix3D;
 
   {ДОБАВЛЕНИЕ ВЕКТОРА}
   procedure MAppend(var M: TIntMatrix;   const V: TIntVector);
@@ -75,12 +128,25 @@ type
   procedure MAppend(var M: TDblMatrix;   const V: TDblVector);
   procedure MAppend(var M: TBoolMatrix;  const V: TBoolVector);
 
+  {ДОБАВЛЕНИЕ МАТРИЦЫ}
+  procedure MAppend(var M: TIntMatrix3D;   const MValue: TIntMatrix);
+  procedure MAppend(var M: TInt64Matrix3D; const MValue: TInt64Matrix);
+  procedure MAppend(var M: TStrMatrix3D;   const MValue: TStrMatrix);
+  procedure MAppend(var M: TDblMatrix3D;   const MValue: TDblMatrix);
+  procedure MAppend(var M: TBoolMatrix3D;  const MValue: TBoolMatrix);
+
   {ПОИСК В МАТРИЦЕ}
   function MIndexOf(const M: TIntMatrix;   const FindValue: Integer; out Index1, Index2: Integer): Boolean;
   function MIndexOf(const M: TInt64Matrix; const FindValue: Int64;   out Index1, Index2: Integer): Boolean;
   function MIndexOf(const M: TStrMatrix;   const FindValue: String;  out Index1, Index2: Integer): Boolean;
   function MIndexOf(const M: TDateMatrix;  const FindValue: TDate;   out Index1, Index2: Integer): Boolean;
   function MIndexOf(const M: TBoolMatrix;  const FindValue: Boolean; out Index1, Index2: Integer): Boolean;
+  function MIndexOf(const M: TIntMatrix3D;   const FindValue: Integer; out Index1, Index2, Index3: Integer): Boolean;
+  function MIndexOf(const M: TInt64Matrix3D; const FindValue: Int64;   out Index1, Index2, Index3: Integer): Boolean;
+  function MIndexOf(const M: TStrMatrix3D;   const FindValue: String;  out Index1, Index2, Index3: Integer): Boolean;
+  function MIndexOf(const M: TDateMatrix3D;  const FindValue: TDate;   out Index1, Index2, Index3: Integer): Boolean;
+  function MIndexOf(const M: TBoolMatrix3D;  const FindValue: Boolean; out Index1, Index2, Index3: Integer): Boolean;
+
 
   {ПРЕОБРАЗОВАНИЕ МАТРИЦЫ В ВЕКТОР ПОСЛЕДОВАТЕЛЬНО ИДУЩИХ ЗНАЧЕНИЙ}
   function MToVector(const M: TIntMatrix)  : TIntVector;
@@ -114,6 +180,11 @@ type
   function MIsNil(const M: TStrMatrix): Boolean;
   function MIsNil(const M: TDblMatrix): Boolean;
   function MIsNil(const M: TBoolMatrix): Boolean;
+  function MIsNil(const M: TIntMatrix3D): Boolean;
+  function MIsNil(const M: TInt64Matrix3D): Boolean;
+  function MIsNil(const M: TStrMatrix3D): Boolean;
+  function MIsNil(const M: TDblMatrix3D): Boolean;
+  function MIsNil(const M: TBoolMatrix3D): Boolean;
 
   {НАИБОЛЬШАЯ ДЛИНА ВЕКТОРА}
   function MMaxLength(const M: TIntMatrix): Integer;
@@ -137,6 +208,13 @@ type
   function MDateToStr(const M: TDateMatrix): TStrMatrix;
   function MFormatDateTime(const FormatStr: String; const M: TDateMatrix; Options: TFormatDateTimeOptions = []): TStrMatrix;
 
+  function MIntToStr(const M: TIntMatrix3D): TStrMatrix3D;
+  function MIntToStr(const M: TInt64Matrix3D): TStrMatrix3D;
+  function MBoolToStr(const M: TBoolMatrix3D): TStrMatrix3D;
+  function MFloatToStr(const M: TDblMatrix3D): TStrMatrix3D;
+  function MDateToStr(const M: TDateMatrix3D): TStrMatrix3D;
+  function MFormatDateTime(const FormatStr: String; const M: TDateMatrix3D; Options: TFormatDateTimeOptions = []): TStrMatrix3D;
+
 
 implementation
 
@@ -151,7 +229,7 @@ begin
     VDim(M[i], Size2, DefaultValue);
 end;
 
-procedure MDim(var M: TInt64Matrix; const Size1, Size2: Integer; const DefaultValue: Integer = VECTOR_INT64_DEFAULT_VALUE);
+procedure MDim(var M: TInt64Matrix; const Size1, Size2: Integer; const DefaultValue: Int64 = VECTOR_INT64_DEFAULT_VALUE);
 var
   i: Integer;
 begin
@@ -191,6 +269,56 @@ begin
     VDim(M[i], Size2, DefaultValue);
 end;
 
+procedure MDim(var M: TIntMatrix3D; const Size1, Size2, Size3: Integer; const DefaultValue: Integer = VECTOR_INT_DEFAULT_VALUE);
+var
+  i: Integer;
+begin
+  M:= nil;
+  SetLength(M, Size1);
+  for i:=0 to Size1-1 do
+    MDim(M[i], Size2, Size3, DefaultValue);
+end;
+
+procedure MDim(var M: TInt64Matrix3D; const Size1, Size2, Size3: Integer; const DefaultValue: Int64 = VECTOR_INT64_DEFAULT_VALUE);
+var
+  i: Integer;
+begin
+  M:= nil;
+  SetLength(M, Size1);
+  for i:=0 to Size1-1 do
+    MDim(M[i], Size2, Size3, DefaultValue);
+end;
+
+procedure MDim(var M: TStrMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: String = VECTOR_STR_DEFAULT_VALUE);
+var
+  i: Integer;
+begin
+  M:= nil;
+  SetLength(M, Size1);
+  for i:=0 to Size1-1 do
+    MDim(M[i], Size2, Size3, DefaultValue);
+end;
+
+procedure MDim(var M: TDblMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: Double = VECTOR_DBL_DEFAULT_VALUE);
+var
+  i: Integer;
+begin
+  M:= nil;
+  SetLength(M, Size1);
+  for i:=0 to Size1-1 do
+    MDim(M[i], Size2, Size3, DefaultValue);
+end;
+
+procedure MDim(var M: TBoolMatrix3D;  const Size1, Size2, Size3: Integer; const DefaultValue: Boolean = VECTOR_BOOL_DEFAULT_VALUE);
+var
+  i: Integer;
+begin
+  M:= nil;
+  SetLength(M, Size1);
+  for i:=0 to Size1-1 do
+    MDim(M[i], Size2, Size3, DefaultValue);
+end;
+
 procedure MDim(var M: TIntMatrix; const Size: Integer; const DefaultVector: TIntVector = nil);
 var
   i: Integer;
@@ -221,7 +349,7 @@ begin
     M[i]:= VCut(DefaultVector);
 end;
 
-procedure MDim(var M: TDblMatrix; const Size: Integer; const DefaultVector: TDateVector = nil);
+procedure MDim(var M: TDblMatrix; const Size: Integer; const DefaultVector: TDblVector = nil);
 var
   i: Integer;
 begin
@@ -241,6 +369,55 @@ begin
     M[i]:= VCut(DefaultVector);
 end;
 
+procedure MDim(var M: TIntMatrix3D;   const Size: Integer; const DefaultMatrix: TIntMatrix = nil);
+var
+  i: Integer;
+begin
+  M:= nil;
+  SetLength(M, Size);
+  for i:=0 to Size-1 do
+    M[i]:= MCut(DefaultMatrix);
+end;
+
+procedure MDim(var M: TInt64Matrix3D; const Size: Integer; const DefaultMatrix: TInt64Matrix = nil);
+var
+  i: Integer;
+begin
+  M:= nil;
+  SetLength(M, Size);
+  for i:=0 to Size-1 do
+    M[i]:= MCut(DefaultMatrix);
+end;
+
+procedure MDim(var M: TStrMatrix3D;   const Size: Integer; const DefaultMatrix: TStrMatrix = nil);
+var
+  i: Integer;
+begin
+  M:= nil;
+  SetLength(M, Size);
+  for i:=0 to Size-1 do
+    M[i]:= MCut(DefaultMatrix);
+end;
+
+procedure MDim(var M: TDblMatrix3D;   const Size: Integer; const DefaultMatrix: TDblMatrix = nil);
+var
+  i: Integer;
+begin
+  M:= nil;
+  SetLength(M, Size);
+  for i:=0 to Size-1 do
+    M[i]:= MCut(DefaultMatrix);
+end;
+
+procedure MDim(var M: TBoolMatrix3D;  const Size: Integer; const DefaultMatrix: TBoolMatrix = nil);
+var
+  i: Integer;
+begin
+  M:= nil;
+  SetLength(M, Size);
+  for i:=0 to Size-1 do
+    M[i]:= MCut(DefaultMatrix);
+end;
 
 procedure MReDim(var M: TIntMatrix; const Size1, Size2: Integer; const DefaultValue: Integer = VECTOR_INT_DEFAULT_VALUE);
 var
@@ -251,7 +428,7 @@ begin
     VReDim(M[i], Size2, DefaultValue);
 end;
 
-procedure MReDim(var M: TInt64Matrix; const Size1, Size2: Integer; const DefaultValue: Integer = VECTOR_INT64_DEFAULT_VALUE);
+procedure MReDim(var M: TInt64Matrix; const Size1, Size2: Integer; const DefaultValue: Int64 = VECTOR_INT64_DEFAULT_VALUE);
 var
   i: Integer;
 begin
@@ -287,6 +464,52 @@ begin
     VReDim(M[i], Size2, DefaultValue);
 end;
 
+procedure MReDim(var M: TIntMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: Integer = VECTOR_INT_DEFAULT_VALUE);
+var
+  i: Integer;
+begin
+  SetLength(M, Size1);
+  for i:=0 to Size1-1 do
+    MReDim(M[i], Size2, Size3, DefaultValue);
+end;
+
+procedure MReDim(var M: TInt64Matrix3D; const Size1, Size2, Size3: Integer; const DefaultValue: Int64 = VECTOR_INT64_DEFAULT_VALUE);
+var
+  i: Integer;
+begin
+  SetLength(M, Size1);
+  for i:=0 to Size1-1 do
+    MReDim(M[i], Size2, Size3, DefaultValue);
+end;
+
+procedure MReDim(var M: TStrMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: String = VECTOR_STR_DEFAULT_VALUE);
+var
+  i: Integer;
+begin
+  SetLength(M, Size1);
+  for i:=0 to Size1-1 do
+    MReDim(M[i], Size2, Size3, DefaultValue);
+end;
+
+procedure MReDim(var M: TDblMatrix3D;   const Size1, Size2, Size3: Integer; const DefaultValue: Double = VECTOR_DBL_DEFAULT_VALUE);
+var
+  i: Integer;
+begin
+  SetLength(M, Size1);
+  for i:=0 to Size1-1 do
+    MReDim(M[i], Size2, Size3, DefaultValue);
+end;
+
+procedure MReDim(var M: TBoolMatrix3D;  const Size1, Size2, Size3: Integer; const DefaultValue: Boolean = VECTOR_BOOL_DEFAULT_VALUE);
+var
+  i: Integer;
+begin
+  SetLength(M, Size1);
+  for i:=0 to Size1-1 do
+    MReDim(M[i], Size2, Size3, DefaultValue);
+end;
+
+
 procedure MReDim(var M: TIntMatrix; const Size: Integer; const DefaultVector: TIntVector = nil);
 var
   i, OldSize: Integer;
@@ -317,7 +540,7 @@ begin
     M[i]:= VCut(DefaultVector);
 end;
 
-procedure MReDim(var M: TDblMatrix; const Size: Integer; const DefaultVector: TDateVector = nil);
+procedure MReDim(var M: TDblMatrix; const Size: Integer; const DefaultVector: TDblVector = nil);
 var
   i, OldSize: Integer;
 begin
@@ -335,6 +558,56 @@ begin
   SetLength(M,Size);
   for i:= OldSize to Size-1 do
     M[i]:= VCut(DefaultVector);
+end;
+
+procedure MReDim(var M: TIntMatrix3D;   const Size: Integer; const DefaultMatrix: TIntMatrix = nil);
+var
+  i, OldSize: Integer;
+begin
+  OldSize:= Length(M);
+  SetLength(M,Size);
+  for i:= OldSize to Size-1 do
+    M[i]:= MCut(DefaultMatrix);
+end;
+
+procedure MReDim(var M: TInt64Matrix3D; const Size: Integer; const DefaultMatrix: TInt64Matrix = nil);
+var
+  i, OldSize: Integer;
+begin
+  OldSize:= Length(M);
+  SetLength(M,Size);
+  for i:= OldSize to Size-1 do
+    M[i]:= MCut(DefaultMatrix);
+end;
+
+procedure MReDim(var M: TStrMatrix3D;   const Size: Integer; const DefaultMatrix: TStrMatrix = nil);
+var
+  i, OldSize: Integer;
+begin
+  OldSize:= Length(M);
+  SetLength(M,Size);
+  for i:= OldSize to Size-1 do
+    M[i]:= MCut(DefaultMatrix);
+end;
+
+procedure MReDim(var M: TDblMatrix3D;   const Size: Integer; const DefaultMatrix: TDblMatrix = nil);
+var
+  i, OldSize: Integer;
+begin
+  OldSize:= Length(M);
+  SetLength(M,Size);
+  for i:= OldSize to Size-1 do
+    M[i]:= MCut(DefaultMatrix);
+end;
+
+procedure MReDim(var M: TBoolMatrix3D;  const Size: Integer; const DefaultMatrix: TBoolMatrix = nil);
+var
+  i, OldSize: Integer;
+begin
+  OldSize:= Length(M);
+  SetLength(M,Size);
+  for i:= OldSize to Size-1 do
+    M[i]:= MCut(DefaultMatrix);
 end;
 
 //Swap
@@ -371,7 +644,7 @@ end;
 
 procedure MSwap(var M:TDblMatrix; const Index1, Index2: Integer);
 var
-  TmpVector: TDateVector;
+  TmpVector: TDblVector;
 begin
   if not CheckIndexes(High(M), Index1, Index2) then Exit;
   TmpVector:= M[Index1];
@@ -387,6 +660,56 @@ begin
   TmpVector:= M[Index1];
   M[Index1]:= M[Index2];
   M[Index2]:= TmpVector;
+end;
+
+procedure MSwap(var M: TIntMatrix3D;   const Index1, Index2: Integer);
+var
+  TmpMatrix: TIntMatrix;
+begin
+  if not CheckIndexes(High(M), Index1, Index2) then Exit;
+  TmpMatrix:= M[Index1];
+  M[Index1]:= M[Index2];
+  M[Index2]:= TmpMatrix;
+end;
+
+procedure MSwap(var M: TInt64Matrix3D; const Index1, Index2: Integer);
+var
+  TmpMatrix: TInt64Matrix;
+begin
+  if not CheckIndexes(High(M), Index1, Index2) then Exit;
+  TmpMatrix:= M[Index1];
+  M[Index1]:= M[Index2];
+  M[Index2]:= TmpMatrix;
+end;
+
+procedure MSwap(var M: TStrMatrix3D;   const Index1, Index2: Integer);
+var
+  TmpMatrix: TStrMatrix;
+begin
+  if not CheckIndexes(High(M), Index1, Index2) then Exit;
+  TmpMatrix:= M[Index1];
+  M[Index1]:= M[Index2];
+  M[Index2]:= TmpMatrix;
+end;
+
+procedure MSwap(var M: TDblMatrix3D;   const Index1, Index2: Integer);
+var
+  TmpMatrix: TDblMatrix;
+begin
+  if not CheckIndexes(High(M), Index1, Index2) then Exit;
+  TmpMatrix:= M[Index1];
+  M[Index1]:= M[Index2];
+  M[Index2]:= TmpMatrix;
+end;
+
+procedure MSwap(var M: TBoolMatrix3D;  const Index1, Index2: Integer);
+var
+  TmpMatrix: TBoolMatrix;
+begin
+  if not CheckIndexes(High(M), Index1, Index2) then Exit;
+  TmpMatrix:= M[Index1];
+  M[Index1]:= M[Index2];
+  M[Index2]:= TmpMatrix;
 end;
 
 //MDel
@@ -481,6 +804,96 @@ begin
   MReDim(M, OldSize - DelLength);
 end;
 
+procedure MDel(var M: TIntMatrix3D;   const Index1: Integer; Index2: Integer = -1);
+var
+  i, OldSize, DelLength: Integer;
+begin
+  if Index2<Index1 then Index2:= Index1;
+  i:= High(M);
+  if not (CheckIndex(i, Index1) and CheckIndex(i, Index2)) then Exit;
+  OldSize:= Length(M);
+  DelLength:= Index2 - Index1 + 1;
+  if OldSize=DelLength then
+  begin
+    M:= nil;
+    Exit;
+  end;
+  for i := Index2+1 to OldSize-1 do  M[i-DelLength]:= M[i];
+  MReDim(M, OldSize - DelLength);
+end;
+
+procedure MDel(var M: TInt64Matrix3D; const Index1: Integer; Index2: Integer = -1);
+var
+  i, OldSize, DelLength: Integer;
+begin
+  if Index2<Index1 then Index2:= Index1;
+  i:= High(M);
+  if not (CheckIndex(i, Index1) and CheckIndex(i, Index2)) then Exit;
+  OldSize:= Length(M);
+  DelLength:= Index2 - Index1 + 1;
+  if OldSize=DelLength then
+  begin
+    M:= nil;
+    Exit;
+  end;
+  for i := Index2+1 to OldSize-1 do  M[i-DelLength]:= M[i];
+  MReDim(M, OldSize - DelLength);
+end;
+
+procedure MDel(var M: TStrMatrix3D;   const Index1: Integer; Index2: Integer = -1);
+var
+  i, OldSize, DelLength: Integer;
+begin
+  if Index2<Index1 then Index2:= Index1;
+  i:= High(M);
+  if not (CheckIndex(i, Index1) and CheckIndex(i, Index2)) then Exit;
+  OldSize:= Length(M);
+  DelLength:= Index2 - Index1 + 1;
+  if OldSize=DelLength then
+  begin
+    M:= nil;
+    Exit;
+  end;
+  for i := Index2+1 to OldSize-1 do  M[i-DelLength]:= M[i];
+  MReDim(M, OldSize - DelLength);
+end;
+
+procedure MDel(var M: TDblMatrix3D;   const Index1: Integer; Index2: Integer = -1);
+var
+  i, OldSize, DelLength: Integer;
+begin
+  if Index2<Index1 then Index2:= Index1;
+  i:= High(M);
+  if not (CheckIndex(i, Index1) and CheckIndex(i, Index2)) then Exit;
+  OldSize:= Length(M);
+  DelLength:= Index2 - Index1 + 1;
+  if OldSize=DelLength then
+  begin
+    M:= nil;
+    Exit;
+  end;
+  for i := Index2+1 to OldSize-1 do  M[i-DelLength]:= M[i];
+  MReDim(M, OldSize - DelLength);
+end;
+
+procedure MDel(var M: TBoolMatrix3D;  const Index1: Integer; Index2: Integer = -1);
+var
+  i, OldSize, DelLength: Integer;
+begin
+  if Index2<Index1 then Index2:= Index1;
+  i:= High(M);
+  if not (CheckIndex(i, Index1) and CheckIndex(i, Index2)) then Exit;
+  OldSize:= Length(M);
+  DelLength:= Index2 - Index1 + 1;
+  if OldSize=DelLength then
+  begin
+    M:= nil;
+    Exit;
+  end;
+  for i := Index2+1 to OldSize-1 do  M[i-DelLength]:= M[i];
+  MReDim(M, OldSize - DelLength);
+end;
+
 //MCut
 
 function MCut(const M: TIntMatrix;   FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix;
@@ -538,6 +951,61 @@ begin
   for i:= 0 to x do Result[i]:= VCut(M[FromIndex+i]);
 end;
 
+function MCut(const M: TIntMatrix3D;   FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix3D;
+var
+  i, x: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  x:= ToIndex - FromIndex;
+  MDim(Result, x+1);
+  for i:= 0 to x do Result[i]:= MCut(M[FromIndex+i]);
+end;
+
+function MCut(const M: TInt64Matrix3D; FromIndex: Integer=-1; ToIndex: Integer=-1): TInt64Matrix3D;
+var
+  i, x: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  x:= ToIndex - FromIndex;
+  MDim(Result, x+1);
+  for i:= 0 to x do Result[i]:= MCut(M[FromIndex+i]);
+end;
+
+function MCut(const M: TStrMatrix3D;   FromIndex: Integer=-1; ToIndex: Integer=-1): TStrMatrix3D;
+var
+  i, x: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  x:= ToIndex - FromIndex;
+  MDim(Result, x+1);
+  for i:= 0 to x do Result[i]:= MCut(M[FromIndex+i]);
+end;
+
+function MCut(const M: TDblMatrix3D;   FromIndex: Integer=-1; ToIndex: Integer=-1): TDblMatrix3D;
+var
+  i, x: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  x:= ToIndex - FromIndex;
+  MDim(Result, x+1);
+  for i:= 0 to x do Result[i]:= MCut(M[FromIndex+i]);
+end;
+
+function MCut(const M: TBoolMatrix3D;  FromIndex: Integer=-1; ToIndex: Integer=-1): TBoolMatrix3D;
+var
+  i, x: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  x:= ToIndex - FromIndex;
+  MDim(Result, x+1);
+  for i:= 0 to x do Result[i]:= MCut(M[FromIndex+i]);
+end;
+
 //MAdd
 
 function MAdd(var M1,M2: TIntMatrix): TIntMatrix;
@@ -585,6 +1053,51 @@ begin
     MAppend(Result, M2[i]);
 end;
 
+function MAdd(var M1,M2: TIntMatrix3D)  : TIntMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= MCut(M1);
+  for i:= 0 to High(M2) do
+    MAppend(Result, M2[i]);
+end;
+
+function MAdd(var M1,M2: TInt64Matrix3D): TInt64Matrix3D;
+var
+  i: Integer;
+begin
+  Result:= MCut(M1);
+  for i:= 0 to High(M2) do
+    MAppend(Result, M2[i]);
+end;
+
+function MAdd(var M1,M2: TStrMatrix3D)  : TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= MCut(M1);
+  for i:= 0 to High(M2) do
+    MAppend(Result, M2[i]);
+end;
+
+function MAdd(var M1,M2: TDblMatrix3D)  : TDblMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= MCut(M1);
+  for i:= 0 to High(M2) do
+    MAppend(Result, M2[i]);
+end;
+
+function MAdd(var M1,M2: TBoolMatrix3D) : TBoolMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= MCut(M1);
+  for i:= 0 to High(M2) do
+    MAppend(Result, M2[i]);
+end;
+
 //MAppend
 
 procedure MAppend(var M: TIntMatrix; const V: TIntVector);
@@ -610,6 +1123,31 @@ end;
 procedure MAppend(var M: TBoolMatrix; const V: TBoolVector);
 begin
   MReDim(M, Length(M)+1, V);
+end;
+
+procedure MAppend(var M: TIntMatrix3D;   const MValue: TIntMatrix);
+begin
+  MReDim(M, Length(M)+1, MValue);
+end;
+
+procedure MAppend(var M: TInt64Matrix3D; const MValue: TInt64Matrix);
+begin
+  MReDim(M, Length(M)+1, MValue);
+end;
+
+procedure MAppend(var M: TStrMatrix3D;   const MValue: TStrMatrix);
+begin
+  MReDim(M, Length(M)+1, MValue);
+end;
+
+procedure MAppend(var M: TDblMatrix3D;   const MValue: TDblMatrix);
+begin
+  MReDim(M, Length(M)+1, MValue);
+end;
+
+procedure MAppend(var M: TBoolMatrix3D;  const MValue: TBoolMatrix);
+begin
+  MReDim(M, Length(M)+1, MValue);
 end;
 
 //MIndexOf
@@ -698,6 +1236,111 @@ begin
   begin
     Index1:= i;
     Index2:= j;
+    Result:= True;
+    Exit;
+  end;
+end;
+
+function MIndexOf(const M: TIntMatrix3D;   const FindValue: Integer; out Index1, Index2, Index3: Integer): Boolean;
+var
+  i,j,k: Integer;
+begin
+  Index1:= -1;
+  Index2:= -1;
+  Index3:= -1;
+  Result:= False;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if M[i,j,k]=FindValue then
+  begin
+    Index1:= i;
+    Index2:= j;
+    Index3:= k;
+    Result:= True;
+    Exit;
+  end;
+end;
+
+function MIndexOf(const M: TInt64Matrix3D; const FindValue: Int64;   out Index1, Index2, Index3: Integer): Boolean;
+var
+  i,j,k: Integer;
+begin
+  Index1:= -1;
+  Index2:= -1;
+  Index3:= -1;
+  Result:= False;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if M[i,j,k]=FindValue then
+  begin
+    Index1:= i;
+    Index2:= j;
+    Index3:= k;
+    Result:= True;
+    Exit;
+  end;
+end;
+
+function MIndexOf(const M: TStrMatrix3D;   const FindValue: String;  out Index1, Index2, Index3: Integer): Boolean;
+var
+  i,j,k: Integer;
+begin
+  Index1:= -1;
+  Index2:= -1;
+  Index3:= -1;
+  Result:= False;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if M[i,j,k]=FindValue then
+  begin
+    Index1:= i;
+    Index2:= j;
+    Index3:= k;
+    Result:= True;
+    Exit;
+  end;
+end;
+
+function MIndexOf(const M: TDateMatrix3D;  const FindValue: TDate;   out Index1, Index2, Index3: Integer): Boolean;
+var
+  i,j,k: Integer;
+begin
+  Index1:= -1;
+  Index2:= -1;
+  Index3:= -1;
+  Result:= False;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if M[i,j,k]=FindValue then
+  begin
+    Index1:= i;
+    Index2:= j;
+    Index3:= k;
+    Result:= True;
+    Exit;
+  end;
+end;
+
+function MIndexOf(const M: TBoolMatrix3D;  const FindValue: Boolean; out Index1, Index2, Index3: Integer): Boolean;
+var
+  i,j,k: Integer;
+begin
+  Index1:= -1;
+  Index2:= -1;
+  Index3:= -1;
+  Result:= False;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if M[i,j,k]=FindValue then
+  begin
+    Index1:= i;
+    Index2:= j;
+    Index3:= k;
     Result:= True;
     Exit;
   end;
@@ -953,6 +1596,31 @@ begin
   Result:= Length(M)=0;
 end;
 
+function MIsNil(const M: TIntMatrix3D): Boolean;
+begin
+  Result:= Length(M)=0;
+end;
+
+function MIsNil(const M: TInt64Matrix3D): Boolean;
+begin
+  Result:= Length(M)=0;
+end;
+
+function MIsNil(const M: TStrMatrix3D): Boolean;
+begin
+  Result:= Length(M)=0;
+end;
+
+function MIsNil(const M: TDblMatrix3D): Boolean;
+begin
+  Result:= Length(M)=0;
+end;
+
+function MIsNil(const M: TBoolMatrix3D): Boolean;
+begin
+  Result:= Length(M)=0;
+end;
+
 function MMaxLength(const M: TIntMatrix): Integer;
 var
   i: Integer;
@@ -1108,6 +1776,66 @@ begin
   if Length(M)>0 then
     for i:=0 to High(M) do
       MAppend(Result, VFormatDateTime(FormatStr, M[i], Options));
+end;
+
+function MIntToStr(const M: TIntMatrix3D): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, MIntToStr(M[i]));
+end;
+
+function MIntToStr(const M: TInt64Matrix3D): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, MIntToStr(M[i]));
+end;
+
+function MBoolToStr(const M: TBoolMatrix3D): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, MBoolToStr(M[i]));
+end;
+
+function MFloatToStr(const M: TDblMatrix3D): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, MFloatToStr(M[i]));
+end;
+
+function MDateToStr(const M: TDateMatrix3D): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, MDateToStr(M[i]));
+end;
+
+function MFormatDateTime(const FormatStr: String; const M: TDateMatrix3D; Options: TFormatDateTimeOptions = []): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, MFormatDateTime(FormatStr, M[i], Options));
 end;
 
 
