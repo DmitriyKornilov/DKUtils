@@ -30,11 +30,11 @@ uses
   procedure QParamDT(const AParamName: String; const AParamValue: TDateTime);
   procedure QParamFloat(const AParamName: String; const AParamValue: Double);
 
-  procedure QParamsInt(const AParamValues: array of Integer);
-  procedure QParamsInt64(const AParamValues: array of Int64);
-  procedure QParamsStr(const AParamValues: array of String);
-  procedure QParamsDT(const AParamValues: array of TDateTime);
-  procedure QParamsFloat(const AParamValues: array of Double);
+  procedure QParamsInt(const AParamValues: array of Integer; const AValueName: String = '');
+  procedure QParamsInt64(const AParamValues: array of Int64; const AValueName: String = '');
+  procedure QParamsStr(const AParamValues: array of String; const AValueName: String = '');
+  procedure QParamsDT(const AParamValues: array of TDateTime; const AValueName: String = '');
+  procedure QParamsFloat(const AParamValues: array of Double; const AValueName: String = '');
 
   function QIsNull(const AFieldName: String): Boolean;
   function QIsEmpty: Boolean;
@@ -56,7 +56,8 @@ uses
   function SqlINSERT(const ATableName: String; const AFields: array of String;
                      const AORExpression: String = SYMBOL_EMPTY): String;
   function SqlUPDATE(const ATableName: String; const AFields: array of String): String;
-  function SqlIN(const ATablePseud, AFieldName: String; const AValuesCount: Integer): String;
+  function SqlIN(const ATablePseud, AFieldName: String; const AValuesCount: Integer;
+                 const AValueName: String = ''): String;
   function SqlEsc(const AStr: String; const ANeedSpaces: Boolean = True): String;
 
 implementation
@@ -199,49 +200,74 @@ begin
   SqlUtilsQuery.ParamByName(AParamName).AsFloat:= AParamValue;
 end;
 
-procedure QParamsInt(const AParamValues: array of Integer);
+procedure QParamsInt(const AParamValues: array of Integer;
+  const AValueName: String);
 var
   i: Integer;
+  S: String;
 begin
   if Length(AParamValues)=0 then Exit;
+  S:= AValueName;
+  if S=EmptyStr then
+    S:= 'Value';
   for i:= 0 to High(AParamValues) do
-      QParamInt('Value' + IntToStr(i+1), AParamValues[i]);
+      QParamInt(S + IntToStr(i+1), AParamValues[i]);
 end;
 
-procedure QParamsInt64(const AParamValues: array of Int64);
+procedure QParamsInt64(const AParamValues: array of Int64;
+  const AValueName: String);
 var
   i: Integer;
+  S: String;
 begin
   if Length(AParamValues)=0 then Exit;
+  S:= AValueName;
+  if S=EmptyStr then
+    S:= 'Value';
   for i:= 0 to High(AParamValues) do
-      QParamInt64('Value' + IntToStr(i+1), AParamValues[i]);
+      QParamInt64(S + IntToStr(i+1), AParamValues[i]);
 end;
 
-procedure QParamsStr(const AParamValues: array of String);
+procedure QParamsStr(const AParamValues: array of String;
+  const AValueName: String);
 var
   i: Integer;
+  S: String;
 begin
   if Length(AParamValues)=0 then Exit;
+  S:= AValueName;
+  if S=EmptyStr then
+    S:= 'Value';
   for i:= 0 to High(AParamValues) do
-      QParamStr('Value' + IntToStr(i+1), AParamValues[i]);
+      QParamStr(S + IntToStr(i+1), AParamValues[i]);
 end;
 
-procedure QParamsDT(const AParamValues: array of TDateTime);
+procedure QParamsDT(const AParamValues: array of TDateTime;
+  const AValueName: String);
 var
   i: Integer;
+  S: String;
 begin
   if Length(AParamValues)=0 then Exit;
+  S:= AValueName;
+  if S=EmptyStr then
+    S:= 'Value';
   for i:= 0 to High(AParamValues) do
-      QParamDT('Value' + IntToStr(i+1), AParamValues[i]);
+      QParamDT(S + IntToStr(i+1), AParamValues[i]);
 end;
 
-procedure QParamsFloat(const AParamValues: array of Double);
+procedure QParamsFloat(const AParamValues: array of Double;
+  const AValueName: String);
 var
   i: Integer;
+  S: String;
 begin
   if Length(AParamValues)=0 then Exit;
+  S:= AValueName;
+  if S=EmptyStr then
+    S:= 'Value';
   for i:= 0 to High(AParamValues) do
-      QParamFloat('Value' + IntToStr(i+1), AParamValues[i]);
+      QParamFloat(S + IntToStr(i+1), AParamValues[i]);
 end;
 
 function QFieldInt(const AFieldName: String): Integer;
@@ -392,7 +418,8 @@ begin
   end;
 end;
 
-function SqlIN(const ATablePseud, AFieldName: String; const AValuesCount: Integer): String;
+function SqlIN(const ATablePseud, AFieldName: String; const AValuesCount: Integer;
+               const AValueName: String = ''): String;
 var
   i: Integer;
   S: String;
@@ -404,9 +431,14 @@ begin
     S:= SqlEsc(ATablePseud, False) + '.';
   S:= S + SqlEsc(AFieldName, False);
 
-  Result:= ' (' + S + ' IN (:Value1';
+  Result:= ' (' + S;
+
+  S:= AValueName;
+  if S=EmptyStr then
+    S:= 'Value';
+  Result:= Result + ' IN (:' + S + '1';
   for i:= 1 to AValuesCount-1 do
-    Result:= Result + ', :Value' + IntToStr(i+1);
+    Result:= Result + ', :' + S + IntToStr(i+1);
   Result:= Result + ')) ';
 end;
 
