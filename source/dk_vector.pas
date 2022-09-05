@@ -3060,7 +3060,7 @@ var
   TmpV: TStrVector;
   i: Integer;
 begin
-  VCopy(V, TmpV);
+  VCopy(V, TmpV{%H-});
   for i:= 0 to High(Indexes) do
     V[i]:= TmpV[Indexes[i]];
 end;
@@ -3070,7 +3070,7 @@ var
   TmpV: TIntVector;
   i: Integer;
 begin
-  VCopy(V, TmpV);
+  VCopy(V, TmpV{%H-});
   for i:= 0 to High(Indexes) do
     V[i]:= TmpV[Indexes[i]];
 end;
@@ -3080,7 +3080,7 @@ var
   TmpV: TInt64Vector;
   i: Integer;
 begin
-  VCopy(V, TmpV);
+  VCopy(V, TmpV{%H-});
   for i:= 0 to High(Indexes) do
     V[i]:= TmpV[Indexes[i]];
 end;
@@ -3090,7 +3090,7 @@ var
   TmpV: TDateVector;
   i: Integer;
 begin
-  VCopy(V, TmpV);
+  VCopy(V, TmpV{%H-});
   for i:= 0 to High(Indexes) do
     V[i]:= TmpV[Indexes[i]];
 end;
