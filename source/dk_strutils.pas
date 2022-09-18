@@ -41,6 +41,9 @@ type
   function SHeight(const AStr: String; const AFont: TFont): Integer;
   function SHeight(const AStr, AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): Integer;
 
+  function SNameLong(const AFamily, AName, APatronymic: String): String;
+  function SNameShort(const AFamily, AName, APatronymic: String): String;
+
 implementation
 
 function SSetUTF8(const AStr: String): String;
@@ -269,6 +272,24 @@ begin
   finally
     FreeAndNil(F);
   end;
+end;
+
+function SNameLong(const AFamily, AName, APatronymic: String): String;
+begin
+  Result:= AFamily;
+  if not SSame(AName, EmptyStr) then
+    Result:= Result + ' ' + AName;
+  if not SSame(APatronymic, EmptyStr) then
+    Result:= Result + ' ' + APatronymic;
+end;
+
+function SNameShort(const AFamily, AName, APatronymic: String): String;
+begin
+  Result:= AFamily;
+  if not SSame(AName, EmptyStr) then
+    Result:= Result + ' ' + SCopy(AName, 1, 1) + '.';
+  if not SSame(APatronymic, EmptyStr) then
+    Result:= Result + SCopy(APatronymic, 1, 1) + '.';
 end;
 
 

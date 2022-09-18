@@ -324,6 +324,10 @@ type
   function VIsAllTrue(const V: TBoolVector): Boolean;
   function VIsAllFalse(const V: TBoolVector): Boolean;
 
+  {ВЕКТОРЫ ИМЕН}
+  function VNameLong(const AFs, ANs, APs: TStrVector): TStrVector;
+  function VNameShort(const AFs, ANs, APs: TStrVector): TStrVector;
+
 implementation
 
 //проверка диапазона индексов
@@ -3139,6 +3143,26 @@ begin
   n:= High(V);
   for i:= n downto 0 do
     V[n-i]:= TmpV[i];
+end;
+
+function VNameLong(const AFs, ANs, APs: TStrVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  VDim(Result, Length(AFs));
+  for i:= 0 to High(AFs) do
+    Result[i]:= SNameLong(AFs[i], ANs[i], APs[i]);
+end;
+
+function VNameShort(const AFs, ANs, APs: TStrVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  VDim(Result, Length(AFs));
+  for i:= 0 to High(AFs) do
+    Result[i]:= SNameShort(AFs[i], ANs[i], APs[i]);
 end;
 
 end.
