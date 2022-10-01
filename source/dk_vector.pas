@@ -2267,8 +2267,9 @@ var
   i: Integer;
 begin
   Result:= nil;
-  for i:= 1-Ord(AZeroFirst) to MaxValue do
-    VAppend(Result, i);
+  VDim(Result, MaxValue + Ord(AZeroFirst));
+  for i:= 0 to High(Result) do
+    Result[i]:= i + Ord(not AZeroFirst);
 end;
 
 //VMult
