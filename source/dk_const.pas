@@ -8,7 +8,7 @@ interface
   Classes, SysUtils;  }
 
 const
-  SYMBOL_BREAK         = LineEnding;
+  SYMBOL_BREAK        = LineEnding;
   SYMBOL_EMPTY        = '';
   SYMBOL_COMMA        = ',';
   SYMBOL_OPENBRACKET  = '(';
@@ -20,6 +20,18 @@ const
   SYMBOLS_VOWEL       = 'АЕЁИОУЭЫЮЯ';             //гласные буквы
   SYMBOLS_CONSONANT   = 'БВГДЖЙЗКЛМНПРСТФЧЦХШЩ';  //согласные буквы
   SYMBOLS_SPECIAL     = 'ЬЪ';
+
+  SYMBOLS_DIGITS      = '1234567890';
+  SYMBOLS_OTHER       = '№!?,.;:@#$%^&<>()[]{}\/|-_+*="''';
+
+  LETTERS_ENGLISH_LOWER = 'abcdefghijklmnopqrstuvwxyz';
+  LETTERS_ENGLISH_UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  LETTERS_RUSSIAN_LOWER = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+  LETTERS_RUSSIAN_UPPER = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
+
+  SYMBOLS_KEYBOARD = SYMBOLS_DIGITS + SYMBOLS_OTHER + SYMBOL_SPACE +
+                     LETTERS_ENGLISH_LOWER + LETTERS_ENGLISH_UPPER +
+                     LETTERS_RUSSIAN_LOWER + LETTERS_RUSSIAN_UPPER;
 
   STR_TRUE     = 'да';
   STR_FALSE    = 'нет';
