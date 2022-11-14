@@ -27,7 +27,8 @@ var
   procedure VShowAdd(const V: TIntVector;   const VName: String = '');
   procedure VShowAdd(const V: TInt64Vector; const VName: String = '');
   procedure VShowAdd(const V: TStrVector;   const VName: String = '');
-  procedure VShowAdd(const V: TDateVector;  const VName: String = '');
+  procedure VShowAddDate(const V: TDateVector;  const VName: String = '');
+  procedure VShowAddTime(const V: TTimeVector;  const VName: String = '');
   procedure VShowAdd(const V: TBoolVector;  const VName: String = '');
 
   procedure VShow;
@@ -35,13 +36,15 @@ var
   procedure VShow(const V: TIntVector;   const VName: String = '');
   procedure VShow(const V: TInt64Vector; const VName: String = '');
   procedure VShow(const V: TStrVector;   const VName: String = '');
-  procedure VShow(const V: TDateVector;  const VName: String = '');
+  procedure VShowDate(const V: TDateVector;  const VName: String = '');
+  procedure VShowTime(const V: TTimeVector;  const VName: String = '');
   procedure VShow(const V: TBoolVector;  const VName: String = '');
 
   procedure MShow(const M: TIntMatrix);
   procedure MShow(const M: TInt64Matrix);
   procedure MShow(const M: TStrMatrix);
-  procedure MShow(const M: TDateMatrix);
+  procedure MShowDate(const M: TDateMatrix);
+  procedure MShowTime(const M: TTimeMatrix);
   procedure MShow(const M: TBoolMatrix);
 
 implementation
@@ -106,9 +109,14 @@ begin
   AddVector(V, VName);
 end;
 
-procedure VShowAdd(const V: TDateVector; const VName: String);
+procedure VShowAddDate(const V: TDateVector; const VName: String);
 begin
   AddVector(VDateToStr(V), VName);
+end;
+
+procedure VShowAddTime(const V: TTimeVector; const VName: String);
+begin
+  AddVector(VTimeToStr(V), VName);
 end;
 
 procedure VShowAdd(const V: TBoolVector; const VName: String);
@@ -149,12 +157,21 @@ begin
   VShow;
 end;
 
-procedure VShow(const V: TDateVector; const VName: String);
+procedure VShowDate(const V: TDateVector; const VName: String);
 begin
   if VName=EmptyStr then
-    VShowAdd(V, 'Значение')
+    VShowAddDate(V, 'Значение')
   else
-    VShowAdd(V, VName);
+    VShowAddDate(V, VName);
+  VShow;
+end;
+
+procedure VShowTime(const V: TTimeVector; const VName: String);
+begin
+  if VName=EmptyStr then
+    VShowAddTime(V, 'Значение')
+  else
+    VShowAddTime(V, VName);
   VShow;
 end;
 
@@ -194,12 +211,21 @@ begin
   VShow;
 end;
 
-procedure MShow(const M: TDateMatrix);
+procedure MShowDate(const M: TDateMatrix);
 var
   i: Integer;
 begin
   for i:= 0 to High(M) do
-    VShowAdd(M[i]);
+    VShowAddDate(M[i]);
+  VShow;
+end;
+
+procedure MShowTime(const M: TTimeMatrix);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(M) do
+    VShowAddTime(M[i]);
   VShow;
 end;
 

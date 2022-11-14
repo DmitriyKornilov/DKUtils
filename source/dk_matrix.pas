@@ -13,6 +13,7 @@ type
   TStrMatrix   = array of TStrVector;
   TDblMatrix   = array of TDblVector;
   TDateMatrix  = type TDblMatrix;
+  TTimeMatrix  = type TDblMatrix;
   TBoolMatrix  = array of TBoolVector;
 
   TIntMatrix3D   = array of TIntMatrix;
@@ -20,6 +21,7 @@ type
   TStrMatrix3D   = array of TStrMatrix;
   TDblMatrix3D   = array of TDblMatrix;
   TDateMatrix3D  = type TDblMatrix3D;
+  TTimeMatrix3D  = type TDblMatrix3D;
   TBoolMatrix3D  = array of TBoolMatrix;
 
   {РАЗМЕРЫ}
@@ -139,12 +141,14 @@ type
   function MIndexOf(const M: TIntMatrix;   const FindValue: Integer; out Index1, Index2: Integer): Boolean;
   function MIndexOf(const M: TInt64Matrix; const FindValue: Int64;   out Index1, Index2: Integer): Boolean;
   function MIndexOf(const M: TStrMatrix;   const FindValue: String;  out Index1, Index2: Integer): Boolean;
-  function MIndexOf(const M: TDateMatrix;  const FindValue: TDate;   out Index1, Index2: Integer): Boolean;
+  function MIndexOfDate(const M: TDateMatrix;  const FindValue: TDate;   out Index1, Index2: Integer): Boolean;
+  function MIndexOfTime(const M: TTimeMatrix;  const FindValue: TTime;   out Index1, Index2: Integer): Boolean;
   function MIndexOf(const M: TBoolMatrix;  const FindValue: Boolean; out Index1, Index2: Integer): Boolean;
   function MIndexOf(const M: TIntMatrix3D;   const FindValue: Integer; out Index1, Index2, Index3: Integer): Boolean;
   function MIndexOf(const M: TInt64Matrix3D; const FindValue: Int64;   out Index1, Index2, Index3: Integer): Boolean;
   function MIndexOf(const M: TStrMatrix3D;   const FindValue: String;  out Index1, Index2, Index3: Integer): Boolean;
-  function MIndexOf(const M: TDateMatrix3D;  const FindValue: TDate;   out Index1, Index2, Index3: Integer): Boolean;
+  function MIndexOfDate(const M: TDateMatrix3D;  const FindValue: TDate;   out Index1, Index2, Index3: Integer): Boolean;
+  function MIndexOfTime(const M: TTimeMatrix3D;  const FindValue: TTime;   out Index1, Index2, Index3: Integer): Boolean;
   function MIndexOf(const M: TBoolMatrix3D;  const FindValue: Boolean; out Index1, Index2, Index3: Integer): Boolean;
 
 
@@ -166,13 +170,15 @@ type
   function MMin(const M: TIntMatrix)  : Integer;
   function MMin(const M: TInt64Matrix): Int64;
   function MMin(const M: TStrMatrix)  : String;
-  function MMin(const M: TDateMatrix) : TDate;
+  function MMinDate(const M: TDateMatrix) : TDate;
+  function MMinTime(const M: TTimeMatrix) : TTime;
 
   {НАИБОЛЬШЕЕ ЗНАЧЕНИЕ ЭЛЕМЕНТА}
   function MMax(const M: TIntMatrix)  : Integer;
   function MMax(const M: TInt64Matrix): Int64;
   function MMax(const M: TStrMatrix)  : String;
-  function MMax(const M: TDateMatrix) : TDate;
+  function MMaxDate(const M: TDateMatrix) : TDate;
+  function MMaxTime(const M: TTimeMatrix) : TTime;
 
   {НАЛИЧИЕ ДАННЫХ}
   function MIsNil(const M: TIntMatrix): Boolean;
@@ -206,14 +212,16 @@ type
   function MBoolToStr(const M: TBoolMatrix): TStrMatrix;
   function MFloatToStr(const M: TDblMatrix): TStrMatrix;
   function MDateToStr(const M: TDateMatrix): TStrMatrix;
-  function MFormatDateTime(const FormatStr: String; const M: TDateMatrix; Options: TFormatDateTimeOptions = []): TStrMatrix;
+  function MTimeToStr(const M: TTimeMatrix): TStrMatrix;
+  function MFormatDateTime(const FormatStr: String; const M: TDblMatrix; Options: TFormatDateTimeOptions = []): TStrMatrix;
 
   function MIntToStr(const M: TIntMatrix3D): TStrMatrix3D;
   function MIntToStr(const M: TInt64Matrix3D): TStrMatrix3D;
   function MBoolToStr(const M: TBoolMatrix3D): TStrMatrix3D;
   function MFloatToStr(const M: TDblMatrix3D): TStrMatrix3D;
   function MDateToStr(const M: TDateMatrix3D): TStrMatrix3D;
-  function MFormatDateTime(const FormatStr: String; const M: TDateMatrix3D; Options: TFormatDateTimeOptions = []): TStrMatrix3D;
+  function MTimeToStr(const M: TTimeMatrix3D): TStrMatrix3D;
+  function MFormatDateTime(const FormatStr: String; const M: TDblMatrix3D; Options: TFormatDateTimeOptions = []): TStrMatrix3D;
 
 
 implementation
@@ -1205,7 +1213,7 @@ begin
   end;
 end;
 
-function MIndexOf(const M: TDateMatrix; const FindValue: TDate;  out Index1, Index2: Integer): Boolean;
+function MIndexOfDate(const M: TDateMatrix; const FindValue: TDate;  out Index1, Index2: Integer): Boolean;
 var
   i,j: Integer;
 begin
@@ -1214,7 +1222,25 @@ begin
   Result:= False;
   for i:= 0 to High(M) do
     for j:= 0 to High(M[i]) do
-      if Trunc(M[i,j]) = Trunc(FindValue) then
+      if SameDate(M[i,j], FindValue) then
+  begin
+    Index1:= i;
+    Index2:= j;
+    Result:= True;
+    Exit;
+  end;
+end;
+
+function MIndexOfTime(const M: TTimeMatrix; const FindValue: TTime; out Index1,Index2: Integer): Boolean;
+var
+  i,j: Integer;
+begin
+  Index1:= -1;
+  Index2:= -1;
+  Result:= False;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      if SameTime(M[i,j], FindValue) then
   begin
     Index1:= i;
     Index2:= j;
@@ -1304,7 +1330,7 @@ begin
   end;
 end;
 
-function MIndexOf(const M: TDateMatrix3D;  const FindValue: TDate;   out Index1, Index2, Index3: Integer): Boolean;
+function MIndexOfDate(const M: TDateMatrix3D;  const FindValue: TDate;   out Index1, Index2, Index3: Integer): Boolean;
 var
   i,j,k: Integer;
 begin
@@ -1315,7 +1341,28 @@ begin
   for i:= 0 to High(M) do
     for j:= 0 to High(M[i]) do
       for k:= 0 to High(M[i,j]) do
-        if M[i,j,k]=FindValue then
+        if SameDate(M[i,j,k], FindValue) then
+  begin
+    Index1:= i;
+    Index2:= j;
+    Index3:= k;
+    Result:= True;
+    Exit;
+  end;
+end;
+
+function MIndexOfTime(const M: TTimeMatrix3D; const FindValue: TTime; out Index1, Index2, Index3: Integer): Boolean;
+var
+  i,j,k: Integer;
+begin
+  Index1:= -1;
+  Index2:= -1;
+  Index3:= -1;
+  Result:= False;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if SameTime(M[i,j,k], FindValue) then
   begin
     Index1:= i;
     Index2:= j;
@@ -1497,18 +1544,33 @@ begin
   end;
 end;
 
-function MMax(const M: TDateMatrix): TDate;
+function MMaxDate(const M: TDateMatrix): TDate;
 var
   i: Integer;
   X: TDate;
 begin
   Result:= 0;
   if MIsNil(M) then Exit;
-  Result:= VMax(M[0]);
+  Result:= VMaxDate(M[0]);
   for i:=1 to High(M) do
   begin
-    X:= VMax(M[i]);
+    X:= VMaxDate(M[i]);
     if CompareDate(X,Result)>0 then Result:= X;
+  end;
+end;
+
+function MMaxTime(const M: TTimeMatrix): TTime;
+var
+  i: Integer;
+  X: TDate;
+begin
+  Result:= 0;
+  if MIsNil(M) then Exit;
+  Result:= VMaxTime(M[0]);
+  for i:=1 to High(M) do
+  begin
+    X:= VMaxTime(M[i]);
+    if CompareTime(X,Result)>0 then Result:= X;
   end;
 end;
 
@@ -1556,18 +1618,33 @@ begin
   end;
 end;
 
-function MMin(const M: TDateMatrix): TDate;
+function MMinDate(const M: TDateMatrix): TDate;
 var
   i: Integer;
   X: TDate;
 begin
   Result:= 0;
   if MIsNil(M) then Exit;
-  Result:= VMin(M[0]);
+  Result:= VMinDate(M[0]);
   for i:=1 to High(M) do
   begin
-    X:= VMin(M[i]);
+    X:= VMinDate(M[i]);
     if CompareDate(X,Result)<0 then Result:= X;
+  end;
+end;
+
+function MMinTime(const M: TTimeMatrix): TTime;
+var
+  i: Integer;
+  X: TDate;
+begin
+  Result:= 0;
+  if MIsNil(M) then Exit;
+  Result:= VMinTime(M[0]);
+  for i:=1 to High(M) do
+  begin
+    X:= VMinTime(M[i]);
+    if CompareTime(X,Result)<0 then Result:= X;
   end;
 end;
 
@@ -1768,7 +1845,17 @@ begin
       MAppend(Result, VDateToStr(M[i]));
 end;
 
-function MFormatDateTime(const FormatStr: String; const M: TDateMatrix; Options: TFormatDateTimeOptions = []): TStrMatrix;
+function MTimeToStr(const M: TTimeMatrix): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, VTimeToStr(M[i]));
+end;
+
+function MFormatDateTime(const FormatStr: String; const M: TDblMatrix; Options: TFormatDateTimeOptions = []): TStrMatrix;
 var
   i: Integer;
 begin
@@ -1828,7 +1915,17 @@ begin
       MAppend(Result, MDateToStr(M[i]));
 end;
 
-function MFormatDateTime(const FormatStr: String; const M: TDateMatrix3D; Options: TFormatDateTimeOptions = []): TStrMatrix3D;
+function MTimeToStr(const M: TTimeMatrix3D): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(M)>0 then
+    for i:=0 to High(M) do
+      MAppend(Result, MTimeToStr(M[i]));
+end;
+
+function MFormatDateTime(const FormatStr: String; const M: TDblMatrix3D; Options: TFormatDateTimeOptions = []): TStrMatrix3D;
 var
   i: Integer;
 begin

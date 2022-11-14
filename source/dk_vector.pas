@@ -13,6 +13,7 @@ type
   TStrVector   = array of String;
   TDblVector   = array of Double;
   TDateVector  = type TDblVector;
+  TTimeVector  = type TDblVector;
   TBoolVector  = array of Boolean;
   TColorVector = array of TColor;
 
@@ -44,6 +45,7 @@ type
   function VCreateStr(const V: array of String): TStrVector;
   function VCreateDbl(const V: array of Double): TDblVector;
   function VCreateDate(const V: array of TDate): TDateVector;
+  function VCreateTime(const V: array of TTime): TTimeVector;
   function VCreateBool(const V: array of Boolean): TBoolVector;
   function VCreateColor(const V: array of TColor): TColorVector;
 
@@ -66,7 +68,8 @@ type
   procedure VChangeIf(var V: TInt64Vector; const IfValue, NewValue: Int64; FromIndex: Integer=-1; ToIndex: Integer=-1);
   procedure VChangeIf(var V: TStrVector;   const IfValue, NewValue: String; FromIndex: Integer=-1; ToIndex: Integer=-1;
                       const ACaseSensitivity: Boolean = True);
-  procedure VChangeIf(var V: TDateVector;  const IfValue, NewValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1);
+  procedure VChangeIfDate(var V: TDateVector;  const IfValue, NewValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1);
+  procedure VChangeIfTime(var V: TTimeVector;  const IfValue, NewValue: TTime; FromIndex: Integer=-1; ToIndex: Integer=-1);
   procedure VChangeIf(var V: TBoolVector;  const IfValue, NewValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1);
   procedure VChangeIf(var V: TColorVector; const IfValue, NewValue: TColor; FromIndex: Integer=-1; ToIndex: Integer=-1);
 
@@ -161,7 +164,8 @@ type
   function VIndexOf(const V: TInt64Vector; const FindValue: Int64):   Integer;
   function VIndexOf(const V: TStrVector;   const FindValue: String;
                     const ACaseSensitivity: Boolean = True):  Integer;
-  function VIndexOf(const V: TDateVector;  const FindValue: TDate):   Integer;
+  function VIndexOfDate(const V: TDateVector;  const FindValue: TDate):   Integer;
+  function VIndexOfTime(const V: TTimeVector;  const FindValue: TTime):   Integer;
   function VIndexOf(const V: TBoolVector;  const FindValue: Boolean): Integer;
   function VIndexOf(const V: TColorVector; const FindValue: TColor):  Integer;
 
@@ -170,20 +174,23 @@ type
   function VInsOfAsc(const V: TInt64Vector; const InsValue: Int64):   Integer;
   function VInsOfAsc(const V: TStrVector;   const InsValue: String;
                      const ACaseSensitivity: Boolean = True):  Integer;
-  function VInsOfAsc(const V: TDateVector; const InsValue: TDate):    Integer;
+  function VInsOfAscDate(const V: TDateVector; const InsValue: TDate):    Integer;
+  function VInsOfAscTime(const V: TTimeVector; const InsValue: TTime):    Integer;
 
   function VInsOfDesc(const V: TIntVector;   const InsValue: Integer): Integer;
   function VInsOfDesc(const V: TInt64Vector; const InsValue: Int64):   Integer;
   function VInsOfDesc(const V: TStrVector;   const InsValue: String;
                       const ACaseSensitivity: Boolean = True):  Integer;
-  function VInsOfDesc(const V: TDateVector; const InsValue: TDate):    Integer;
+  function VInsOfDescDate(const V: TDateVector; const InsValue: TDate):    Integer;
+  function VInsOfDescTime(const V: TTimeVector; const InsValue: TTime):    Integer;
 
   {УНИКАЛЬНЫЕ ЗНАЧЕНИЯ}
   function VUnique(const V: TIntVector): TIntVector;
   function VUnique(const V: TInt64Vector): TInt64Vector;
   function VUnique(const V: TStrVector;
                    const ACaseSensitivity: Boolean = True): TStrVector;
-  function VUnique(const V: TDateVector): TDateVector;
+  function VUniqueDate(const V: TDateVector): TDateVector;
+  function VUniqueTime(const V: TTimeVector): TTimeVector;
   function VUnique(const V: TColorVector): TColorVector;
 
   {ОБЪЕДИНЕНИЕ}
@@ -198,21 +205,24 @@ type
   function VMin(const V: TInt64Vector): Int64;
   function VMin(const V: TStrVector;
                 const ACaseSensitivity: Boolean = True):   String;
-  function VMin(const V: TDateVector):  TDate;
+  function VMinDate(const V: TDateVector):  TDate;
+  function VMinTime(const V: TTimeVector):  TTime;
 
   {НАИБОЛЬШЕЕ ЗНАЧЕНИЕ}
   function VMax(const V: TIntVector):   Integer;
   function VMax(const V: TInt64Vector): Int64;
   function VMax(const V: TStrVector;
                 const ACaseSensitivity: Boolean = True):   String;
-  function VMax(const V: TDateVector):  TDate;
+  function VMaxDate(const V: TDateVector):  TDate;
+  function VMaxTime(const V: TTimeVector):  TTime;
 
   {КОЛ-ВО ЗНАЧЕНИЙ, РАВНЫХ ЗАДАННОМУ}
   function VCountIf(const V: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIf(const V: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIf(const V: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
                     const ACaseSensitivity: Boolean = True): Integer;
-  function VCountIf(const V: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VCountIfDate(const V: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VCountIfTime(const V: TTimeVector;  const IfValue: TTime;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIf(const V: TBoolVector;  const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIf(const V: TColorVector; const IfValue: TColor;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 
@@ -221,7 +231,8 @@ type
   function VCountIfNot(const V: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIfNot(const V: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
                        const ACaseSensitivity: Boolean = True): Integer;
-  function VCountIfNot(const V: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VCountIfNotDate(const V: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VCountIfNotTime(const V: TTimeVector;  const IfValue: TTime;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIfNot(const V: TBoolVector;  const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIfNot(const V: TColorVector; const IfValue: TColor;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 
@@ -231,7 +242,8 @@ type
   function VBoolToStr(const V: TBoolVector): TStrVector;
   function VFloatToStr(const V: TDblVector): TStrVector;
   function VDateToStr(const V: TDateVector): TStrVector;
-  function VFormatDateTime(const FormatStr: String; const V: TDateVector; Options: TFormatDateTimeOptions = []): TStrVector;
+  function VTimeToStr(const V: TTimeVector): TStrVector;
+  function VFormatDateTime(const FormatStr: String; const V: TDblVector; Options: TFormatDateTimeOptions = []): TStrVector;
   function VTrim(const V: TStrVector): TStrVector;
 
   {СТРОКОВЫЙ ВЕКТОР И СПИСОК}
@@ -257,25 +269,29 @@ type
   function VSumIf(const V: TIntVector; const IfVector: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIf(const V: TIntVector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
                   const ACaseSensitivity: Boolean = True): Integer;
-  function VSumIf(const V: TIntVector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VSumIfDate(const V: TIntVector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VSumIfTime(const V: TIntVector; const IfVector: TTimeVector; const IfValue: TTime;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIf(const V: TIntVector; const IfVector: TBoolVector;  const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIf(const V: TInt64Vector; const IfVector: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
   function VSumIf(const V: TInt64Vector; const IfVector: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
   function VSumIf(const V: TInt64Vector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
                   const ACaseSensitivity: Boolean = True): Int64;
-  function VSumIf(const V: TInt64Vector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
+  function VSumIfDate(const V: TInt64Vector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
+  function VSumIfTime(const V: TInt64Vector; const IfVector: TTimeVector;  const IfValue: TTime;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
   function VSumIf(const V: TInt64Vector; const IfVector: TBoolVector;  const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
 
   function VSumIfNot(const V: TIntVector; const IfVector: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIfNot(const V: TIntVector; const IfVector: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIfNot(const V: TIntVector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
                      const ACaseSensitivity: Boolean = True): Integer;
-  function VSumIfNot(const V: TIntVector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VSumIfNotDate(const V: TIntVector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+  function VSumIfNotTime(const V: TIntVector; const IfVector: TTimeVector;  const IfValue: TTime;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VSumIfNot(const V: TInt64Vector; const IfVector: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
   function VSumIfNot(const V: TInt64Vector; const IfVector: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
   function VSumIfNot(const V: TInt64Vector; const IfVector: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
                      const ACaseSensitivity: Boolean = True): Int64;
-  function VSumIfNot(const V: TInt64Vector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
+  function VSumIfNotDate(const V: TInt64Vector; const IfVector: TDateVector;  const IfValue: TDate;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
+  function VSumIfNotTime(const V: TInt64Vector; const IfVector: TTimeVector;  const IfValue: TTime;   FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
 
   function VMult(const V1,V2: TIntVector): TIntVector;
   function VMult(const V1,V2: TInt64Vector): TInt64Vector;
@@ -295,24 +311,26 @@ type
   {ОБРАЩЕНИЕ ПОРЯДКА ЭЛЕМЕНТОВ}
   procedure VReverse(const V: TIntVector);
   procedure VReverse(const V: TInt64Vector);
-  procedure VReverse(const V: TDateVector);
+  procedure VReverse(const V: TDblVector);
   procedure VReverse(const V: TStrVector);
 
   {СОРТИРОВКА}
   procedure VSort(const V: TStrVector; out Indexes: TIntVector; const Desc: Boolean = False);
   procedure VSort(const V: TIntVector; out Indexes: TIntVector; const Desc: Boolean = False);
   procedure VSort(const V: TInt64Vector; out Indexes: TIntVector; const Desc: Boolean = False);
-  procedure VSort(const V: TDateVector; out Indexes: TIntVector;  const Desc: Boolean = False);
+  procedure VSortDate(const V: TDateVector; out Indexes: TIntVector;  const Desc: Boolean = False);
+  procedure VSortTime(const V: TTimeVector; out Indexes: TIntVector;  const Desc: Boolean = False);
   procedure VSort(var V: TStrVector; const Desc: Boolean = False);
   procedure VSort(var V: TIntVector; const Desc: Boolean = False);
   procedure VSort(var V: TInt64Vector; const Desc: Boolean = False);
-  procedure VSort(var V: TDateVector; const Desc: Boolean = False);
+  procedure VSortDate(var V: TDateVector; const Desc: Boolean = False);
+  procedure VSortTime(var V: TTimeVector; const Desc: Boolean = False);
 
   {ПЕРЕСТАНОВКА ПО ВЕКТОРУ ИНДЕКСОВ}
   procedure VReplace(var V: TStrVector; const Indexes: TIntVector);
   procedure VReplace(var V: TIntVector; const Indexes: TIntVector);
   procedure VReplace(var V: TInt64Vector; const Indexes: TIntVector);
-  procedure VReplace(var V: TDateVector; const Indexes: TIntVector);
+  procedure VReplace(var V: TDblVector; const Indexes: TIntVector);
 
   {ПРОВЕРКА И КОРРЕКТИРОВКА ИНДЕКСОВ}
   function CheckFromToIndexes(MaxIndex: Integer; var FromIndex, ToIndex: Integer): Boolean;
@@ -593,6 +611,15 @@ begin
     VAppend(Result, V[i]);
 end;
 
+function VCreateTime(const V: array of TTime): TTimeVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= Low(V) to High(V) do
+    VAppend(Result, V[i]);
+end;
+
 function VCreateBool(const V: array of Boolean): TBoolVector;
 var
   i: Integer;
@@ -702,13 +729,22 @@ begin
   end;
 end;
 
-procedure VChangeIf(var V: TDateVector;  const IfValue, NewValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1);
+procedure VChangeIfDate(var V: TDateVector;  const IfValue, NewValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1);
 var
   i: Integer;
 begin
   if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
     for i:= FromIndex to ToIndex do
       if SameDate(V[i],IfValue) then V[i]:= NewValue;
+end;
+
+procedure VChangeIfTime(var V: TTimeVector; const IfValue, NewValue: TTime; FromIndex: Integer; ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
+    for i:= FromIndex to ToIndex do
+      if SameTime(V[i],IfValue) then V[i]:= NewValue;
 end;
 
 procedure VChangeIf(var V: TBoolVector;  const IfValue, NewValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1);
@@ -1597,14 +1633,29 @@ begin
   end;
 end;
 
-function VIndexOf(const V: TDateVector; const FindValue: TDate): Integer;
+function VIndexOfDate(const V: TDateVector; const FindValue: TDate): Integer;
 var
   i: Integer;
 begin
   Result:= -1;
   for i := 0 to High(V) do
   begin
-    if CompareDate(V[i], FindValue)=0 then
+    if SameDate(V[i], FindValue) then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+function VIndexOfTime(const V: TTimeVector; const FindValue: TTime): Integer;
+var
+  i: Integer;
+begin
+  Result:= -1;
+  for i := 0 to High(V) do
+  begin
+    if SameTime(V[i], FindValue) then
     begin
       Result:= i;
       Exit;
@@ -1714,7 +1765,7 @@ begin
   end;
 end;
 
-function VInsOfAsc(const V: TDateVector; const InsValue: TDate):   Integer;
+function VInsOfAscDate(const V: TDateVector; const InsValue: TDate):   Integer;
 var
   i: Integer;
 begin
@@ -1732,6 +1783,31 @@ begin
   for i:= 1 to High(V) do
   begin
     if CompareDate(InsValue, V[i])<0 then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+function VInsOfAscTime(const V: TTimeVector; const InsValue: TTime): Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
+
+  if CompareTime(InsValue, V[0])<0 then Exit;
+
+  if CompareTime(InsValue, V[High(V)])>=0 then
+  begin
+    Result:= High(V)+1;
+    Exit;
+  end;
+
+  for i:= 1 to High(V) do
+  begin
+    if CompareTime(InsValue, V[i])<0 then
     begin
       Result:= i;
       Exit;
@@ -1811,7 +1887,7 @@ begin
   end;
 end;
 
-function VInsOfDesc(const V: TDateVector; const InsValue: TDate):    Integer;
+function VInsOfDescDate(const V: TDateVector; const InsValue: TDate):    Integer;
 var
   i: Integer;
 begin
@@ -1829,6 +1905,31 @@ begin
   for i:= 1 to High(V) do
   begin
     if CompareDate(InsValue, V[i])>0 then
+    begin
+      Result:= i;
+      Exit;
+    end;
+  end;
+end;
+
+function VInsOfDescTime(const V: TTimeVector; const InsValue: TTime): Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
+
+  if CompareTime(InsValue, V[0])>0 then Exit;
+
+  if CompareTime(InsValue, V[High(V)])<=0 then
+  begin
+    Result:= High(V)+1;
+    Exit;
+  end;
+
+  for i:= 1 to High(V) do
+  begin
+    if CompareTime(InsValue, V[i])>0 then
     begin
       Result:= i;
       Exit;
@@ -1875,14 +1976,26 @@ begin
   end;
 end;
 
-function VUnique(const V: TDateVector): TDateVector;
+function VUniqueDate(const V: TDateVector): TDateVector;
 var
   i: Integer;
 begin
   Result:= nil;
   for i:= 0 to High(V) do
   begin
-    if VIndexOf(Result, V[i])=-1 then
+    if VIndexOfDate(Result, V[i])=-1 then
+      VAppend(Result, V[i]);
+  end;
+end;
+
+function VUniqueTime(const V: TTimeVector): TTimeVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(V) do
+  begin
+    if VIndexOfTime(Result, V[i])=-1 then
       VAppend(Result, V[i]);
   end;
 end;
@@ -1974,7 +2087,7 @@ begin
   begin
     Result:= VCut(V1);
     for i:=0 to High(V2) do
-      if VIndexOf(V1, V2[i])<0 then
+      if VIndexOfDate(V1, V2[i])<0 then
         VAppend(Result, V2[i]);
   end
   else begin
@@ -2014,7 +2127,8 @@ var
 begin
   Result:= V[0];
   for i:=1 to High(V) do
-    if V[i]<Result then Result:= V[i];
+    if V[i]<Result then
+      Result:= V[i];
 end;
 
 function VMin(const V: TInt64Vector): Int64;
@@ -2023,7 +2137,8 @@ var
 begin
   Result:= V[0];
   for i:=1 to High(V) do
-    if V[i]<Result then Result:= V[i];
+    if V[i]<Result then
+      Result:= V[i];
 end;
 
 
@@ -2050,13 +2165,24 @@ begin
   end;
 end;
 
-function VMin(const V: TDateVector): TDate;
+function VMinDate(const V: TDateVector): TDate;
 var
   i: Integer;
 begin
   Result:= V[0];
   for i:=1 to High(V) do
-    if V[i]<Result then Result:= V[i];
+    if CompareDate(V[i], Result)<0 then
+      Result:= V[i];
+end;
+
+function VMinTime(const V: TTimeVector): TTime;
+var
+  i: Integer;
+begin
+  Result:= V[0];
+  for i:=1 to High(V) do
+    if CompareTime(V[i], Result)<0 then
+      Result:= V[i];
 end;
 
 //VMax
@@ -2067,7 +2193,8 @@ var
 begin
   Result:= V[0];
   for i:=1 to High(V) do
-    if V[i]>Result then Result:= V[i];
+    if V[i]>Result then
+      Result:= V[i];
 end;
 
 function VMax(const V: TInt64Vector): Int64;
@@ -2076,7 +2203,8 @@ var
 begin
   Result:= V[0];
   for i:=1 to High(V) do
-    if V[i]>Result then Result:= V[i];
+    if V[i]>Result then
+      Result:= V[i];
 end;
 
 function VMax(const V: TStrVector; const ACaseSensitivity: Boolean = True): String;
@@ -2102,13 +2230,24 @@ begin
   end;
 end;
 
-function VMax(const V: TDateVector): TDate;
+function VMaxDate(const V: TDateVector): TDate;
 var
   i: Integer;
 begin
   Result:= V[0];
   for i:=1 to High(V) do
-    if V[i]>Result then Result:= V[i];
+    if CompareDate(V[i], Result)>0 then
+      Result:= V[i];
+end;
+
+function VMaxTime(const V: TTimeVector): TTime;
+var
+  i: Integer;
+begin
+  Result:= V[0];
+  for i:=1 to High(V) do
+    if CompareTime(V[i], Result)>0 then
+      Result:= V[i];
 end;
 
 //VCountIf
@@ -2120,7 +2259,8 @@ begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i := FromIndex to ToIndex do
-    if V[i]=IfValue then Inc(Result);
+    if V[i]=IfValue then
+      Inc(Result);
 end;
 
 function VCountIf(const V: TInt64Vector; const IfValue: Int64; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -2130,7 +2270,8 @@ begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i := FromIndex to ToIndex do
-    if V[i]=IfValue then Inc(Result);
+    if V[i]=IfValue then
+      Inc(Result);
 end;
 
 function VCountIf(const V: TStrVector; const IfValue: String;
@@ -2155,14 +2296,26 @@ begin
   end;
 end;
 
-function VCountIf(const V: TDateVector; const IfValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+function VCountIfDate(const V: TDateVector; const IfValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 var
   i: Integer;
 begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i := FromIndex to ToIndex do
-    if V[i]=IfValue then Inc(Result);
+    if SameDate(V[i], IfValue) then
+      Inc(Result);
+end;
+
+function VCountIfTime(const V: TTimeVector; const IfValue: TTime; FromIndex: Integer; ToIndex: Integer): Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  for i := FromIndex to ToIndex do
+    if SameTime(V[i], IfValue) then
+      Inc(Result);
 end;
 
 function VCountIf(const V: TBoolVector; const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -2172,7 +2325,8 @@ begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i := FromIndex to ToIndex do
-    if V[i]=IfValue then Inc(Result);
+    if V[i]=IfValue then
+      Inc(Result);
 end;
 
 function VCountIf(const V: TColorVector; const IfValue: TColor; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -2182,7 +2336,8 @@ begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i := FromIndex to ToIndex do
-    if V[i]=IfValue then Inc(Result);
+    if V[i]=IfValue then
+      Inc(Result);
 end;
 
 //VCountIfNot
@@ -2194,7 +2349,8 @@ begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i := FromIndex to ToIndex do
-    if V[i]<>IfValue then Inc(Result);
+    if V[i]<>IfValue then
+      Inc(Result);
 end;
 
 function VCountIfNot(const V: TInt64Vector; const IfValue: Int64; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -2204,7 +2360,8 @@ begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i := FromIndex to ToIndex do
-    if V[i]<>IfValue then Inc(Result);
+    if V[i]<>IfValue then
+      Inc(Result);
 end;
 
 function VCountIfNot(const V: TStrVector; const IfValue: String;
@@ -2229,14 +2386,26 @@ begin
   end;
 end;
 
-function VCountIfNot(const V: TDateVector; const IfValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
+function VCountIfNotDate(const V: TDateVector; const IfValue: TDate; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 var
   i: Integer;
 begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i := FromIndex to ToIndex do
-    if V[i]<>IfValue then Inc(Result);
+    if not SameDate(V[i], IfValue) then
+      Inc(Result);
+end;
+
+function VCountIfNotTime(const V: TTimeVector; const IfValue: TTime; FromIndex: Integer; ToIndex: Integer): Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  for i := FromIndex to ToIndex do
+    if not SameTime(V[i], IfValue) then
+      Inc(Result);
 end;
 
 function VCountIfNot(const V: TBoolVector; const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -2246,7 +2415,8 @@ begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i := FromIndex to ToIndex do
-    if V[i]<>IfValue then Inc(Result);
+    if V[i]<>IfValue then
+      Inc(Result);
 end;
 
 function VCountIfNot(const V: TColorVector; const IfValue: TColor;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -2256,7 +2426,8 @@ begin
   Result:= 0;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i := FromIndex to ToIndex do
-    if V[i]<>IfValue then Inc(Result);
+    if V[i]<>IfValue then
+      Inc(Result);
 end;
 
 
@@ -2409,7 +2580,8 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]=IfValue then Result:= Result + V[i];
+    if IfVector[i]=IfValue then
+      Result:= Result + V[i];
 end;
 
 function VSumIf(const V: TIntVector; const IfVector: TInt64Vector; const IfValue: Int64;
@@ -2421,7 +2593,8 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]=IfValue then Result:= Result + V[i];
+    if IfVector[i]=IfValue then
+      Result:= Result + V[i];
 end;
 
 function VSumIf(const V: TIntVector; const IfVector: TStrVector; const IfValue: String;
@@ -2447,7 +2620,7 @@ begin
   end;
 end;
 
-function VSumIf(const V: TIntVector; const IfVector: TDateVector; const IfValue: TDate;
+function VSumIfDate(const V: TIntVector; const IfVector: TDateVector; const IfValue: TDate;
                 FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 var
   i: Integer;
@@ -2456,7 +2629,21 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]=IfValue then Result:= Result + V[i];
+    if SameDate(IfVector[i], IfValue) then
+      Result:= Result + V[i];
+end;
+
+function VSumIfTime(const V: TIntVector; const IfVector: TTimeVector; const IfValue: TTime;
+                FromIndex: Integer; ToIndex: Integer): Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if Length(V)<>Length(IfVector) then Exit;
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  for i:=FromIndex to ToIndex do
+    if SameTime(IfVector[i], IfValue) then
+      Result:= Result + V[i];
 end;
 
 function VSumIf(const V: TIntVector; const IfVector: TBoolVector; const IfValue: Boolean;
@@ -2468,7 +2655,8 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]=IfValue then Result:= Result + V[i];
+    if IfVector[i]=IfValue then
+      Result:= Result + V[i];
 end;
 
 function VSumIf(const V: TInt64Vector; const IfVector: TIntVector; const IfValue: Integer;
@@ -2480,7 +2668,8 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]=IfValue then Result:= Result + V[i];
+    if IfVector[i]=IfValue then
+      Result:= Result + V[i];
 end;
 
 function VSumIf(const V: TInt64Vector; const IfVector: TInt64Vector; const IfValue: Int64;
@@ -2492,7 +2681,8 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]=IfValue then Result:= Result + V[i];
+    if IfVector[i]=IfValue then
+      Result:= Result + V[i];
 end;
 
 function VSumIf(const V: TInt64Vector; const IfVector: TStrVector; const IfValue: String;
@@ -2518,7 +2708,7 @@ begin
   end;
 end;
 
-function VSumIf(const V: TInt64Vector; const IfVector: TDateVector; const IfValue: TDate;
+function VSumIfDate(const V: TInt64Vector; const IfVector: TDateVector; const IfValue: TDate;
                 FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
 var
   i: Integer;
@@ -2527,7 +2717,21 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]=IfValue then Result:= Result + V[i];
+    if SameDate(IfVector[i], IfValue) then
+      Result:= Result + V[i];
+end;
+
+function VSumIfTime(const V: TInt64Vector; const IfVector: TTimeVector;
+  const IfValue: TTime; FromIndex: Integer; ToIndex: Integer): Int64;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if Length(V)<>Length(IfVector) then Exit;
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  for i:=FromIndex to ToIndex do
+    if SameTime(IfVector[i], IfValue) then
+      Result:= Result + V[i];
 end;
 
 function VSumIf(const V: TInt64Vector; const IfVector: TBoolVector; const IfValue: Boolean;
@@ -2539,7 +2743,8 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]=IfValue then Result:= Result + V[i];
+    if IfVector[i]=IfValue then
+      Result:= Result + V[i];
 end;
 
 //VSumIfNot
@@ -2553,7 +2758,8 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]<>IfValue then Result:= Result + V[i];
+    if IfVector[i]<>IfValue then
+      Result:= Result + V[i];
 end;
 
 function VSumIfNot(const V: TIntVector; const IfVector: TInt64Vector; const IfValue: Int64;
@@ -2565,7 +2771,8 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]<>IfValue then Result:= Result + V[i];
+    if IfVector[i]<>IfValue then
+      Result:= Result + V[i];
 end;
 
 
@@ -2592,7 +2799,7 @@ begin
   end;
 end;
 
-function VSumIfNot(const V: TIntVector; const IfVector: TDateVector; const IfValue: TDate;
+function VSumIfNotDate(const V: TIntVector; const IfVector: TDateVector; const IfValue: TDate;
                    FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 var
   i: Integer;
@@ -2601,7 +2808,21 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]<>IfValue then Result:= Result + V[i];
+    if not SameDate(IfVector[i], IfValue) then
+      Result:= Result + V[i];
+end;
+
+function VSumIfNotTime(const V: TIntVector; const IfVector: TTimeVector; const IfValue: TTime;
+                   FromIndex: Integer; ToIndex: Integer): Integer;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if Length(V)<>Length(IfVector) then Exit;
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  for i:=FromIndex to ToIndex do
+    if not SameTime(IfVector[i], IfValue) then
+      Result:= Result + V[i];
 end;
 
 function VSumIfNot(const V: TInt64Vector; const IfVector: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
@@ -2612,7 +2833,8 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]<>IfValue then Result:= Result + V[i];
+    if IfVector[i]<>IfValue then
+      Result:= Result + V[i];
 end;
 
 function VSumIfNot(const V: TInt64Vector; const IfVector: TInt64Vector; const IfValue: Int64;
@@ -2624,7 +2846,8 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]<>IfValue then Result:= Result + V[i];
+    if IfVector[i]<>IfValue then
+      Result:= Result + V[i];
 end;
 
 function VSumIfNot(const V: TInt64Vector; const IfVector: TStrVector; const IfValue: String;
@@ -2650,7 +2873,7 @@ begin
   end;
 end;
 
-function VSumIfNot(const V: TInt64Vector; const IfVector: TDateVector; const IfValue: TDate;
+function VSumIfNotDate(const V: TInt64Vector; const IfVector: TDateVector; const IfValue: TDate;
                    FromIndex: Integer=-1; ToIndex: Integer=-1): Int64;
 var
   i: Integer;
@@ -2659,7 +2882,21 @@ begin
   if Length(V)<>Length(IfVector) then Exit;
   if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
   for i:=FromIndex to ToIndex do
-    if IfVector[i]<>IfValue then Result:= Result + V[i];
+    if not SameDate(IfVector[i], IfValue) then
+      Result:= Result + V[i];
+end;
+
+function VSumIfNotTime(const V: TInt64Vector; const IfVector: TTimeVector;
+  const IfValue: TTime; FromIndex: Integer; ToIndex: Integer): Int64;
+var
+  i: Integer;
+begin
+  Result:= 0;
+  if Length(V)<>Length(IfVector) then Exit;
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  for i:=FromIndex to ToIndex do
+    if not SameTime(IfVector[i], IfValue) then
+      Result:= Result + V[i];
 end;
 
 {ПРЕОБРАЗОВНИЕ К СТРОКОВОМУ ВЕКТОРУ}
@@ -2731,7 +2968,20 @@ begin
   end;
 end;
 
-function VFormatDateTime(const FormatStr: String; const V: TDateVector; Options: TFormatDateTimeOptions = []): TStrVector;
+function VTimeToStr(const V: TTimeVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if Length(V)>0 then
+  begin
+    VDim(Result, Length(V));
+    for i:=0 to High(V) do
+      Result[i]:= TimeToStr(V[i]);
+  end;
+end;
+
+function VFormatDateTime(const FormatStr: String; const V: TDblVector; Options: TFormatDateTimeOptions = []): TStrVector;
 var
   i: Integer;
 begin
@@ -2993,7 +3243,7 @@ begin
   end;
 end;
 
-procedure VSort(const V: TDateVector; out Indexes: TIntVector;
+procedure VSortDate(const V: TDateVector; out Indexes: TIntVector;
                 const Desc: Boolean = False);
 var
   Vec: TDateVector;
@@ -3009,9 +3259,42 @@ begin
   while Length(Vec)<>0 do
   begin
     if Desc then
-      x:= VMax(Vec)
+      x:= VMaxDate(Vec)
     else
-      x:= VMin(Vec);
+      x:= VMinDate(Vec);
+    TmpI:= nil;
+    for i:= 0 to High(Vec) do
+      if Vec[i]=x then
+        VAppend(TmpI, i);
+    for i:= 0 to High(TmpI) do
+      VAppend(Indexes, Ind[TmpI[i]]);
+    for i:= High(TmpI) downto 0 do
+    begin
+      VDel(Vec, TmpI[i]);
+      VDel(Ind, TmpI[i]);
+    end;
+  end;
+end;
+
+procedure VSortTime(const V: TTimeVector; out Indexes: TIntVector;
+  const Desc: Boolean);
+var
+  Vec: TDateVector;
+  Ind, TmpI: TIntVector;
+  x: TDate;
+  i: Integer;
+begin
+  Indexes:= nil;
+  Vec:= nil;
+  VCopy(V, Vec);
+  Ind:= nil;
+  for i:= 0 to High(Vec) do VAppend(Ind, i);
+  while Length(Vec)<>0 do
+  begin
+    if Desc then
+      x:= VMaxTime(Vec)
+    else
+      x:= VMinTime(Vec);
     TmpI:= nil;
     for i:= 0 to High(Vec) do
       if Vec[i]=x then
@@ -3050,11 +3333,19 @@ begin
   VReplace(V, Indexes);
 end;
 
-procedure VSort(var V: TDateVector; const Desc: Boolean = False);
+procedure VSortDate(var V: TDateVector; const Desc: Boolean = False);
 var
   Indexes: TIntVector;
 begin
-  VSort(V, Indexes, Desc);
+  VSortDate(V, Indexes, Desc);
+  VReplace(V, Indexes);
+end;
+
+procedure VSortTime(var V: TTimeVector; const Desc: Boolean);
+var
+  Indexes: TIntVector;
+begin
+  VSortTime(V, Indexes, Desc);
   VReplace(V, Indexes);
 end;
 
@@ -3090,7 +3381,7 @@ begin
     V[i]:= TmpV[Indexes[i]];
 end;
 
-procedure VReplace(var V: TDateVector; const Indexes: TIntVector);
+procedure VReplace(var V: TDblVector; const Indexes: TIntVector);
 var
   TmpV: TDateVector;
   i: Integer;
@@ -3124,7 +3415,7 @@ begin
     V[n-i]:= TmpV[i];
 end;
 
-procedure VReverse(const V: TDateVector);
+procedure VReverse(const V: TDblVector);
 var
   TmpV: TDateVector;
   i, n: Integer;
