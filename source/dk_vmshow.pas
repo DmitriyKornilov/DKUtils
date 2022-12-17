@@ -27,6 +27,7 @@ var
   procedure VShowAdd(const V: TIntVector;   const VName: String = '');
   procedure VShowAdd(const V: TInt64Vector; const VName: String = '');
   procedure VShowAdd(const V: TStrVector;   const VName: String = '');
+  procedure VShowAdd(const V: TDblVector;   const VName: String = '');
   procedure VShowAddDate(const V: TDateVector;  const VName: String = '');
   procedure VShowAddTime(const V: TTimeVector;  const VName: String = '');
   procedure VShowAdd(const V: TBoolVector;  const VName: String = '');
@@ -36,6 +37,7 @@ var
   procedure VShow(const V: TIntVector;   const VName: String = '');
   procedure VShow(const V: TInt64Vector; const VName: String = '');
   procedure VShow(const V: TStrVector;   const VName: String = '');
+  procedure VShow(const V: TDblVector;   const VName: String = '');
   procedure VShowDate(const V: TDateVector;  const VName: String = '');
   procedure VShowTime(const V: TTimeVector;  const VName: String = '');
   procedure VShow(const V: TBoolVector;  const VName: String = '');
@@ -109,6 +111,11 @@ begin
   AddVector(V, VName);
 end;
 
+procedure VShowAdd(const V: TDblVector; const VName: String);
+begin
+  AddVector(VFloatToStr(V), VName);
+end;
+
 procedure VShowAddDate(const V: TDateVector; const VName: String);
 begin
   AddVector(VDateToStr(V), VName);
@@ -149,6 +156,15 @@ begin
 end;
 
 procedure VShow(const V: TStrVector; const VName: String);
+begin
+  if VName=EmptyStr then
+    VShowAdd(V, 'Значение')
+  else
+    VShowAdd(V, VName);
+  VShow;
+end;
+
+procedure VShow(const V: TDblVector; const VName: String);
 begin
   if VName=EmptyStr then
     VShowAdd(V, 'Значение')
