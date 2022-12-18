@@ -300,6 +300,7 @@ type
   {ДЛЯ ЦЕЛОЧИСЛЕННОГО ВЕКТОРА}
   function VOrder(const MaxValue: Integer;
                   const AZeroFirst: Boolean = False): TIntVector; //{[0],1,2,3,...,MaxValue}
+  function VRange(const AFirstValue, ALastValue: Integer): TIntVector; // {AFirstValue, AFirstValue+1, ..., ALastValue}
 
   {ДЛЯ УПОРЯДОЧЕННОГО ВЕКТОРА ДАТ}
   function VCrossInd(const V: TDateVector; const ABeginDate, AEndDate: TDate; out I1,I2: Integer): Boolean;
@@ -2441,6 +2442,19 @@ begin
   VDim(Result, MaxValue + Ord(AZeroFirst));
   for i:= 0 to High(Result) do
     Result[i]:= i + Ord(not AZeroFirst);
+end;
+
+//VRange
+
+function VRange(const AFirstValue, ALastValue: Integer): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if ALastValue<AFirstValue then Exit;
+  VDim(Result, ALastValue-AFirstValue+1);
+  for i:= AFirstValue to ALastValue do
+    Result[i-AFirstValue]:= i;
 end;
 
 //VMult
