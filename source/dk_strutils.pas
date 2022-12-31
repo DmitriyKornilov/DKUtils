@@ -230,7 +230,8 @@ begin
   BM:= TBitmap.Create;
   try
     BM.Canvas.Font.Assign(AFont);
-    Result:= Round(BM.Canvas.TextWidth(AStr)*96/AFont.PixelsPerInch);
+    Result:= BM.Canvas.TextWidth(AStr);
+    //Result:= Round(BM.Canvas.TextWidth(AStr)*96/AFont.PixelsPerInch);
   finally
     FreeAndNil(BM);
   end;

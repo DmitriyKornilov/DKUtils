@@ -338,10 +338,10 @@ type
   function CheckIndex(const MaxIndex, Ind: Integer): Boolean;
   function CheckIndexes(const MaxIndex, Ind1, Ind2: Integer): Boolean;
 
-  function VIsTrue(const V: TBoolVector): Boolean;
-  function VIsFalse(const V: TBoolVector): Boolean;
-  function VIsAllTrue(const V: TBoolVector): Boolean;
-  function VIsAllFalse(const V: TBoolVector): Boolean;
+  function VIsTrue(const V: TBoolVector; FromIndex: Integer=-1; ToIndex: Integer=-1): Boolean;
+  function VIsFalse(const V: TBoolVector; FromIndex: Integer=-1; ToIndex: Integer=-1): Boolean;
+  function VIsAllTrue(const V: TBoolVector; FromIndex: Integer=-1; ToIndex: Integer=-1): Boolean;
+  function VIsAllFalse(const V: TBoolVector; FromIndex: Integer=-1; ToIndex: Integer=-1): Boolean;
 
   {ВЕКТОРЫ ИМЕН}
   function VNameLong(const AFs, ANs, APs: TStrVector): TStrVector;
@@ -373,12 +373,14 @@ begin
   Result:= CheckIndex(MaxIndex, Ind1) and CheckIndex(MaxIndex, Ind2) and (Ind1<>Ind2);
 end;
 
-function VIsIncludes(const V: TBoolVector; const AValue: Boolean): Boolean;
+function VIsIncludes(const V: TBoolVector; const AValue: Boolean;
+                     FromIndex: Integer=-1; ToIndex: Integer=-1): Boolean;
 var
   i: Integer;
 begin
   Result:= False;
-  for i:= 0 to High(V) do
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
   begin
     if V[i]=AValue then
     begin
@@ -388,24 +390,24 @@ begin
   end;
 end;
 
-function VIsTrue(const V: TBoolVector): Boolean;
+function VIsTrue(const V: TBoolVector; FromIndex: Integer=-1; ToIndex: Integer=-1): Boolean;
 begin
-  Result:= VIsIncludes(V, True);
+  Result:= VIsIncludes(V, True, FromIndex, ToIndex);
 end;
 
-function VIsFalse(const V: TBoolVector): Boolean;
+function VIsFalse(const V: TBoolVector; FromIndex: Integer=-1; ToIndex: Integer=-1): Boolean;
 begin
-  Result:= VIsIncludes(V, False);
+  Result:= VIsIncludes(V, False, FromIndex, ToIndex);
 end;
 
-function VIsAllTrue(const V: TBoolVector): Boolean;
+function VIsAllTrue(const V: TBoolVector; FromIndex: Integer=-1; ToIndex: Integer=-1): Boolean;
 begin
-  Result:= not VIsFalse(V);
+  Result:= not VIsFalse(V, FromIndex, ToIndex);
 end;
 
-function VIsAllFalse(const V: TBoolVector): Boolean;
+function VIsAllFalse(const V: TBoolVector; FromIndex: Integer=-1; ToIndex: Integer=-1): Boolean;
 begin
-  Result:= not VIsTrue(V);
+  Result:= not VIsTrue(V, FromIndex, ToIndex);
 end;
 
 //VDim
