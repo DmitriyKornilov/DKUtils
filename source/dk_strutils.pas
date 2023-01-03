@@ -13,7 +13,9 @@ type
   function SSetUTF8(const AStr: String): String;
   function SLength(const AStr: String): Integer;
   function SUpper(const AStr: String): String;
+  function SFirstUpper(const AStr: String): String;
   function SLower(const AStr: String): String;
+  function SFirstLower(const AStr: String): String;
   function STrim(const AStr: String): String;
   function SCut(const AStr: String; const ALeftCount, ARightCount: Integer): String;
   function SCutRight(const AStr: String; const ACount: Integer): String;
@@ -66,9 +68,19 @@ begin
   Result:= UTF8UpperCase(AStr);
 end;
 
+function SFirstUpper(const AStr: String): String;
+begin
+  Result:= SUpper(SSymbol(AStr, 1)) + SCutLeft(AStr, 1);
+end;
+
 function SLower(const AStr: String): String;
 begin
   Result:= UTF8LowerCase(AStr);
+end;
+
+function SFirstLower(const AStr: String): String;
+begin
+  Result:= SLower(SSymbol(AStr, 1)) + SCutLeft(AStr, 1);
 end;
 
 function STrim(const AStr: String): String;
@@ -231,7 +243,7 @@ begin
   try
     BM.Canvas.Font.Assign(AFont);
     Result:= BM.Canvas.TextWidth(AStr);
-    //Result:= Round(BM.Canvas.TextWidth(AStr)*96/AFont.PixelsPerInch);
+    //Result:= Round(BM.Canvas.TextWidth(AStr)*AFont.PixelsPerInch/96);
   finally
     FreeAndNil(BM);
   end;
