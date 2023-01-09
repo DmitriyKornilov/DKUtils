@@ -21,6 +21,7 @@ type
   function SCutRight(const AStr: String; const ACount: Integer): String;
   function SCutLeft(const AStr: String; const ACount: Integer): String;
   function SSame(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Boolean;
+  function SEmpty(const AStr: String): Boolean;
   function SCompare(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Integer;
   function SPos(const AStr, AValue: String; const AStartPos: Integer = 1): Integer;
   function SCopy(const AStr: String; const AStart, AEnd: Integer): String;
@@ -106,6 +107,11 @@ end;
 function SSame(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Boolean;
 begin
   Result:= SCompare(AStr1, AStr2, ACaseSensitivity)=0;
+end;
+
+function SEmpty(const AStr: String): Boolean;
+begin
+  Result:= SSame(AStr, EmptyStr);
 end;
 
 function SCompare(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Integer;

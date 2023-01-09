@@ -23,17 +23,25 @@ uses
 
  {TextToCell - вставляет в текст AText с шрифтом AFont символы разрыва
  (переноса) строки ABreakSymbol так, чтобы полученные строки умещались в ячейке
- шириной ACellWidth (размерность в px), а также символы пробела количеством
- ARedLineWidth в начало текста (красная строка).
+ шириной ACellWidth (размерность в px), а также символы пробела шириной
+ ARedLineWidth (размерность в px) в начало текста (красная строка).
  Возвращает требуемую высоту ячейки в px.}
  function TextToCell(var AText: String; const AFont: TFont;
                    const ACellWidth: Integer;
                    const ARedLineWidth: Integer = 0;
                    const AWrapToWordParts: Boolean = False;
                    const ABreakSymbol: String = SYMBOL_BREAK): Integer; //result:= CellHeight
-
- {Фамилия Имя Отчество -> Фамилия И.О.}
- function SurnameNP(const ASurname, AName, APatronymic: String): String;
+ {FitTextToWidth - разбивает в текст AText с шрифтом AFont на части так,
+ чтобы полученные строки умещались в ячейке шириной AWidth (размерность в px),
+ а также символы пробела шириной ARedLineWidth (размерность в px)
+ в начало текста (красная строка).
+ Записывает требуемую высоту ячейки в px в AHeight, вектор получившихся
+ частей в ARows}
+ procedure TextToWidth(const AText: String; const AFont: TFont; const AWidth: Integer;
+                  out AHeight: Integer;
+                  out ARows: TStrVector;
+                  const AWrapToWordParts: Boolean = False;
+                  const ARedLineWidth: Integer = 0);
 
 implementation
 
@@ -189,85 +197,95 @@ begin
       VAppend(Result, WordStr);
 end;
 
-function TextToCell(var AText: String; const AFont: TFont;
-                    const ACellWidth: Integer;
-                    const ARedLineWidth: Integer = 0;
-                    const AWrapToWordParts: Boolean = False;
-                    const ABreakSymbol: String = SYMBOL_BREAK): Integer; //result:= CellHeight
+procedure TextToWidth(const AText: String; const AFont: TFont; const AWidth: Integer;
+                  out AHeight: Integer;
+                  out ARows: TStrVector;
+                  const AWrapToWordParts: Boolean = False;
+                  const ARedLineWidth: Integer = 0);
 var
-  i,j,k, SpaceWidth, CellWidth: Integer;
-  Words, WordParts, Lines: TStrVector;
-  OldLineStr, OldLineStr2, NewLineStr: String;
+  i,j,k, SpaceWidth, RowWidth: Integer;
+  Words, WordParts: TStrVector;
+  OldRowValue, OldRowValue2, NewRowValue: String;
 begin
-  //пустая строка
-  AText:= STrim(AText);
-  if SSame(AText, EmptyStr) then
-  begin
-    Result:= SHeight('Х', AFont);
-    Exit;
-  end;
+  AHeight:= 0;
+  ARows:= nil;
+  if SEmpty(AText) then Exit;
+
   //ширина пробела
   SpaceWidth:= SWidth(SYMBOL_SPACE, AFont);
   //ширина ячейки
-  CellWidth:= ACellWidth - SpaceWidth;
+  RowWidth:= AWidth - SpaceWidth;
   //разбиваем текст на слова
-  Words:= TextToWords(AText);
+  Words:= TextToWords(Strim(AText));
   //добавляем красную строку перед первым словом, если нужно
   if ARedLineWidth>0 then
     Words[0]:= SRedLine(ARedLineWidth div SpaceWidth) + Words[0];
   //заполняем строки
-  Lines:= nil;
-  OldLineStr:= Words[0];
+  OldRowValue:= Words[0];
   for i:= 1 to High(Words) do
   begin
-    NewLineStr:= OldLineStr + SYMBOL_SPACE + Words[i]; //добавляем пробел и слово
-    if SWidth(NewLineStr, AFont)<CellWidth then
-      OldLineStr:= NewLineStr
+    NewRowValue:= OldRowValue + SYMBOL_SPACE + Words[i]; //добавляем пробел и слово
+    if SWidth(NewRowValue, AFont)<RowWidth then
+      OldRowValue:= NewRowValue
     else begin
       if AWrapToWordParts then //перенос по слогам
       begin
         WordParts:= WordToParts(Words[i]); //разбиваем слово на слоги
-        OldLineStr2:= OldLineStr;
-        NewLineStr:= OldLineStr + SYMBOL_SPACE;
+        OldRowValue2:= OldRowValue;
+        NewRowValue:= OldRowValue + SYMBOL_SPACE;
         for j:=0 to High(WordParts) do
         begin
-          NewLineStr:= NewLineStr + WordParts[j];
-          if SWidth(NewLineStr + SYMBOL_CARRY, AFont)<CellWidth then
-            OldLineStr2:= NewLineStr
+          NewRowValue:= NewRowValue + WordParts[j];
+          if SWidth(NewRowValue + SYMBOL_CARRY, AFont)<RowWidth then
+            OldRowValue2:= NewRowValue
           else begin
-            if SSame(OldLineStr, OldLineStr2) then //не поместилось ни одного слога
+            if SSame(OldRowValue, OldRowValue2) then //не поместилось ни одного слога
             begin
-              VAppend(Lines, OldLineStr);
-              OldLineStr:= Words[i];
+              VAppend(ARows, OldRowValue);
+              OldRowValue:= Words[i];
             end
             else begin //поместилась какая-то часть слогов
-              VAppend(Lines, OldLineStr2 + SYMBOL_CARRY);
-              OldLineStr:= EmptyStr;
+              VAppend(ARows, OldRowValue2 + SYMBOL_CARRY);
+              OldRowValue:= EmptyStr;
               for k:= j to High(WordParts) do
-                OldLineStr:= OldLineStr + WordParts[k];
+                OldRowValue:= OldRowValue + WordParts[k];
             end;
             break;
           end;
         end;
       end
       else begin //сохранять целые слова
-        VAppend(Lines, OldLineStr);
-        OldLineStr:= Words[i];
+        VAppend(ARows, OldRowValue);
+        OldRowValue:= Words[i];
       end;
     end;
   end;
-  VAppend(Lines, OldLineStr); //последнее значение
-  //формируем итоговую строку
-  AText:= Lines[0];
-  for i:= 1 to High(Lines) do
-    AText:= AText + ABreakSymbol + Lines[i];
-  //требуемая высота ячейки = кол-во строк * высота одной строки
-  Result:= Length(Lines) * SHeight('Х', AFont);
+  VAppend(ARows, OldRowValue); //последнее значение
+
+  AHeight:= SHeight('Х', AFont) * Length(ARows) + 2;
 end;
 
-function SurnameNP(const ASurname, AName, APatronymic: String): String;
+function TextToCell(var AText: String; const AFont: TFont;
+                    const ACellWidth: Integer;
+                    const ARedLineWidth: Integer = 0;
+                    const AWrapToWordParts: Boolean = False;
+                    const ABreakSymbol: String = SYMBOL_BREAK): Integer; //result:= CellHeight
+var
+  TotalHeight: Integer;
+  RowValues: TStrVector;
 begin
-  Result:= ASurname + ' ' + SSymbol(AName,1) + '.' + SSymbol(APatronymic,1) + '.' ;
+  TextToWidth(AText, AFont, ACellWidth,
+                 TotalHeight, RowValues,
+                 AWrapToWordParts, ARedLineWidth);
+
+  if TotalHeight>0 then
+  begin
+    AText:= VVectorToStr(RowValues, ABreakSymbol);
+    Result:= TotalHeight;
+  end
+  else begin
+    Result:= SHeight('Х', AFont);
+  end;
 end;
 
 end.
