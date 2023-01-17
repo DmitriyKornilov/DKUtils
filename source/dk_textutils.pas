@@ -31,7 +31,7 @@ uses
                    const ARedLineWidth: Integer = 0;
                    const AWrapToWordParts: Boolean = False;
                    const ABreakSymbol: String = SYMBOL_BREAK): Integer; //result:= CellHeight
- {FitTextToWidth - разбивает в текст AText с шрифтом AFont на части так,
+ {TextToWidth - разбивает в текст AText с шрифтом AFont на части так,
  чтобы полученные строки умещались в ячейке шириной AWidth (размерность в px),
  а также символы пробела шириной ARedLineWidth (размерность в px)
  в начало текста (красная строка).
@@ -42,6 +42,7 @@ uses
                   out ARows: TStrVector;
                   const AWrapToWordParts: Boolean = False;
                   const ARedLineWidth: Integer = 0);
+
 
 implementation
 
@@ -203,9 +204,55 @@ procedure TextToWidth(const AText: String; const AFont: TFont; const AWidth: Int
                   const AWrapToWordParts: Boolean = False;
                   const ARedLineWidth: Integer = 0);
 var
-  i,j,k, SpaceWidth, RowWidth: Integer;
-  Words, WordParts: TStrVector;
-  OldRowValue, OldRowValue2, NewRowValue: String;
+  i,SpaceWidth, RowWidth, TmpWidth: Integer;
+  Words, RowValues: TStrVector;
+  OldRowValue, NewRowValue: String;
+
+  procedure DoWrapWord(const AWord: String; const ARowWidth: Integer;
+                       out ARowValues: TStrVector;
+                       const ANeedWritePartIfNotFit: Boolean = True;
+                       const ANeedCarrySymbolAfterFirst: Boolean = True);
+  var
+    n: Integer;
+    WordParts: TStrVector;
+    OldValue, NewValue: String;
+  begin
+    ARowValues:= nil;
+    WordParts:= WordToParts(AWord);
+    NewValue:= EmptyStr;
+    OldValue:= EmptyStr;
+    n:= 0;
+    while n<=High(WordParts) do
+    begin
+      NewValue:= NewValue + WordParts[n];
+      if SWidth(NewValue + SYMBOL_CARRY, AFont)<ARowWidth then
+      begin
+        OldValue:= NewValue;
+        n:= n + 1;
+      end
+      else begin
+        if SEmpty(OldValue) then
+        begin
+          if not ANeedWritePartIfNotFit then
+          begin
+            ARowValues:= nil;
+            Exit;
+          end;
+
+          OldValue:= NewValue;
+          n:= n + 1;
+        end;
+        if VIsNil(ARowValues) or ANeedCarrySymbolAfterFirst then
+          VAppend(ARowValues, OldValue + SYMBOL_CARRY)
+        else
+          VAppend(ARowValues, OldValue);
+        NewValue:= EmptyStr;
+        OldValue:= EmptyStr;
+      end;
+    end;
+    VAppend(ARowValues, OldValue);
+  end;
+
 begin
   AHeight:= 0;
   ARows:= nil;
@@ -220,6 +267,79 @@ begin
   //добавляем красную строку перед первым словом, если нужно
   if ARedLineWidth>0 then
     Words[0]:= SRedLine(ARedLineWidth div SpaceWidth) + Words[0];
+
+  if (Length(Words)=1)  then
+  begin
+    if AWrapToWordParts then
+    begin
+      DoWrapWord(Words[0], RowWidth, RowValues, True, True);
+      ARows:= RowValues;
+    end
+    else
+      VAppend(ARows, Words[0]);
+  end
+  else begin
+    i:= 0;
+    OldRowValue:= EmptyStr;
+    while i<=High(Words) do
+    begin
+       if SEmpty(OldRowValue) then
+         NewRowValue:= Words[i]
+       else
+         NewRowValue:= OldRowValue + SYMBOL_SPACE + Words[i]; //добавляем пробел и слово
+       if SWidth(NewRowValue, AFont)<RowWidth then
+       begin
+         //если уместилось - запоминаем и переходим к следующему слову
+         OldRowValue:= NewRowValue;
+         i:= i + 1;
+       end
+       else begin
+         //не уместилось
+         if AWrapToWordParts then  //переносим слово по слогам
+         begin
+           TmpWidth:= RowWidth - SWidth(OldRowValue+SYMBOL_SPACE, AFont);
+           DoWrapWord(Words[i], TmpWidth, RowValues, False, False);
+           if not VIsNil(RowValues) then
+           begin
+             VAppend(ARows, OldRowValue+SYMBOL_SPACE+RowValues[0]);
+             OldRowValue:= VSum(RowValues, 1);
+             i:= i + 1;
+           end
+           else begin
+             VAppend(ARows, OldRowValue);
+             OldRowValue:= EmptyStr;
+           end;
+         end
+         else begin //записываем все до предыдущего слова
+           if SEmpty(OldRowValue) then //слово вообще не умещается - записываем, т.к. нет иного выхода
+           begin
+             OldRowValue:= NewRowValue;
+             i:= i + 1;
+           end;
+           VAppend(ARows, OldRowValue);
+           OldRowValue:= EmptyStr;
+         end;
+       end;
+    end;
+    VAppend(ARows, OldRowValue); //последнее значение
+  end;
+
+  AHeight:= SHeight('Х', AFont) * Length(ARows) + 2;
+
+  {AHeight:= 0;
+  ARows:= nil;
+  if SEmpty(AText) then Exit;
+
+  //ширина пробела
+  SpaceWidth:= SWidth(SYMBOL_SPACE, AFont);
+  //ширина ячейки
+  RowWidth:= AWidth - SpaceWidth;
+  //разбиваем текст на слова
+  Words:= TextToWords(Strim(AText));
+  //добавляем красную строку перед первым словом, если нужно
+  if ARedLineWidth>0 then
+    Words[0]:= SRedLine(ARedLineWidth div SpaceWidth) + Words[0];
+
   //заполняем строки
   OldRowValue:= Words[0];
   for i:= 1 to High(Words) do
@@ -262,7 +382,7 @@ begin
   end;
   VAppend(ARows, OldRowValue); //последнее значение
 
-  AHeight:= SHeight('Х', AFont) * Length(ARows) + 2;
+  AHeight:= SHeight('Х', AFont) * Length(ARows) + 2;  }
 end;
 
 function TextToCell(var AText: String; const AFont: TFont;

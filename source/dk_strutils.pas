@@ -17,6 +17,8 @@ type
   function SLower(const AStr: String): String;
   function SFirstLower(const AStr: String): String;
   function STrim(const AStr: String): String;
+  function STrimRight(const AStr: String): String;
+  function STrimLeft(const AStr: String): String;
   function SCut(const AStr: String; const ALeftCount, ARightCount: Integer): String;
   function SCutRight(const AStr: String; const ACount: Integer): String;
   function SCutLeft(const AStr: String; const ACount: Integer): String;
@@ -87,6 +89,16 @@ end;
 function STrim(const AStr: String): String;
 begin
   Result:= UTF8Trim(AStr);
+end;
+
+function STrimRight(const AStr: String): String;
+begin
+  Result:= UTF8Trim(AStr, [u8tKeepStart]);
+end;
+
+function STrimLeft(const AStr: String): String;
+begin
+  Result:= UTF8Trim(AStr, [u8tKeepEnd]);
 end;
 
 function SCut(const AStr: String; const ALeftCount, ARightCount: Integer): String;
