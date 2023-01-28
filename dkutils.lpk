@@ -72,6 +72,10 @@
         <Filename Value="source\dk_fonts.pas"/>
         <UnitName Value="DK_Fonts"/>
       </Item>
+      <Item>
+        <Filename Value="source\dk_math.pas"/>
+        <UnitName Value="dk_math"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

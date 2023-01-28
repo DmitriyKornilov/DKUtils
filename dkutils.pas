@@ -10,7 +10,7 @@ interface
 uses
   DK_Const, DK_DateUtils, DK_Dialogs, DK_LCLStrRus, DK_Matrix, DK_PriceUtils, 
   DK_SQLUtils, DK_StrUtils, DK_TextUtils, DK_Vector, DK_VMShow, DK_Fonts, 
-  LazarusPackageIntf;
+  DK_Math, LazarusPackageIntf;
 
 implementation
 
