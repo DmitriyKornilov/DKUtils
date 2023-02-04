@@ -237,8 +237,8 @@ type
   function VCountIfNot(const V: TColorVector; const IfValue: TColor;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 
   {ПРЕОБРАЗОВНИЕ К СТРОКОВОМУ ВЕКТОРУ}
-  function VIntToStr(const V: TIntVector): TStrVector;
-  function VIntToStr(const V: TInt64Vector): TStrVector;
+  function VIntToStr(const V: TIntVector; const ZeroIsEmpty: Boolean = False): TStrVector;
+  function VIntToStr(const V: TInt64Vector; const ZeroIsEmpty: Boolean = False): TStrVector;
   function VBoolToStr(const V: TBoolVector): TStrVector;
   function VFloatToStr(const V: TDblVector): TStrVector;
   function VDateToStr(const V: TDateVector): TStrVector;
@@ -2916,30 +2916,28 @@ begin
 end;
 
 {ПРЕОБРАЗОВНИЕ К СТРОКОВОМУ ВЕКТОРУ}
-function VIntToStr(const V: TIntVector): TStrVector;
+function VIntToStr(const V: TIntVector; const ZeroIsEmpty: Boolean = False): TStrVector;
 var
   i: Integer;
 begin
   Result:= nil;
-  if Length(V)>0 then
-  begin
-    VDim(Result, Length(V));
-    for i:=0 to High(V) do
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    if not (ZeroIsEmpty and (V[i]=0)) then
       Result[i]:= IntToStr(V[i]);
-  end;
 end;
 
-function VIntToStr(const V: TInt64Vector): TStrVector;
+function VIntToStr(const V: TInt64Vector; const ZeroIsEmpty: Boolean = False): TStrVector;
 var
   i: Integer;
 begin
   Result:= nil;
-  if Length(V)>0 then
-  begin
-    VDim(Result, Length(V));
-    for i:=0 to High(V) do
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    if not (ZeroIsEmpty and (V[i]=0)) then
       Result[i]:= IntToStr(V[i]);
-  end;
 end;
 
 function VDateToStr(const V: TDateVector): TStrVector;
@@ -2947,12 +2945,10 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(V)>0 then
-  begin
-    VDim(Result, Length(V));
-    for i:=0 to High(V) do
-      Result[i]:= DateToStr(V[i]);
-  end;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    Result[i]:= DateToStr(V[i]);
 end;
 
 function VBoolToStr(const V: TBoolVector): TStrVector;
@@ -2960,15 +2956,13 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(V)>0 then
-  begin
-    VDim(Result, Length(V));
-    for i:=0 to High(V) do
-      if V[i] then
-        Result[i]:= STR_TRUE
-      else
-        Result[i]:= STR_FALSE;
-  end;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    if V[i] then
+      Result[i]:= STR_TRUE
+    else
+      Result[i]:= STR_FALSE;
 end;
 
 function VFloatToStr(const V: TDblVector): TStrVector;
@@ -2976,12 +2970,10 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(V)>0 then
-  begin
-    VDim(Result, Length(V));
-    for i:=0 to High(V) do
-      Result[i]:= FloatToStr(V[i]);
-  end;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    Result[i]:= FloatToStr(V[i]);
 end;
 
 function VTimeToStr(const V: TTimeVector): TStrVector;
@@ -2989,12 +2981,10 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(V)>0 then
-  begin
-    VDim(Result, Length(V));
-    for i:=0 to High(V) do
-      Result[i]:= TimeToStr(V[i]);
-  end;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    Result[i]:= TimeToStr(V[i]);
 end;
 
 function VFormatDateTime(const FormatStr: String; const V: TDblVector; Options: TFormatDateTimeOptions = []): TStrVector;
@@ -3002,12 +2992,10 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(V)>0 then
-  begin
-    VDim(Result, Length(V));
-    for i:=0 to High(V) do
-      Result[i]:= FormatDateTime(FormatStr, V[i], Options);
-  end;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    Result[i]:= FormatDateTime(FormatStr, V[i], Options);
 end;
 
 function VTrim(const V: TStrVector): TStrVector;
