@@ -87,6 +87,7 @@ uses
 
   {ОПЕРАЦИИ С ДАТАМИ}
   function IncMonthExt(const ADate: TDate; const ADeltaMonth: Extended): TDate;
+  function IsBoundaryDate(const ADate: TDate): Boolean;
 
 
 implementation
@@ -455,6 +456,15 @@ begin
   Delta:= Round(30*Frac(ADeltaMonth)); //дробная часть месяцев (дни)
   if Delta<>0 then
     Result:= IncDay(Result, Delta);
+end;
+
+function IsBoundaryDate(const ADate: TDate): Boolean;
+begin
+  Result:= (CompareDate(ADate, 0)=0)           or
+           (CompareDate(ADate, NULDATE)=0)     or
+           (CompareDate(ADate, INFDATE)=0)     or
+           (CompareDate(ADate, MaxDateTime)=0) or
+           (CompareDate(ADate, MinDateTime)=0);
 end;
 
 

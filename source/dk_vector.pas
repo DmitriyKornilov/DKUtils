@@ -241,9 +241,11 @@ type
   function VIntToStr(const V: TInt64Vector; const ZeroIsEmpty: Boolean = False): TStrVector;
   function VBoolToStr(const V: TBoolVector): TStrVector;
   function VFloatToStr(const V: TDblVector): TStrVector;
-  function VDateToStr(const V: TDateVector): TStrVector;
+  function VDateToStr(const V: TDateVector; const BoundaryIsEmpty: Boolean = False): TStrVector;
   function VTimeToStr(const V: TTimeVector): TStrVector;
-  function VFormatDateTime(const FormatStr: String; const V: TDblVector; Options: TFormatDateTimeOptions = []): TStrVector;
+  function VFormatDateTime(const FormatStr: String; const V: TDblVector;
+                           const BoundaryIsEmpty: Boolean = False;
+                           Options: TFormatDateTimeOptions = []): TStrVector;
   function VTrim(const V: TStrVector): TStrVector;
 
   {СТРОКОВЫЙ ВЕКТОР И СПИСОК}
@@ -2940,7 +2942,7 @@ begin
       Result[i]:= IntToStr(V[i]);
 end;
 
-function VDateToStr(const V: TDateVector): TStrVector;
+function VDateToStr(const V: TDateVector; const BoundaryIsEmpty: Boolean = False): TStrVector;
 var
   i: Integer;
 begin
@@ -2948,7 +2950,8 @@ begin
   if VIsNil(V) then Exit;
   VDim(Result, Length(V));
   for i:=0 to High(V) do
-    Result[i]:= DateToStr(V[i]);
+    if not (BoundaryIsEmpty and IsBoundaryDate(V[i])) then
+      Result[i]:= DateToStr(V[i]);
 end;
 
 function VBoolToStr(const V: TBoolVector): TStrVector;
@@ -2987,7 +2990,9 @@ begin
     Result[i]:= TimeToStr(V[i]);
 end;
 
-function VFormatDateTime(const FormatStr: String; const V: TDblVector; Options: TFormatDateTimeOptions = []): TStrVector;
+function VFormatDateTime(const FormatStr: String; const V: TDblVector;
+                         const BoundaryIsEmpty: Boolean = False;
+                         Options: TFormatDateTimeOptions = []): TStrVector;
 var
   i: Integer;
 begin
@@ -2995,7 +3000,8 @@ begin
   if VIsNil(V) then Exit;
   VDim(Result, Length(V));
   for i:=0 to High(V) do
-    Result[i]:= FormatDateTime(FormatStr, V[i], Options);
+    if not (BoundaryIsEmpty and IsBoundaryDate(V[i])) then
+      Result[i]:= FormatDateTime(FormatStr, V[i], Options);
 end;
 
 function VTrim(const V: TStrVector): TStrVector;
