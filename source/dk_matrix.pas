@@ -207,21 +207,25 @@ type
   function MLengths(const M: TBoolMatrix): TIntVector;
 
   {ПРЕОБРАЗОВНИЕ К СТРОКОВОЙ МАТРИЦЕ}
-  function MIntToStr(const M: TIntMatrix): TStrMatrix;
-  function MIntToStr(const M: TInt64Matrix): TStrMatrix;
+  function MIntToStr(const M: TIntMatrix; const ZeroIsEmpty: Boolean = False): TStrMatrix;
+  function MIntToStr(const M: TInt64Matrix; const ZeroIsEmpty: Boolean = False): TStrMatrix;
   function MBoolToStr(const M: TBoolMatrix): TStrMatrix;
   function MFloatToStr(const M: TDblMatrix): TStrMatrix;
-  function MDateToStr(const M: TDateMatrix): TStrMatrix;
+  function MDateToStr(const M: TDateMatrix; const BoundaryIsEmpty: Boolean = False): TStrMatrix;
   function MTimeToStr(const M: TTimeMatrix): TStrMatrix;
-  function MFormatDateTime(const FormatStr: String; const M: TDblMatrix; Options: TFormatDateTimeOptions = []): TStrMatrix;
+  function MFormatDateTime(const FormatStr: String; const M: TDblMatrix;
+                           const BoundaryIsEmpty: Boolean = False;
+                           Options: TFormatDateTimeOptions = []): TStrMatrix;
 
-  function MIntToStr(const M: TIntMatrix3D): TStrMatrix3D;
-  function MIntToStr(const M: TInt64Matrix3D): TStrMatrix3D;
+  function MIntToStr(const M: TIntMatrix3D; const ZeroIsEmpty: Boolean = False): TStrMatrix3D;
+  function MIntToStr(const M: TInt64Matrix3D; const ZeroIsEmpty: Boolean = False): TStrMatrix3D;
   function MBoolToStr(const M: TBoolMatrix3D): TStrMatrix3D;
   function MFloatToStr(const M: TDblMatrix3D): TStrMatrix3D;
-  function MDateToStr(const M: TDateMatrix3D): TStrMatrix3D;
+  function MDateToStr(const M: TDateMatrix3D; const BoundaryIsEmpty: Boolean = False): TStrMatrix3D;
   function MTimeToStr(const M: TTimeMatrix3D): TStrMatrix3D;
-  function MFormatDateTime(const FormatStr: String; const M: TDblMatrix3D; Options: TFormatDateTimeOptions = []): TStrMatrix3D;
+  function MFormatDateTime(const FormatStr: String; const M: TDblMatrix3D;
+                           const BoundaryIsEmpty: Boolean = False;
+                           Options: TFormatDateTimeOptions = []): TStrMatrix3D;
 
 
 implementation
@@ -1795,24 +1799,24 @@ begin
     VAppend(Result, Length(M[i]));
 end;
 
-function MIntToStr(const M: TIntMatrix): TStrMatrix;
+function MIntToStr(const M: TIntMatrix; const ZeroIsEmpty: Boolean = False): TStrMatrix;
 var
   i: Integer;
 begin
   Result:= nil;
   if Length(M)>0 then
     for i:=0 to High(M) do
-      MAppend(Result, VIntToStr(M[i]));
+      MAppend(Result, VIntToStr(M[i], ZeroIsEmpty));
 end;
 
-function MIntToStr(const M: TInt64Matrix): TStrMatrix;
+function MIntToStr(const M: TInt64Matrix; const ZeroIsEmpty: Boolean = False): TStrMatrix;
 var
   i: Integer;
 begin
   Result:= nil;
   if Length(M)>0 then
     for i:=0 to High(M) do
-      MAppend(Result, VIntToStr(M[i]));
+      MAppend(Result, VIntToStr(M[i], ZeroIsEmpty));
 end;
 
 function MBoolToStr(const M: TBoolMatrix): TStrMatrix;
@@ -1835,14 +1839,14 @@ begin
       MAppend(Result, VFloatToStr(M[i]));
 end;
 
-function MDateToStr(const M: TDateMatrix): TStrMatrix;
+function MDateToStr(const M: TDateMatrix; const BoundaryIsEmpty: Boolean = False): TStrMatrix;
 var
   i: Integer;
 begin
   Result:= nil;
   if Length(M)>0 then
     for i:=0 to High(M) do
-      MAppend(Result, VDateToStr(M[i]));
+      MAppend(Result, VDateToStr(M[i], BoundaryIsEmpty));
 end;
 
 function MTimeToStr(const M: TTimeMatrix): TStrMatrix;
@@ -1855,34 +1859,36 @@ begin
       MAppend(Result, VTimeToStr(M[i]));
 end;
 
-function MFormatDateTime(const FormatStr: String; const M: TDblMatrix; Options: TFormatDateTimeOptions = []): TStrMatrix;
+function MFormatDateTime(const FormatStr: String; const M: TDblMatrix;
+                         const BoundaryIsEmpty: Boolean = False;
+                         Options: TFormatDateTimeOptions = []): TStrMatrix;
 var
   i: Integer;
 begin
   Result:= nil;
   if Length(M)>0 then
     for i:=0 to High(M) do
-      MAppend(Result, VFormatDateTime(FormatStr, M[i], Options));
+      MAppend(Result, VFormatDateTime(FormatStr, M[i], BoundaryIsEmpty, Options));
 end;
 
-function MIntToStr(const M: TIntMatrix3D): TStrMatrix3D;
+function MIntToStr(const M: TIntMatrix3D; const ZeroIsEmpty: Boolean = False): TStrMatrix3D;
 var
   i: Integer;
 begin
   Result:= nil;
   if Length(M)>0 then
     for i:=0 to High(M) do
-      MAppend(Result, MIntToStr(M[i]));
+      MAppend(Result, MIntToStr(M[i], ZeroIsEmpty));
 end;
 
-function MIntToStr(const M: TInt64Matrix3D): TStrMatrix3D;
+function MIntToStr(const M: TInt64Matrix3D; const ZeroIsEmpty: Boolean = False): TStrMatrix3D;
 var
   i: Integer;
 begin
   Result:= nil;
   if Length(M)>0 then
     for i:=0 to High(M) do
-      MAppend(Result, MIntToStr(M[i]));
+      MAppend(Result, MIntToStr(M[i], ZeroIsEmpty));
 end;
 
 function MBoolToStr(const M: TBoolMatrix3D): TStrMatrix3D;
@@ -1905,14 +1911,14 @@ begin
       MAppend(Result, MFloatToStr(M[i]));
 end;
 
-function MDateToStr(const M: TDateMatrix3D): TStrMatrix3D;
+function MDateToStr(const M: TDateMatrix3D; const BoundaryIsEmpty: Boolean = False): TStrMatrix3D;
 var
   i: Integer;
 begin
   Result:= nil;
   if Length(M)>0 then
     for i:=0 to High(M) do
-      MAppend(Result, MDateToStr(M[i]));
+      MAppend(Result, MDateToStr(M[i], BoundaryIsEmpty));
 end;
 
 function MTimeToStr(const M: TTimeMatrix3D): TStrMatrix3D;
@@ -1925,14 +1931,16 @@ begin
       MAppend(Result, MTimeToStr(M[i]));
 end;
 
-function MFormatDateTime(const FormatStr: String; const M: TDblMatrix3D; Options: TFormatDateTimeOptions = []): TStrMatrix3D;
+function MFormatDateTime(const FormatStr: String; const M: TDblMatrix3D;
+                         const BoundaryIsEmpty: Boolean = False;
+                         Options: TFormatDateTimeOptions = []): TStrMatrix3D;
 var
   i: Integer;
 begin
   Result:= nil;
   if Length(M)>0 then
     for i:=0 to High(M) do
-      MAppend(Result, MFormatDateTime(FormatStr, M[i], Options));
+      MAppend(Result, MFormatDateTime(FormatStr, M[i], BoundaryIsEmpty, Options));
 end;
 
 
