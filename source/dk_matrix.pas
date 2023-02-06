@@ -227,6 +227,7 @@ type
                            const BoundaryIsEmpty: Boolean = False;
                            Options: TFormatDateTimeOptions = []): TStrMatrix3D;
 
+  function MTranspose(const M: TIntMatrix): TIntMatrix;
 
 implementation
 
@@ -1941,6 +1942,20 @@ begin
   if Length(M)>0 then
     for i:=0 to High(M) do
       MAppend(Result, MFormatDateTime(FormatStr, M[i], BoundaryIsEmpty, Options));
+end;
+
+function MTranspose(const M: TIntMatrix): TIntMatrix;
+var
+  i, j, Size1, Size2: Integer;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Size1:= Length(M);
+  Size2:= Length(M[0]);
+  MDim(Result, Size2, Size1);
+  for i:= 0 to Size1-1 do
+    for j:= 0 to Size2-1 do
+      Result[j,i]:= M[i,j];
 end;
 
 
