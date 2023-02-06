@@ -204,7 +204,7 @@ procedure TextToWidth(const AText: String; const AFont: TFont; const AWidth: Int
                   const AWrapToWordParts: Boolean = False;
                   const ARedLineWidth: Integer = 0);
 var
-  i,SpaceWidth, RowWidth, TmpWidth: Integer;
+  i, SpaceWidth, RowWidth, TmpWidth: Integer;
   Words, RowValues: TStrVector;
   OldRowValue, NewRowValue: String;
 
@@ -287,7 +287,8 @@ begin
          NewRowValue:= Words[i]
        else
          NewRowValue:= OldRowValue + SYMBOL_SPACE + Words[i]; //добавляем пробел и слово
-       if SWidth(NewRowValue, AFont)<RowWidth then
+       TmpWidth:= SWidth(NewRowValue, AFont);
+       if TmpWidth<RowWidth then
        begin
          //если уместилось - запоминаем и переходим к следующему слову
          OldRowValue:= NewRowValue;
