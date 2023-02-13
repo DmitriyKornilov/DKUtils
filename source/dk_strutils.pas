@@ -50,7 +50,6 @@ type
   function SMetric(const AFont: TFont): TLCLTextMetric;
   function SNameLong(const AFamily, AName, APatronymic: String): String;
   function SNameShort(const AFamily, AName, APatronymic: String): String;
-
   function SFileName(const AFileName, AExtention: String): String;
 
 implementation

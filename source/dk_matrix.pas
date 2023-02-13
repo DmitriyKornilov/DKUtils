@@ -226,8 +226,10 @@ type
   function MFormatDateTime(const FormatStr: String; const M: TDblMatrix3D;
                            const BoundaryIsEmpty: Boolean = False;
                            Options: TFormatDateTimeOptions = []): TStrMatrix3D;
-
+  {ТРАНСПОНИРОВАНИЕ}
   function MTranspose(const M: TIntMatrix): TIntMatrix;
+  function MTranspose(const M: TInt64Matrix): TInt64Matrix;
+  function MTranspose(const M: TDblMatrix): TDblMatrix;
 
 implementation
 
@@ -1945,6 +1947,34 @@ begin
 end;
 
 function MTranspose(const M: TIntMatrix): TIntMatrix;
+var
+  i, j, Size1, Size2: Integer;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Size1:= Length(M);
+  Size2:= Length(M[0]);
+  MDim(Result, Size2, Size1);
+  for i:= 0 to Size1-1 do
+    for j:= 0 to Size2-1 do
+      Result[j,i]:= M[i,j];
+end;
+
+function MTranspose(const M: TInt64Matrix): TInt64Matrix;
+var
+  i, j, Size1, Size2: Integer;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Size1:= Length(M);
+  Size2:= Length(M[0]);
+  MDim(Result, Size2, Size1);
+  for i:= 0 to Size1-1 do
+    for j:= 0 to Size2-1 do
+      Result[j,i]:= M[i,j];
+end;
+
+function MTranspose(const M: TDblMatrix): TDblMatrix;
 var
   i, j, Size1, Size2: Integer;
 begin
