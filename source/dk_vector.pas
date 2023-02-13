@@ -349,6 +349,12 @@ type
   function VNameLong(const AFs, ANs, APs: TStrVector): TStrVector;
   function VNameShort(const AFs, ANs, APs: TStrVector): TStrVector;
 
+
+  function VSameIndexValue(const FindValue: Integer; const SearchVector: TIntVector; const SourceVector: TIntVector; out Value: Integer): Boolean;
+  function VSameIndexValue(const FindValue: Integer; const SearchVector: TIntVector; const SourceVector: TInt64Vector; out Value: Int64): Boolean;
+  function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector; const SourceVector: TIntVector; out Value: Integer): Boolean;
+  function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector; const SourceVector: TInt64Vector; out Value: Int64): Boolean;
+
 implementation
 
 //проверка диапазона индексов
@@ -3465,6 +3471,54 @@ begin
   VDim(Result, Length(AFs));
   for i:= 0 to High(AFs) do
     Result[i]:= SNameShort(AFs[i], ANs[i], APs[i]);
+end;
+
+function VSameIndexValue(const FindValue: Integer; const SearchVector: TIntVector;
+                         const SourceVector: TIntVector; out Value: Integer): Boolean;
+var
+  Index: Integer;
+begin
+  Value:= VECTOR_INT_DEFAULT_VALUE;
+  Index:= VIndexOf(SearchVector, FindValue);
+  Result:= Index>=0;
+  if not Result then Exit;
+  Value:= SourceVector[Index];
+end;
+
+function VSameIndexValue(const FindValue: Integer; const SearchVector: TIntVector;
+                         const SourceVector: TInt64Vector; out Value: Int64): Boolean;
+var
+  Index: Integer;
+begin
+  Value:= VECTOR_INT64_DEFAULT_VALUE;
+  Index:= VIndexOf(SearchVector, FindValue);
+  Result:= Index>=0;
+  if not Result then Exit;
+  Value:= SourceVector[Index];
+end;
+
+function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector;
+                         const SourceVector: TIntVector; out Value: Integer): Boolean;
+var
+  Index: Integer;
+begin
+  Value:= VECTOR_INT_DEFAULT_VALUE;
+  Index:= VIndexOf(SearchVector, FindValue);
+  Result:= Index>=0;
+  if not Result then Exit;
+  Value:= SourceVector[Index];
+end;
+
+function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector;
+                         const SourceVector: TInt64Vector; out Value: Int64): Boolean;
+var
+  Index: Integer;
+begin
+  Value:= VECTOR_INT64_DEFAULT_VALUE;
+  Index:= VIndexOf(SearchVector, FindValue);
+  Result:= Index>=0;
+  if not Result then Exit;
+  Value:= SourceVector[Index];
 end;
 
 end.
