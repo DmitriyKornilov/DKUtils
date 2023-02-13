@@ -325,7 +325,7 @@ begin
     VAppend(ARows, OldRowValue); //последнее значение
   end;
 
-  AHeight:= SHeight('Х', AFont) * Length(ARows) + 2;
+  AHeight:= SHeight(AFont) * Length(ARows) + 2;
 
   {AHeight:= 0;
   ARows:= nil;
@@ -405,7 +405,7 @@ begin
     Result:= TotalHeight;
   end
   else begin
-    Result:= SHeight('Х', AFont);
+    Result:= SHeight(AFont);
   end;
 end;
 

@@ -22,6 +22,8 @@ type
   function SCut(const AStr: String; const ALeftCount, ARightCount: Integer): String;
   function SCutRight(const AStr: String; const ACount: Integer): String;
   function SCutLeft(const AStr: String; const ACount: Integer): String;
+  function SRight(const AStr: String; const ACount: Integer): String;
+  function SLeft(const AStr: String; const ACount: Integer): String;
   function SSame(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Boolean;
   function SEmpty(const AStr: String): Boolean;
   function SCompare(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Integer;
@@ -43,11 +45,13 @@ type
   function SFont(const AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): TFont;
   function SWidth(const AStr: String; const AFont: TFont): Integer;
   function SWidth(const AStr, AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): Integer;
-  function SHeight(const AStr: String; const AFont: TFont): Integer;
-  function SHeight(const AStr, AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): Integer;
-
+  function SHeight(const AFont: TFont): Integer;
+  function SHeight(const AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): Integer;
+  function SMetric(const AFont: TFont): TLCLTextMetric;
   function SNameLong(const AFamily, AName, APatronymic: String): String;
   function SNameShort(const AFamily, AName, APatronymic: String): String;
+
+  function SFileName(const AFileName, AExtention: String): String;
 
 implementation
 
@@ -114,6 +118,16 @@ end;
 function SCutLeft(const AStr: String; const ACount: Integer): String;
 begin
   Result:= SCopyCount(AStr, ACount+1, SLength(AStr));
+end;
+
+function SRight(const AStr: String; const ACount: Integer): String;
+begin
+  Result:= SCopyCount(AStr, SLength(AStr)-ACount+1, ACount);
+end;
+
+function SLeft(const AStr: String; const ACount: Integer): String;
+begin
+  Result:= SCopyCount(AStr, 1, ACount);
 end;
 
 function SSame(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Boolean;
@@ -278,28 +292,41 @@ begin
   end;
 end;
 
-function SHeight(const AStr: String; const AFont: TFont): Integer;
+function SHeight(const AFont: TFont): Integer;
 var
   BM: TBitmap;
 begin
   BM:= TBitmap.Create;
   try
     BM.Canvas.Font.Assign(AFont);
-    Result:= BM.Canvas.TextHeight(AStr) + 2;
+    Result:= BM.Canvas.TextHeight('X') + 2;
   finally
     FreeAndNil(BM);
   end;
 end;
 
-function SHeight(const AStr, AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): Integer;
+function SHeight(const AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): Integer;
 var
   F: TFont;
 begin
   F:= SFont(AFontName, AFontSize, AFontStyle);
   try
-    Result:= SHeight(AStr, F);
+    Result:= SHeight(F);
   finally
     FreeAndNil(F);
+  end;
+end;
+
+function SMetric(const AFont: TFont): TLCLTextMetric;
+var
+  BM: TBitmap;
+begin
+  BM:= TBitmap.Create;
+  try
+    BM.Canvas.Font.Assign(AFont);
+    BM.Canvas.GetTextMetrics(Result);
+  finally
+    FreeAndNil(BM);
   end;
 end;
 
@@ -319,6 +346,18 @@ begin
     Result:= Result + ' ' + SCopy(AName, 1, 1) + '.';
   if not SSame(APatronymic, EmptyStr) then
     Result:= Result + SCopy(APatronymic, 1, 1) + '.';
+end;
+
+function SFileName(const AFileName, AExtention: String): String;
+var
+  N: Integer;
+  S: String;
+begin
+  Result:= AFileName;
+  N:= Length(AExtention);
+  S:= SRight(AFileName, N);
+  if not SSame(S, AExtention) then
+    Result:= Result + '.' + AExtention;
 end;
 
 
