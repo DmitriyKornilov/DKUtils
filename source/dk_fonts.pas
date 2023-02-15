@@ -23,6 +23,8 @@ type
   function FontLikeToName(const AFontLike: TFontLike): String;
   procedure LoadFontFromControl(const AControl: TControl;
                               out AFontName: String; out AFontSize: Single);
+  function GetFontHeight(const AFontName: String; const AFontSize: Integer;
+                         const AFontStyle: TFontStyles = []): Integer;
 
 implementation
 
@@ -66,6 +68,22 @@ procedure LoadFontFromControl(const AControl: TControl;
 begin
   LoadFontParams(AControl.Font.Reference.Handle,
                  AControl.Font.PixelsPerInch, AFontName, AFontSize);
+end;
+
+function GetFontHeight(const AFontName: String; const AFontSize: Integer;
+  const AFontStyle: TFontStyles): Integer;
+var
+  Font: TFont;
+begin
+  Font:= TFont.Create;
+  try
+    Font.Name:= AFontName;
+    Font.Size:= AFontSize;
+    Font.Style:= AFontStyle;
+    Result:= Font.Height;
+  finally
+    FreeAndNil(Font);
+  end;
 end;
 
 end.

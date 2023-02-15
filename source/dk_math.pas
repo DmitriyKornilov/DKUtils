@@ -19,6 +19,7 @@ uses
   function IsValidPercent(const APercent: Double): Boolean;
 
   function Percent(const AValue, APercent: Double): Double;
+  function Part(const AValue, ATotal: Double): Double;
 
 
   function RandomInRange(const AMinValue, AMaxValue: Integer): Integer;
@@ -68,6 +69,13 @@ end;
 function Percent(const AValue, APercent: Double): Double;
 begin
   Result:= AValue*APercent/100;
+end;
+
+function Part(const AValue, ATotal: Double): Double;
+begin
+  Result:= 0;
+  if ATotal=0 then Exit;
+  Result:= AValue/ATotal;
 end;
 
 function RandomInRange(const AMinValue, AMaxValue: Integer): Integer;
