@@ -312,10 +312,10 @@ type
   function VCountAfter(const V: TDateVector; const ADate: TDate): Integer;
 
   {ОБРАЩЕНИЕ ПОРЯДКА ЭЛЕМЕНТОВ}
-  procedure VReverse(const V: TIntVector);
-  procedure VReverse(const V: TInt64Vector);
-  procedure VReverse(const V: TDblVector);
-  procedure VReverse(const V: TStrVector);
+  function VReverse(const V: TIntVector): TIntVector;
+  function VReverse(const V: TInt64Vector): TInt64Vector;
+  function VReverse(const V: TDblVector): TDblVector;
+  function VReverse(const V: TStrVector): TStrVector;
 
   {СОРТИРОВКА}
   procedure VSort(const V: TStrVector; out Indexes: TIntVector; const Desc: Boolean = False);
@@ -323,17 +323,17 @@ type
   procedure VSort(const V: TInt64Vector; out Indexes: TIntVector; const Desc: Boolean = False);
   procedure VSortDate(const V: TDateVector; out Indexes: TIntVector;  const Desc: Boolean = False);
   procedure VSortTime(const V: TTimeVector; out Indexes: TIntVector;  const Desc: Boolean = False);
-  procedure VSort(var V: TStrVector; const Desc: Boolean = False);
-  procedure VSort(var V: TIntVector; const Desc: Boolean = False);
-  procedure VSort(var V: TInt64Vector; const Desc: Boolean = False);
-  procedure VSortDate(var V: TDateVector; const Desc: Boolean = False);
-  procedure VSortTime(var V: TTimeVector; const Desc: Boolean = False);
+  function VSort(const V: TStrVector; const Desc: Boolean = False): TStrVector;
+  function VSort(const V: TIntVector; const Desc: Boolean = False): TIntVector;
+  function VSort(const V: TInt64Vector; const Desc: Boolean = False): TInt64Vector;
+  function VSortDate(const V: TDateVector; const Desc: Boolean = False): TDateVector;
+  function VSortTime(const V: TTimeVector; const Desc: Boolean = False): TTimeVector;
 
   {ПЕРЕСТАНОВКА ПО ВЕКТОРУ ИНДЕКСОВ}
-  procedure VReplace(var V: TStrVector; const Indexes: TIntVector);
-  procedure VReplace(var V: TIntVector; const Indexes: TIntVector);
-  procedure VReplace(var V: TInt64Vector; const Indexes: TIntVector);
-  procedure VReplace(var V: TDblVector; const Indexes: TIntVector);
+  function VReplace(const V: TStrVector; const Indexes: TIntVector): TStrVector;
+  function VReplace(const V: TIntVector; const Indexes: TIntVector): TIntVector;
+  function VReplace(const V: TInt64Vector; const Indexes: TIntVector): TInt64Vector;
+  function VReplace(const V: TDblVector; const Indexes: TIntVector): TDblVector;
 
   {ПРОВЕРКА И КОРРЕКТИРОВКА ИНДЕКСОВ}
   function CheckFromToIndexes(MaxIndex: Integer; var FromIndex, ToIndex: Integer): Boolean;
@@ -1094,85 +1094,85 @@ end;
 
 procedure VCopy(const Source: TIntVector; var Dest: TIntVector; const FromIndex: Integer = 0);
 var
-   i, SSize, DSize: Integer;
+  i, SSize, DSize: Integer;
 begin
-   if VIsNil(Source) then Exit;
-   //размер вектора-источника
-   SSize:= Length(Source);
-   //размер вектора-приемника
-   DSize:= Length(Dest);
-   //необходимый минимальный размер вектора-приемника
-   i:= SSize + FromIndex;
-   //если размер вектора-приемника недостаточный, увеличиваем его
-   if DSize < i then  VReDim(Dest, i);
-   //копируем Source в Dest с позиции FromIndex
-   for i := 0 to SSize - 1 do
-       Dest[FromIndex+i]:= Source[i];
+  if VIsNil(Source) then Exit;
+  //размер вектора-источника
+  SSize:= Length(Source);
+  //размер вектора-приемника
+  DSize:= Length(Dest);
+  //необходимый минимальный размер вектора-приемника
+  i:= SSize + FromIndex;
+  //если размер вектора-приемника недостаточный, увеличиваем его
+  if DSize < i then  VReDim(Dest, i);
+  //копируем Source в Dest с позиции FromIndex
+  for i := 0 to SSize - 1 do
+    Dest[FromIndex+i]:= Source[i];
 end;
 
 procedure VCopy(const Source: TInt64Vector; var Dest: TInt64Vector; const FromIndex: Integer = 0);
 var
-   i, SSize, DSize: Integer;
+  i, SSize, DSize: Integer;
 begin
-   if VIsNil(Source) then Exit;
-   SSize:= Length(Source);
-   DSize:= Length(Dest);
-   i:= SSize + FromIndex;
-   if DSize < i then  VReDim(Dest, i);
-   for i := 0 to SSize - 1 do
-     Dest[FromIndex+i]:= Source[i];
+  if VIsNil(Source) then Exit;
+  SSize:= Length(Source);
+  DSize:= Length(Dest);
+  i:= SSize + FromIndex;
+  if DSize < i then  VReDim(Dest, i);
+  for i := 0 to SSize - 1 do
+    Dest[FromIndex+i]:= Source[i];
 end;
 
 procedure VCopy(const Source: TStrVector; var Dest: TStrVector; const FromIndex: Integer = 0);
 var
-   i, SSize, DSize: Integer;
+  i, SSize, DSize: Integer;
 begin
-   if VIsNil(Source) then Exit;
-   SSize:= Length(Source);
-   DSize:= Length(Dest);
-   i:= SSize + FromIndex;
-   if DSize < i then  VReDim(Dest, i);
-   for i := 0 to SSize - 1 do
-     Dest[FromIndex+i]:= Source[i];
+  if VIsNil(Source) then Exit;
+  SSize:= Length(Source);
+  DSize:= Length(Dest);
+  i:= SSize + FromIndex;
+  if DSize < i then  VReDim(Dest, i);
+  for i := 0 to SSize - 1 do
+   Dest[FromIndex+i]:= Source[i];
 end;
 
 procedure VCopy(const Source: TDblVector; var Dest: TDblVector; const FromIndex: Integer = 0);
 var
-   i, SSize, DSize: Integer;
+  i, SSize, DSize: Integer;
 begin
-   if VIsNil(Source) then Exit;
-   SSize:= Length(Source);
-   DSize:= Length(Dest);
-   i:= SSize + FromIndex;
-   if DSize < i then  VReDim(Dest, i);
-   for i := 0 to SSize - 1 do
-     Dest[FromIndex+i]:= Source[i];
+  if VIsNil(Source) then Exit;
+  SSize:= Length(Source);
+  DSize:= Length(Dest);
+  i:= SSize + FromIndex;
+  if DSize < i then  VReDim(Dest, i);
+  for i := 0 to SSize - 1 do
+   Dest[FromIndex+i]:= Source[i];
 end;
 
 procedure VCopy(const Source: TBoolVector; var Dest: TBoolVector; const FromIndex: Integer = 0);
 var
-   i, SSize, DSize: Integer;
+  i, SSize, DSize: Integer;
 begin
-   if VIsNil(Source) then Exit;
-   SSize:= Length(Source);
-   DSize:= Length(Dest);
-   i:= SSize + FromIndex;
-   if DSize < i then  VReDim(Dest, i);
-   for i := 0 to SSize - 1 do
-     Dest[FromIndex+i]:= Source[i];
+  if VIsNil(Source) then Exit;
+  SSize:= Length(Source);
+  DSize:= Length(Dest);
+  i:= SSize + FromIndex;
+  if DSize < i then  VReDim(Dest, i);
+  for i := 0 to SSize - 1 do
+   Dest[FromIndex+i]:= Source[i];
 end;
 
 procedure VCopy(const Source: TColorVector; var Dest: TColorVector; const FromIndex: Integer = 0);
 var
-   i, SSize, DSize: Integer;
+  i, SSize, DSize: Integer;
 begin
-   if VIsNil(Source) then Exit;
-   SSize:= Length(Source);
-   DSize:= Length(Dest);
-   i:= SSize + FromIndex;
-   if DSize < i then  VReDim(Dest, i);
-   for i := 0 to SSize - 1 do
-     Dest[FromIndex+i]:= Source[i];
+  if VIsNil(Source) then Exit;
+  SSize:= Length(Source);
+  DSize:= Length(Dest);
+  i:= SSize + FromIndex;
+  if DSize < i then  VReDim(Dest, i);
+  for i := 0 to SSize - 1 do
+   Dest[FromIndex+i]:= Source[i];
 end;
 
 //VCut
@@ -3325,132 +3325,125 @@ begin
   end;
 end;
 
-procedure VSort(var V: TStrVector; const Desc: Boolean = False);
+function VSort(const V: TStrVector; const Desc: Boolean): TStrVector;
 var
   Indexes: TIntVector;
 begin
   VSort(V, Indexes, Desc);
-  VReplace(V, Indexes);
+  Result:= VReplace(V, Indexes);
 end;
 
-procedure VSort(var V: TIntVector; const Desc: Boolean = False);
+function VSort(const V: TIntVector; const Desc: Boolean): TIntVector;
 var
   Indexes: TIntVector;
 begin
   VSort(V, Indexes, Desc);
-  VReplace(V, Indexes);
+  Result:= VReplace(V, Indexes);
 end;
 
-procedure VSort(var V: TInt64Vector; const Desc: Boolean = False);
+function VSort(const V: TInt64Vector; const Desc: Boolean): TInt64Vector;
 var
   Indexes: TIntVector;
 begin
   VSort(V, Indexes, Desc);
-  VReplace(V, Indexes);
+  Result:= VReplace(V, Indexes);
 end;
 
-procedure VSortDate(var V: TDateVector; const Desc: Boolean = False);
+function VSortDate(const V: TDateVector; const Desc: Boolean): TDateVector;
 var
   Indexes: TIntVector;
 begin
   VSortDate(V, Indexes, Desc);
-  VReplace(V, Indexes);
+  Result:= VReplace(V, Indexes);
 end;
 
-procedure VSortTime(var V: TTimeVector; const Desc: Boolean);
+function VSortTime(const V: TTimeVector; const Desc: Boolean): TTimeVector;
 var
   Indexes: TIntVector;
 begin
   VSortTime(V, Indexes, Desc);
-  VReplace(V, Indexes);
+  Result:= VReplace(V, Indexes);
 end;
 
 //VReplace
 
-procedure VReplace(var V: TStrVector; const Indexes: TIntVector);
+function VReplace(const V: TStrVector; const Indexes: TIntVector): TStrVector;
 var
-  TmpV: TStrVector;
   i: Integer;
 begin
-  VCopy(V, TmpV{%H-});
+  VDim(Result, Length(V));
   for i:= 0 to High(Indexes) do
-    V[i]:= TmpV[Indexes[i]];
+    Result[i]:= V[Indexes[i]];
 end;
 
-procedure VReplace(var V: TIntVector; const Indexes: TIntVector);
+function VReplace(const V: TIntVector; const Indexes: TIntVector): TIntVector;
 var
-  TmpV: TIntVector;
   i: Integer;
 begin
-  VCopy(V, TmpV{%H-});
+  VDim(Result, Length(V));
   for i:= 0 to High(Indexes) do
-    V[i]:= TmpV[Indexes[i]];
+    Result[i]:= V[Indexes[i]];
 end;
 
-procedure VReplace(var V: TInt64Vector; const Indexes: TIntVector);
+function VReplace(const V: TInt64Vector; const Indexes: TIntVector
+  ): TInt64Vector;
 var
-  TmpV: TInt64Vector;
   i: Integer;
 begin
-  VCopy(V, TmpV{%H-});
+  VDim(Result, Length(V));
   for i:= 0 to High(Indexes) do
-    V[i]:= TmpV[Indexes[i]];
+    Result[i]:= V[Indexes[i]];
 end;
 
-procedure VReplace(var V: TDblVector; const Indexes: TIntVector);
+function VReplace(const V: TDblVector; const Indexes: TIntVector): TDblVector;
 var
-  TmpV: TDateVector;
   i: Integer;
 begin
-  VCopy(V, TmpV{%H-});
+  VDim(Result, Length(V));
   for i:= 0 to High(Indexes) do
-    V[i]:= TmpV[Indexes[i]];
+    Result[i]:= V[Indexes[i]];
 end;
 
 //VReverse
 
-procedure VReverse(const V: TIntVector);
+function VReverse(const V: TIntVector): TIntVector;
 var
-  TmpV: TIntVector;
   i, n: Integer;
 begin
-  TmpV:= VCut(V);
+  VDim(Result, Length(V));
   n:= High(V);
   for i:= n downto 0 do
-    V[n-i]:= TmpV[i];
+    Result[n-i]:= V[i];
 end;
 
-procedure VReverse(const V: TInt64Vector);
+function VReverse(const V: TInt64Vector): TInt64Vector;
 var
-  TmpV: TInt64Vector;
   i, n: Integer;
 begin
-  TmpV:= VCut(V);
+  VDim(Result, Length(V));
   n:= High(V);
   for i:= n downto 0 do
-    V[n-i]:= TmpV[i];
+    Result[n-i]:= V[i];
 end;
 
-procedure VReverse(const V: TDblVector);
+function VReverse(const V: TDblVector): TDblVector;
 var
-  TmpV: TDateVector;
   i, n: Integer;
 begin
-  TmpV:= VCut(V);
+  VDim(Result, Length(V));
   n:= High(V);
   for i:= n downto 0 do
-    V[n-i]:= TmpV[i];
+    Result[n-i]:= V[i];
 end;
 
-procedure VReverse(const V: TStrVector);
+function VReverse(const V: TStrVector): TStrVector;
 var
-  TmpV: TStrVector;
   i, n: Integer;
 begin
-  TmpV:= VCut(V);
+  VDim(Result, Length(V));
   n:= High(V);
   for i:= n downto 0 do
-    V[n-i]:= TmpV[i];
+    Result[n-i]:= V[i];
 end;
 
 function VNameLong(const AFs, ANs, APs: TStrVector): TStrVector;
