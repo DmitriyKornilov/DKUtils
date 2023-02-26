@@ -8,6 +8,8 @@ uses
   Classes, SysUtils, DateUtils, Graphics, DK_Const, DK_DateUtils, DK_StrUtils;
 
 type
+  TOrderType = (otNone, otAscending, otDescending);
+
   TIntVector   = array of Integer;
   TInt64Vector = array of Int64;
   TStrVector   = array of String;
@@ -334,6 +336,7 @@ type
   function VReplace(const V: TIntVector; const Indexes: TIntVector): TIntVector;
   function VReplace(const V: TInt64Vector; const Indexes: TIntVector): TInt64Vector;
   function VReplace(const V: TDblVector; const Indexes: TIntVector): TDblVector;
+  function VReplace(const V: TBoolVector; const Indexes: TIntVector): TBoolVector;
 
   {ПРОВЕРКА И КОРРЕКТИРОВКА ИНДЕКСОВ}
   function CheckFromToIndexes(MaxIndex: Integer; var FromIndex, ToIndex: Integer): Boolean;
@@ -3396,6 +3399,15 @@ begin
 end;
 
 function VReplace(const V: TDblVector; const Indexes: TIntVector): TDblVector;
+var
+  i: Integer;
+begin
+  VDim(Result, Length(V));
+  for i:= 0 to High(Indexes) do
+    Result[i]:= V[Indexes[i]];
+end;
+
+function VReplace(const V: TBoolVector; const Indexes: TIntVector): TBoolVector;
 var
   i: Integer;
 begin

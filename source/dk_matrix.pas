@@ -231,6 +231,78 @@ type
   function MTranspose(const M: TInt64Matrix): TInt64Matrix;
   function MTranspose(const M: TDblMatrix): TDblMatrix;
 
+  {ВЕКТОР ПО ВТОРОМУ ИЗМЕРЕНИЮ}
+  function MIndex2(const M: TIntMatrix;   const Index2: Integer): TIntVector;
+  function MIndex2(const M: TInt64Matrix; const Index2: Integer): TInt64Vector;
+  function MIndex2(const M: TStrMatrix;   const Index2: Integer): TStrVector;
+  function MIndex2(const M: TDblMatrix;   const Index2: Integer): TDblVector;
+  function MIndex2(const M: TBoolMatrix;  const Index2: Integer): TBoolVector;
+
+  {МАТРИЦА ИЗ ВЕКТОРОВ ПО ИНДЕКСУ}
+  function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix;
+  function MIndex1(const M: TInt64Matrix3D; const Index1: Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TInt64Matrix;
+  function MIndex1(const M: TStrMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TStrMatrix;
+  function MIndex1(const M: TDblMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TDblMatrix;
+  function MIndex1(const M: TBoolMatrix3D;  const Index1: Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TBoolMatrix;
+
+  function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;
+                   const Used: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix;
+  function MIndex1(const M: TInt64Matrix3D; const Index1: Integer;
+                   const Used: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TInt64Matrix;
+  function MIndex1(const M: TStrMatrix3D;   const Index1: Integer;
+                   const Used: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TStrMatrix;
+  function MIndex1(const M: TDblMatrix3D;   const Index1: Integer;
+                   const Used: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TDblMatrix;
+  function MIndex1(const M: TBoolMatrix3D;  const Index1: Integer;
+                   const Used: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TBoolMatrix;
+
+  function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1;  ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TIntMatrix;
+  function MIndex1(const M: TInt64Matrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1;  ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TInt64Matrix;
+  function MIndex1(const M: TStrMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1;  ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TStrMatrix;
+  function MIndex1(const M: TDblMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1;  ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TDblMatrix;
+  function MIndex1(const M: TBoolMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1;  ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TBoolMatrix;
+
+  function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;
+                   const Used, Used1: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TIntMatrix;
+  function MIndex1(const M: TInt64Matrix3D;   const Index1: Integer;
+                   const Used, Used1: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TInt64Matrix;
+  function MIndex1(const M: TStrMatrix3D;   const Index1: Integer;
+                   const Used, Used1: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TStrMatrix;
+  function MIndex1(const M: TDblMatrix3D;   const Index1: Integer;
+                   const Used, Used1: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TDblMatrix;
+  function MIndex1(const M: TBoolMatrix3D;   const Index1: Integer;
+                   const Used, Used1: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TBoolMatrix;
+
 implementation
 
 
@@ -1986,6 +2058,476 @@ begin
   for i:= 0 to Size1-1 do
     for j:= 0 to Size2-1 do
       Result[j,i]:= M[i,j];
+end;
+
+function MIndex2(const M: TIntMatrix; const Index2: Integer): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  VDim(Result, Length(M));
+  for i:=0 to High(M) do
+    if Index2>=High(M[i]) then
+      Result[i]:= M[i, Index2];
+end;
+
+function MIndex2(const M: TInt64Matrix; const Index2: Integer): TInt64Vector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  VDim(Result, Length(M));
+  for i:=0 to High(M) do
+    if Index2>=High(M[i]) then
+      Result[i]:= M[i, Index2];
+end;
+
+function MIndex2(const M: TStrMatrix; const Index2: Integer): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  VDim(Result, Length(M));
+  for i:=0 to High(M) do
+    if Index2>=High(M[i]) then
+      Result[i]:= M[i, Index2];
+end;
+
+function MIndex2(const M: TDblMatrix; const Index2: Integer): TDblVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  VDim(Result, Length(M));
+  for i:=0 to High(M) do
+    if Index2>=High(M[i]) then
+      Result[i]:= M[i, Index2];
+end;
+
+function MIndex2(const M: TBoolMatrix; const Index2: Integer): TBoolVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  VDim(Result, Length(M));
+  for i:=0 to High(M) do
+    if Index2>=High(M[i]) then
+      Result[i]:= M[i, Index2];
+end;
+
+function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not CheckIndex(High(M[i]), Index1) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, M[i, Index1]);
+  end;
+end;
+
+function MIndex1(const M: TInt64Matrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TInt64Matrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not CheckIndex(High(M[i]), Index1) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, M[i, Index1]);
+  end;
+end;
+
+function MIndex1(const M: TStrMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not CheckIndex(High(M[i]), Index1) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, M[i, Index1]);
+  end;
+end;
+
+function MIndex1(const M: TDblMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TDblMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not CheckIndex(High(M[i]), Index1) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, M[i, Index1]);
+  end;
+end;
+
+function MIndex1(const M: TBoolMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TBoolMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not CheckIndex(High(M[i]), Index1) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, M[i, Index1]);
+  end;
+end;
+
+function MIndex1(const M: TIntMatrix3D;   const Index1: Integer; const Used: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VCountIf(Used, True, FromIndex, ToIndex)=0 then Exit;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not Used[i] then continue;
+    if not CheckIndex(High(M[i]), Index1) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, M[i, Index1]);
+  end;
+end;
+
+function MIndex1(const M: TInt64Matrix3D;   const Index1: Integer; const Used: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TInt64Matrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VCountIf(Used, True, FromIndex, ToIndex)=0 then Exit;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not Used[i] then continue;
+    if not CheckIndex(High(M[i]), Index1) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, M[i, Index1]);
+  end;
+end;
+
+function MIndex1(const M: TStrMatrix3D;   const Index1: Integer; const Used: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VCountIf(Used, True, FromIndex, ToIndex)=0 then Exit;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not Used[i] then continue;
+    if not CheckIndex(High(M[i]), Index1) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, M[i, Index1]);
+  end;
+end;
+
+function MIndex1(const M: TDblMatrix3D;   const Index1: Integer; const Used: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TDblMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VCountIf(Used, True, FromIndex, ToIndex)=0 then Exit;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not Used[i] then continue;
+    if not CheckIndex(High(M[i]), Index1) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, M[i, Index1]);
+  end;
+end;
+
+function MIndex1(const M: TBoolMatrix3D;   const Index1: Integer; const Used: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1): TBoolMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VCountIf(Used, True, FromIndex, ToIndex)=0 then Exit;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not Used[i] then continue;
+    if not CheckIndex(High(M[i]), Index1) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, M[i, Index1]);
+  end;
+end;
+
+function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1;  ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TIntMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if (not CheckIndex(High(M[i]), Index1)) or
+       (not CheckFromToIndexes(High(M[i, Index1]), FromIndex1, ToIndex1)) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, VCut(M[i, Index1], FromIndex1, ToIndex1));
+  end;
+end;
+
+function MIndex1(const M: TInt64Matrix3D;   const Index1: Integer;
+                   FromIndex: Integer=-1;  ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TInt64Matrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if (not CheckIndex(High(M[i]), Index1)) or
+       (not CheckFromToIndexes(High(M[i, Index1]), FromIndex1, ToIndex1)) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, VCut(M[i, Index1], FromIndex1, ToIndex1));
+  end;
+end;
+
+function MIndex1(const M: TStrMatrix3D;   const Index1: Integer;
+                 FromIndex: Integer=-1;  ToIndex: Integer=-1;
+                 FromIndex1: Integer=-1; ToIndex1: Integer=-1): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if (not CheckIndex(High(M[i]), Index1)) or
+       (not CheckFromToIndexes(High(M[i, Index1]), FromIndex1, ToIndex1)) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, VCut(M[i, Index1], FromIndex1, ToIndex1));
+  end;
+end;
+
+function MIndex1(const M: TDblMatrix3D;   const Index1: Integer;
+                 FromIndex: Integer=-1;  ToIndex: Integer=-1;
+                 FromIndex1: Integer=-1; ToIndex1: Integer=-1): TDblMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if (not CheckIndex(High(M[i]), Index1)) or
+       (not CheckFromToIndexes(High(M[i, Index1]), FromIndex1, ToIndex1)) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, VCut(M[i, Index1], FromIndex1, ToIndex1));
+  end;
+end;
+
+function MIndex1(const M: TBoolMatrix3D;   const Index1: Integer;
+                 FromIndex: Integer=-1;  ToIndex: Integer=-1;
+                 FromIndex1: Integer=-1; ToIndex1: Integer=-1): TBoolMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if (not CheckIndex(High(M[i]), Index1)) or
+       (not CheckFromToIndexes(High(M[i, Index1]), FromIndex1, ToIndex1)) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, VCut(M[i, Index1], FromIndex1, ToIndex1));
+  end;
+end;
+
+function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;
+                   const Used, Used1: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TIntMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VCountIf(Used, True, FromIndex, ToIndex)=0 then Exit;
+  if VCountIf(Used1, True, FromIndex1, ToIndex1)=0 then Exit;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not Used[i] then continue;
+    if (not CheckIndex(High(M[i]), Index1)) or
+       (not CheckFromToIndexes(High(M[i, Index1]), FromIndex1, ToIndex1)) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, VCut(M[i, Index1], Used1, FromIndex1, ToIndex1));
+  end;
+end;
+
+function MIndex1(const M: TInt64Matrix3D;   const Index1: Integer;
+                   const Used, Used1: TBoolVector;
+                   FromIndex: Integer=-1; ToIndex: Integer=-1;
+                   FromIndex1: Integer=-1; ToIndex1: Integer=-1): TInt64Matrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VCountIf(Used, True, FromIndex, ToIndex)=0 then Exit;
+  if VCountIf(Used1, True, FromIndex1, ToIndex1)=0 then Exit;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not Used[i] then continue;
+    if (not CheckIndex(High(M[i]), Index1)) or
+       (not CheckFromToIndexes(High(M[i, Index1]), FromIndex1, ToIndex1)) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, VCut(M[i, Index1], Used1, FromIndex1, ToIndex1));
+  end;
+end;
+
+function MIndex1(const M: TStrMatrix3D;   const Index1: Integer;
+                 const Used, Used1: TBoolVector;
+                 FromIndex: Integer=-1; ToIndex: Integer=-1;
+                 FromIndex1: Integer=-1; ToIndex1: Integer=-1): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VCountIf(Used, True, FromIndex, ToIndex)=0 then Exit;
+  if VCountIf(Used1, True, FromIndex1, ToIndex1)=0 then Exit;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not Used[i] then continue;
+    if (not CheckIndex(High(M[i]), Index1)) or
+       (not CheckFromToIndexes(High(M[i, Index1]), FromIndex1, ToIndex1)) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, VCut(M[i, Index1], Used1, FromIndex1, ToIndex1));
+  end;
+end;
+
+function MIndex1(const M: TDblMatrix3D;   const Index1: Integer;
+                 const Used, Used1: TBoolVector;
+                 FromIndex: Integer=-1; ToIndex: Integer=-1;
+                 FromIndex1: Integer=-1; ToIndex1: Integer=-1): TDblMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VCountIf(Used, True, FromIndex, ToIndex)=0 then Exit;
+  if VCountIf(Used1, True, FromIndex1, ToIndex1)=0 then Exit;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not Used[i] then continue;
+    if (not CheckIndex(High(M[i]), Index1)) or
+       (not CheckFromToIndexes(High(M[i, Index1]), FromIndex1, ToIndex1)) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, VCut(M[i, Index1], Used1, FromIndex1, ToIndex1));
+  end;
+end;
+
+function MIndex1(const M: TBoolMatrix3D;   const Index1: Integer;
+                 const Used, Used1: TBoolVector;
+                 FromIndex: Integer=-1; ToIndex: Integer=-1;
+                 FromIndex1: Integer=-1; ToIndex1: Integer=-1): TBoolMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VCountIf(Used, True, FromIndex, ToIndex)=0 then Exit;
+  if VCountIf(Used1, True, FromIndex1, ToIndex1)=0 then Exit;
+  if not CheckFromToIndexes(High(M), FromIndex, ToIndex) then Exit;
+  for i:= FromIndex to ToIndex do
+  begin
+    if not Used[i] then continue;
+    if (not CheckIndex(High(M[i]), Index1)) or
+       (not CheckFromToIndexes(High(M[i, Index1]), FromIndex1, ToIndex1)) then
+    begin
+      Result:= nil;
+      Exit;
+    end;
+    MAppend(Result, VCut(M[i, Index1], Used1, FromIndex1, ToIndex1));
+  end;
 end;
 
 
