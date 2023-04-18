@@ -4,8 +4,10 @@ unit DK_Const;
 
 interface
 
-{uses
-  Classes, SysUtils;  }
+uses
+  Graphics, GraphUtil;
+var
+  DefaultSelectionBGColor: TColor;
 
 const
   SYMBOL_BREAK        = LineEnding;
@@ -60,6 +62,19 @@ const
   VECTOR_COLOR_DEFAULT_VALUE = 0;
 
 implementation
+
+function SetDefaultSelectionBGColor: TColor;
+var
+  H, L, S: Byte;
+begin
+  ColorToHLS(clHighlight, H, L, S);
+  L:= L + 110;
+  Result:= HLSToColor(H, L, S);
+end;
+
+initialization
+
+DefaultSelectionBGColor:= SetDefaultSelectionBGColor;
 
 end.
 
