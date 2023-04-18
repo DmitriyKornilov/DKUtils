@@ -74,7 +74,11 @@
       </Item>
       <Item>
         <Filename Value="source\dk_math.pas"/>
-        <UnitName Value="dk_math"/>
+        <UnitName Value="DK_Math"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_ppi.pas"/>
+        <UnitName Value="dk_ppi"/>
       </Item>
     </Files>
     <RequiredPkgs>
