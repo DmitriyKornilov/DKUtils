@@ -15,7 +15,7 @@ const
   function SizeFromDefaultToDesignTime(const AHeight, ADesignTimePPI: Integer): Integer;
   function SizeFromDesignTimeToDefault(const AHeight, ADesignTimePPI: Integer): Integer;
 
-  //Height -----------------------------------------------------------------------
+  //Height --------------------------------------------------------------------
 
   function HeightFromScreenToDefault(const AHeight: Integer): Integer;
   function HeightFromDefaultToScreen(const AHeight: Integer): Integer;
@@ -23,7 +23,7 @@ const
   function HeightFromScreenToDesignTime(const AHeight, ADesignTimePPI: Integer): Integer;
   function HeightFromDesignTimeToScreen(const AHeight, ADesignTimePPI: Integer): Integer;
 
-  //Width ------------------------------------------------------------------------
+  //Width ---------------------------------------------------------------------
 
   function WidthFromScreenToDefault(const AWidth: Integer): Integer;
   function WidthFromDefaultToScreen(const AWidth: Integer): Integer;
@@ -31,6 +31,13 @@ const
   function WidthFromScreenToDesignTime(const AWidth, ADesignTimePPI: Integer): Integer;
   function WidthFromDesignTimeToScreen(const AWidth, ADesignTimePPI: Integer): Integer;
 
+  //Factors -------------------------------------------------------------------
+
+  function XFactorScreenDivDefault: Double;
+  function YFactorScreenDivDefault: Double;
+
+  function XFactorDefaultDivScreen: Double;
+  function YFactorDefaultDivScreen: Double;
 
 implementation
 
@@ -91,6 +98,28 @@ end;
 function WidthFromDesignTimeToScreen(const AWidth, ADesignTimePPI: Integer): Integer;
 begin
   Result:= SizeFromPPIToPPI(AWidth, ADesignTimePPI, ScreenInfo.PixelsPerInchX);
+end;
+
+//Factors -------------------------------------------------------------------
+
+function XFactorScreenDivDefault: Double;
+begin
+  Result:= ScreenInfo.PixelsPerInchX/DEFAULT_PPI;
+end;
+
+function YFactorScreenDivDefault: Double;
+begin
+  Result:= ScreenInfo.PixelsPerInchY/DEFAULT_PPI;
+end;
+
+function XFactorDefaultDivScreen: Double;
+begin
+  Result:= DEFAULT_PPI/ScreenInfo.PixelsPerInchX;
+end;
+
+function YFactorDefaultDivScreen: Double;
+begin
+  Result:= DEFAULT_PPI/ScreenInfo.PixelsPerInchY;
 end;
 
 end.
