@@ -248,6 +248,10 @@ type
   function VFormatDateTime(const FormatStr: String; const V: TDblVector;
                            const BoundaryIsEmpty: Boolean = False;
                            Options: TFormatDateTimeOptions = []): TStrVector;
+  function VFormat(const FormatStr: String; const V: TIntVector): TStrVector;
+  function VFormat(const FormatStr: String; const V: TInt64Vector): TStrVector;
+  function VFormat(const FormatStr: String; const V: TDblVector): TStrVector;
+  function VFormat(const FormatStr: String; const V: TStrVector): TStrVector;
   function VTrim(const V: TStrVector): TStrVector;
 
   {СТРОКОВЫЙ ВЕКТОР И СПИСОК}
@@ -3013,13 +3017,59 @@ begin
       Result[i]:= FormatDateTime(FormatStr, V[i], Options);
 end;
 
+function VFormat(const FormatStr: String; const V: TIntVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= Format(FormatStr, [V[i]]);
+end;
+
+function VFormat(const FormatStr: String; const V: TInt64Vector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= Format(FormatStr, [V[i]]);
+end;
+
+function VFormat(const FormatStr: String; const V: TDblVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= Format(FormatStr, [V[i]]);
+end;
+
+function VFormat(const FormatStr: String; const V: TStrVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= Format(FormatStr, [V[i]]);
+end;
+
 function VTrim(const V: TStrVector): TStrVector;
 var
   i: Integer;
 begin
   Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
   for i:= 0 to High(V) do
-    VAppend(Result, STrim(V[i]));
+    Result[i]:= STrim(V[i]);
 end;
 
 {СТРОКОВЫЙ ВЕКТОР И СПИСОК}
