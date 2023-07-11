@@ -80,6 +80,10 @@
         <Filename Value="source\dk_ppi.pas"/>
         <UnitName Value="dk_ppi"/>
       </Item>
+      <Item>
+        <Filename Value="source\dk_heaptrace.pas"/>
+        <UnitName Value="DK_HeapTrace"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
