@@ -1,0 +1,636 @@
+unit DK_PDF;
+
+{$mode ObjFPC}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, fpPDF, fpTTF, DK_Vector, DK_TextUtils, DK_StrUtils;
+
+type
+  TPDFFloat = type fpPDF.TPDFFloat;
+  TStringAlignment = (saLeft, saCenter, saRight, saFit);
+
+  { TPDFWriter }
+
+  TPDFWriter = class (TObject)
+  private
+    FDocument: TPDFDocument;
+    FSection: TPDFSection;
+    FPage: TPDFPage;
+
+    FShowFrame: Boolean;
+
+    FMarginLeft: TPDFFloat;
+    FMarginRight: TPDFFloat;
+    FMarginTop: TPDFFloat;
+    FMarginBottom: TPDFFloat;
+
+    //useful page coordinates
+    FX1, FY1: TPDFFloat; // left top point
+    FX2, FY2: TPDFFloat; // right bottom point
+
+    FFontIndexes: TIntVector;
+    FFontNames: TStrVector;
+    FFontFamilies: TStrVector;
+    FFontBolds: TBoolVector;
+    FFontItalics: TBoolVector;
+
+    FCurrentFontIndex: Integer;
+    FCurrentFontSize: Integer;
+    FCurrentFontHeight: TPDFFloat;
+    FCurrentFontDesc: TPDFFloat;
+    FCurrentFontColor: TARGBColor;
+
+    function GetFontIndex(const AFontName: String): Integer;
+    procedure GetWords(const AText: String;
+                        out AWords: TStrVector;
+                        out AWidths: TDblVector);
+
+
+    function LoadImage(const AFileName: String;
+                       out AImageWidth, AImageHeight: TPDFFloat): Integer;
+  public
+    constructor Create(const AFontDir: String);
+    destructor  Destroy; override;
+
+    procedure AddFont(const AFileName, AFontFamily, AFontName: String;
+                      const ABold, AItalic: Boolean);
+    procedure SetFont(const AFontName: String; const AFontSize: Integer);
+    procedure SetFont(const AFontIndex, AFontSize: Integer);
+    procedure SetFontColor(const AColor: TARGBColor);
+
+    procedure AddPage(const ALeftMargin  : TPDFFloat = 20.0;
+                      const ARightMargin : TPDFFloat = 10.0;
+                      const ATopMargin   : TPDFFloat = 10.0;
+                      const ABottomMargin: TPDFFloat = 10.0); virtual;
+
+
+    procedure WriteImageTopLeft(const AFileName: String;
+                                const AX, AY: TPDFFloat; // top left point
+                                out AImageWidth, AImageHeight: TPDFFloat);
+    procedure WriteImageBottomLeft(const AFileName: String;
+                                const AX, AY: TPDFFloat; // bottom left point
+                                out AImageWidth, AImageHeight: TPDFFloat);
+    procedure WriteImageTopLeftFitWidth(const AFileName: String;
+                                const AX, AY: TPDFFloat; // top left point
+                                const ANeedWidth: TPDFFloat;
+                                out AImageHeight: TPDFFloat);
+    procedure WriteImageBottomLeftFitWidth(const AFileName: String;
+                                const AX, AY: TPDFFloat; // bottom left point
+                                const ANeedWidth: TPDFFloat;
+                                out AImageHeight: TPDFFloat);
+
+    procedure AlignString(const ALeftX, ARightX, AY: TPDFFloat;
+                          const AText: String;
+                          const AAlignment: TStringAlignment);
+    procedure FitString(const ALeftX, ARightX, AY: TPDFFloat;
+                          const AText: String);
+    procedure WriteString(const ALeftX, ARightX, AY: TPDFFloat;
+                          const AText: String;
+                          const AAlignment: TStringAlignment);
+
+
+    procedure WriteURL(const ALeftX, ARightX, AY: TPDFFloat;
+                        const AText, AURL: String;
+                        const AAlignment: TStringAlignment);
+
+
+    procedure SaveToFile(const AFileName: String);
+
+    property Document: TPDFDocument read FDocument;
+    property Page: TPDFPage read FPage;
+
+    property ShowFrame: Boolean read FShowFrame write FShowFrame;
+
+    //left top page point in margins
+    property PageX1: TPDFFloat read FX1;
+    property PageY1: TPDFFloat read FY1;
+    //right bottom page point in margins
+    property PageX2: TPDFFloat read FX2;
+    property PageY2: TPDFFloat read FY2;
+
+    property MarginLeft: TPDFFloat read FMarginLeft;
+    property MarginRight: TPDFFloat read FMarginRight;
+    property MarginTop: TPDFFloat read FMarginTop;
+    property MarginBottom: TPDFFloat read FMarginBottom;
+
+    property FontColor: TARGBColor read FCurrentFontColor;
+    property FontIndex: Integer read FCurrentFontIndex;
+    property FontSize: Integer read FCurrentFontSize;
+    property FontHeight: TPDFFloat read FCurrentFontHeight;
+    property FontDesc: TPDFFloat read FCurrentFontDesc;
+    function FontWidth(const AText: String): TPDFFloat;
+
+
+
+
+
+  end;
+
+  { TPDFLetter }
+
+  TPDFLetter = class (TPDFWriter)
+  private
+    FCurrentY: TPDFFloat;
+  protected
+    procedure NextString(const AInterval: TPDFFloat=1.0);
+    function NextPage(const ARowHeight, ABusyBottomSace, ANewPageTopSpace: TPDFFloat): Boolean;
+  public
+    property CurrentY: TPDFFloat read  FCurrentY;
+    procedure WriteSpace(const ADeltaY: TPDFFloat);  // inc CurrentY
+
+    procedure AddPage(const ALeftMargin  : TPDFFloat = 20.0;
+                      const ARightMargin : TPDFFloat = 10.0;
+                      const ATopMargin   : TPDFFloat = 10.0;
+                      const ABottomMargin: TPDFFloat = 10.0); override;
+    // fit from ACoordX1 to ACoordX2 with keep image proportions
+    procedure WriteImageFitWidth(const AFileName: String;
+                                 const ACoordX1, ACoordX2: TPDFFloat);
+
+    procedure WriteHyperlink(const ABusyBottomSace: TPDFFloat;
+                        const AText, AURL: String;
+                        const AAlignment: TStringAlignment;
+                        const AInterval: TPDFFloat = 1.0;
+                        const AIndentMM: TPDFFloat = 0.0);
+    procedure WriteTextRow(const ABusyBottomSace: TPDFFloat;
+                        const AText: String;
+                        const AAlignment: TStringAlignment;
+                        const AInterval: TPDFFloat = 1.0;
+                        const AIndentMM: TPDFFloat = 0.0);
+    procedure WriteTextRows(const ABusyBottomSace: TPDFFloat;
+                        const AText: TStrVector;
+                        const AAlignment: TStringAlignment;
+                        const AInterval: TPDFFloat = 1.0;
+                        const AIndentMM: TPDFFloat = 0.0);
+    procedure WriteTextParagraph(const ABusyBottomSace: TPDFFloat;
+                        const AText: String;
+                        const AAlignment: TStringAlignment;
+                        const AInterval: TPDFFloat = 1.0;
+                        const AFirstIndentMM: TPDFFloat = 0.0);
+
+  end;
+
+
+
+implementation
+
+{ TPDFLetter }
+
+procedure TPDFLetter.NextString(const AInterval: TPDFFloat = 1.0);
+var
+  H: TPDFFloat;
+begin
+  H:= FontHeight * (1 + AInterval);
+  WriteSpace(H);
+end;
+
+procedure TPDFLetter.WriteSpace(const ADeltaY: TPDFFloat);
+begin
+  FCurrentY:= FCurrentY + ADeltaY;
+end;
+
+procedure TPDFLetter.AddPage(const ALeftMargin  : TPDFFloat = 20.0;
+                      const ARightMargin : TPDFFloat = 10.0;
+                      const ATopMargin   : TPDFFloat = 10.0;
+                      const ABottomMargin: TPDFFloat = 10.0);
+begin
+  inherited AddPage(ALeftMargin, ARightMargin, ATopMargin, ABottomMargin);
+  FCurrentY:= FY1;
+end;
+
+procedure TPDFLetter.WriteImageFitWidth(const AFileName: String;
+                                const ACoordX1, ACoordX2: TPDFFloat);
+var
+  W, H: TPDFFloat;
+begin
+  W:= ACoordX2 - ACoordX1;
+  WriteImageTopLeftFitWidth(AFileName, ACoordX1, FCurrentY, W, H);
+  WriteSpace(H);
+end;
+
+procedure TPDFLetter.WriteHyperlink(const ABusyBottomSace: TPDFFloat;
+                const AText, AURL: String;
+                const AAlignment: TStringAlignment;
+                const AInterval: TPDFFloat = 1.0;
+                const AIndentMM: TPDFFloat = 0.0);
+var
+  RowHeight: TPDFFloat;
+begin
+  NextString(AInterval);
+  RowHeight:= (1 + AInterval) * FontHeight;
+  NextPage(RowHeight, ABusyBottomSace, RowHeight);
+  WriteURL(PageX1+AIndentMM, PageX2, FCurrentY, AText, AURL, AAlignment);
+end;
+
+function TPDFLetter.NextPage(const ARowHeight, ABusyBottomSace,
+  ANewPageTopSpace: TPDFFloat): Boolean;
+var
+  PageSpace: TPDFFloat;
+begin
+  Result:= False;
+  //свободное место до конца страницы с учетом данных внизу страницы
+  PageSpace:= PageY2 - ABusyBottomSace - FCurrentY;
+  if ARowHeight>PageSpace then
+  begin
+    //свободное место до конца страницы без учета данных внизу страницы
+    PageSpace:= PageY2 - FCurrentY;
+    if ARowHeight>PageSpace then
+    begin
+      AddPage(MarginLeft, MarginRight, MarginTop, MarginBottom);
+      SetFont(FCurrentFontIndex, FCurrentFontSize);
+      WriteSpace(ANewPageTopSpace);
+      Result:= True;
+    end;
+  end;
+end;
+
+procedure TPDFLetter.WriteTextRow(const ABusyBottomSace: TPDFFloat;
+                    const AText: String;
+                    const AAlignment: TStringAlignment;
+                    const AInterval: TPDFFloat = 1.0;
+                    const AIndentMM: TPDFFloat = 0.0);
+var
+  RowHeight: TPDFFloat;
+begin
+  NextString(AInterval);
+  RowHeight:= (1 + AInterval) * FontHeight;
+  NextPage(RowHeight, ABusyBottomSace, RowHeight);
+  WriteString(PageX1+AIndentMM, PageX2, FCurrentY, AText, AAlignment);
+end;
+
+procedure TPDFLetter.WriteTextRows(const ABusyBottomSace: TPDFFloat;
+                                   const AText: TStrVector;
+                                   const AAlignment: TStringAlignment;
+                                   const AInterval: TPDFFloat = 1.0;
+                                   const AIndentMM: TPDFFloat = 0.0);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AText) do
+    WriteTextRow(ABusyBottomSace, AText[i], AAlignment, AInterval, AIndentMM);
+end;
+
+procedure TPDFLetter.WriteTextParagraph(const ABusyBottomSace: TPDFFloat;
+                                        const AText: String;
+                                        const AAlignment: TStringAlignment;
+                                        const AInterval: TPDFFloat = 1.0;
+                                        const AFirstIndentMM: TPDFFloat = 0.0);
+var
+  i, j, k1, k2: Integer;
+  TextRows: TStrVector;
+  Words: TStrVector;
+  Widths: TDblVector;
+  SpaceWidth: TPDFFloat;
+
+  W, TotalW: TPDFFloat;
+  S: String;
+begin
+  TotalW:= PageX2 - PageX1;
+  if FontWidth(AText)<=TotalW then // one row text
+  begin
+    WriteTextRow(ABusyBottomSace, AText, AAlignment, AInterval, AFirstIndentMM);
+    Exit;
+  end;
+
+  TextRows:= nil;
+  GetWords(AText, Words, Widths);
+  SpaceWidth:= FontWidth(' ');
+
+  k1:= 0;
+  W:= AFirstIndentMM + Widths[k1];
+  for i:= 1 to High(Words) do
+  begin
+    W:= W + SpaceWidth + Widths[i];
+    if W>TotalW then  // overfull
+    begin
+      k2:= i-1;
+      S:= Words[k1];
+      for j:= k1+1 to k2 do
+        S:= S + ' ' + Words[j];
+      VAppend(TextRows, S);
+      k1:= i;
+      W:= Widths[k1];
+    end;
+  end;
+  S:= Words[k1];
+  for j:= k1+1 to High(Words) do
+    S:= S + ' ' + Words[j];
+  VAppend(TextRows, S);
+
+  if VIsNil(TextRows) then Exit;
+
+  if AAlignment<>saFit then
+  begin
+    WriteTextRow(ABusyBottomSace, TextRows[0], AAlignment, AInterval, AFirstIndentMM);
+    for i:= 1 to High(TextRows) do
+      WriteTextRow(ABusyBottomSace, TextRows[i], AAlignment, AInterval, 0.0);
+  end else
+  begin
+    if Length(TextRows)=1 then
+      WriteTextRow(ABusyBottomSace, TextRows[0], saLeft, AInterval, AFirstIndentMM)
+    else
+      WriteTextRow(ABusyBottomSace, TextRows[0], saFit, AInterval, AFirstIndentMM);
+    for i:= 1 to High(TextRows)-1 do
+      WriteTextRow(ABusyBottomSace, TextRows[i], saFit, AInterval, 0.0);
+    WriteTextRow(ABusyBottomSace, VLast(TextRows), saLeft, AInterval, 0.0);
+  end;
+end;
+
+
+{ TPDFWriter }
+
+function TPDFWriter.GetFontIndex(const AFontName: String): Integer;
+var
+  Ind: Integer;
+begin
+  Result:= -1;
+  Ind:= VIndexOf(FFontNames, AFontName, False);
+  if Ind>=0 then
+    Result:= FFontIndexes[Ind];
+end;
+
+procedure TPDFWriter.GetWords(const AText: String;
+                              out AWords: TStrVector;
+                              out AWidths: TDblVector);
+var
+  i: Integer;
+begin
+  AWords:= TextToWords(AText);
+  VDim(AWidths{%H-}, Length(AWords));
+  for i:= 0 to High(AWords) do
+    AWidths[i]:= FontWidth(AWords[i]);
+end;
+
+
+
+
+
+procedure TPDFWriter.AlignString(const ALeftX, ARightX, AY: TPDFFloat;
+                                 const AText: String;
+                                 const AAlignment: TStringAlignment);
+var
+  W, X: TPDFFloat;
+begin
+  if AAlignment=saLeft then
+    X:= ALeftX
+  else begin
+    W:= FontWidth(AText);
+    if AAlignment = saRight then
+      X:= ARightX - W
+    else if AAlignment = saCenter then
+      X:= (ALeftX + ARightX - W) / 2;
+  end;
+  FPage.WriteText(X, AY, AText);
+end;
+
+procedure TPDFWriter.FitString(const ALeftX, ARightX, AY: TPDFFloat;
+                               const AText: String);
+var
+  i: Integer;
+  SpaceWidth, TotalWidth, X: TPDFFloat;
+  Words: TStrVector;
+  Widths: TDblVector;
+begin
+  SpaceWidth:= FontWidth(' ');
+  GetWords(AText, Words, Widths);
+  TotalWidth:= VSum(Widths);
+
+  //extra space
+  SpaceWidth:= (ARightX - ALeftX - TotalWidth) / High(Words);
+
+  X:= ALeftX;
+  for i:= 0 to High(Words) - 1 do
+  begin
+    AlignString(X, ARightX, AY, Words[i], saLeft);
+    X:= X + Widths[i] + SpaceWidth;
+  end;
+  AlignString(ALeftX, ARightX, AY, VLast(Words), saRight);
+end;
+
+
+procedure TPDFWriter.WriteString(const ALeftX, ARightX, AY: TPDFFloat;
+                                 const AText: String;
+                                 const AAlignment: TStringAlignment);
+begin
+  if FontWidth(AText)>(ARightX - ALeftX) then Exit; // used field width less then text width
+
+  if AAlignment = saFit then
+    FitString(ALeftX, ARightX, AY, AText)
+  else
+    AlignString(ALeftX, ARightX, AY, AText, AAlignment);
+end;
+
+constructor TPDFWriter.Create(const AFontDir: String);
+begin
+  //Font cache
+  gTTFontCache.SearchPath.Add(AFontDir);
+  gTTFontCache.BuildFontCache;
+
+  // Create document
+  FDocument:= TPDFDocument.Create(nil);
+  FDocument.FontDirectory:= AFontDir;
+  FDocument.Options:= FDocument.Options + [poPageOriginAtTop];
+  // Start document
+  FDocument.StartDocument;
+  // Add a section, at least one section is needed.
+  FSection:= FDocument.Sections.AddSection;
+
+  FShowFrame:= False;
+  FCurrentFontColor:= clBlack;
+end;
+
+destructor TPDFWriter.Destroy;
+begin
+  FreeAndNil(FDocument);
+  inherited Destroy;
+end;
+
+procedure TPDFWriter.AddFont(const AFileName, AFontFamily, AFontName: String;
+                      const ABold, AItalic: Boolean);
+var
+  Ind: Integer;
+begin
+  if GetFontIndex(AFontName)>=0 then Exit; // font is alredy added
+  Ind:= FDocument.AddFont(AFileName, AFontName);
+  VAppend(FFontIndexes, Ind);
+  VAppend(FFontNames, AFontName);
+  VAppend(FFontFamilies, AFontFamily);
+  VAppend(FFontBolds, ABold);
+  VAppend(FFontItalics, AItalic);
+end;
+
+procedure TPDFWriter.SetFont(const AFontName: String; const AFontSize: Integer);
+var
+  Ind: Integer;
+begin
+  Ind:= GetFontIndex(AFontName);
+  if Ind<0 then Exit; // font does not added
+  SetFont(Ind, AFontSize);
+end;
+
+procedure TPDFWriter.SetFont(const AFontIndex, AFontSize: Integer);
+var
+  Ind: Integer;
+  FontCache: TFPFontCacheItem;
+  FontHeightPX, FontDescPX: TPDFFloat;
+begin
+  FCurrentFontIndex:= AFontIndex;
+  FCurrentFontSize:= AFontSize;
+  FPage.SetFont(FCurrentFontIndex, FCurrentFontSize);
+
+  Ind:= VIndexOf(FFontIndexes, FCurrentFontIndex);
+  FontCache:= gTTFontCache.Find(FFontFamilies[Ind], FFontBolds[Ind], FFontItalics[Ind]);
+  if not Assigned(FontCache) then Exit; // font not found
+
+  FontHeightPX:= FontCache.TextHeight('X', FCurrentFontSize, FontDescPX);
+  FCurrentFontHeight:= (FontHeightPX * 25.4) / gTTFontCache.DPI;  // convert to mm
+  FCurrentFontDesc:= (FontDescPX * 25.4) / gTTFontCache.DPI;  // convert to mm
+end;
+
+function TPDFWriter.FontWidth(const AText: String): TPDFFloat;
+var
+  Ind: Integer;
+  FontCache: TFPFontCacheItem;
+begin
+  Result:= 0;
+  Ind:= VIndexOf(FFontIndexes, FCurrentFontIndex);
+  FontCache:= gTTFontCache.Find(FFontFamilies[Ind], FFontBolds[Ind], FFontItalics[Ind]);
+  if not Assigned(FontCache) then Exit; // font not found
+  Result:= FontCache.TextWidth(AText, FCurrentFontSize); // px
+  Result:= (Result * 25.4) / gTTFontCache.DPI;  // convert to mm
+end;
+
+procedure TPDFWriter.SetFontColor(const AColor: TARGBColor);
+begin
+  FCurrentFontColor:= AColor;
+  FPage.SetColor(FCurrentFontColor, False);
+end;
+
+procedure TPDFWriter.AddPage(const ALeftMargin  : TPDFFloat = 20.0;
+                             const ARightMargin : TPDFFloat = 10.0;
+                             const ATopMargin   : TPDFFloat = 10.0;
+                             const ABottomMargin: TPDFFloat = 10.0);
+var
+  W: Integer;
+begin
+  // Add the Page to the Section
+  FPage:= FDocument.Pages.AddPage;
+  FSection.AddPage(FPage);
+  // Set some properties:
+  FPage.PaperType := ptA4;
+  FPage.UnitOfMeasure := uomMillimeters;
+  FPage.SetColor(clBlack, False);
+  // Margins
+  FMarginLeft:= ALeftMargin;
+  FMarginRight:= ARightMargin;
+  FMarginTop:= ATopMargin;
+  FMarginBottom:= ABottomMargin;
+  //useful part of page
+  FX1:= FMarginLeft;
+  FY1:= FMarginTop;
+  FX2:= PDFToMM(FPage.Paper.W) - FMarginRight;
+  FY2:= PDFToMM(FPage.Paper.H) - FMarginBottom;
+
+
+  if ShowFrame then
+  begin
+    W:= 1;
+    FPage.DrawLine(FX1, FY1, FX2, FY1, W, True);
+    FPage.DrawLine(FX2, FY1, FX2, FY2, W, True);
+    FPage.DrawLine(FX2, FY2, FX1, FY2, W, True);
+    FPage.DrawLine(FX1, FY2, FX1, FY1, W, True);
+  end;
+end;
+
+
+
+function TPDFWriter.LoadImage(const AFileName: String;
+                              out AImageWidth, AImageHeight: TPDFFloat): Integer;
+begin
+  Result:= FDocument.Images.AddFromFile(AFileName);
+  AImageWidth:= PDFtoMM(FDocument.Images[Result].Width);
+  AImageHeight:= PDFtoMM(FDocument.Images[Result].Height);
+end;
+
+procedure TPDFWriter.WriteImageTopLeft(const AFileName: String;
+                                       const AX, AY: TPDFFloat; // top left point
+                                       out AImageWidth, AImageHeight: TPDFFloat);
+var
+  Ind: Integer;
+begin
+  Ind:= LoadImage(AFileName, AImageWidth, AImageHeight);
+  FPage.DrawImage(AX, AY+AImageHeight, AImageWidth, AImageHeight, Ind);
+end;
+
+procedure TPDFWriter.WriteImageBottomLeft(const AFileName: String;
+                                       const AX, AY: TPDFFloat;  // bottom left point
+                                       out AImageWidth, AImageHeight: TPDFFloat);
+var
+  Ind: Integer;
+begin
+  Ind:= LoadImage(AFileName, AImageWidth, AImageHeight);
+  FPage.DrawImage(AX, AY, AImageWidth, AImageHeight, Ind);
+end;
+
+procedure TPDFWriter.WriteImageTopLeftFitWidth(const AFileName: String;
+                                const AX, AY: TPDFFloat; // top left point
+                                const ANeedWidth: TPDFFloat;
+                                out AImageHeight: TPDFFloat);
+var
+  Ind: Integer;
+  ImageWidth, ImageHeight: TPDFFloat;
+begin
+  Ind:= LoadImage(AFileName, ImageWidth, ImageHeight);
+  AImageHeight:= ImageHeight * ANeedWidth / ImageWidth;
+  FPage.DrawImage(AX, AY+AImageHeight, ANeedWidth, AImageHeight, Ind);
+end;
+
+procedure TPDFWriter.WriteImageBottomLeftFitWidth(const AFileName: String;
+                                const AX, AY: TPDFFloat; // bottom left point
+                                const ANeedWidth: TPDFFloat;
+                                out AImageHeight: TPDFFloat);
+var
+  Ind: Integer;
+  ImageWidth, ImageHeight: TPDFFloat;
+begin
+  Ind:= LoadImage(AFileName, ImageWidth, ImageHeight);
+  AImageHeight:= ImageHeight * ANeedWidth / ImageWidth;
+  FPage.DrawImage(AX, AY, ANeedWidth, AImageHeight, Ind);
+end;
+
+
+
+
+
+procedure TPDFWriter.WriteURL(const ALeftX, ARightX, AY: TPDFFloat;
+                        const AText, AURL: String;
+                        const AAlignment: TStringAlignment);
+var
+  C: TARGBColor;
+  W, H, Y: TPDFFloat;
+begin
+  C:= FCurrentFontColor;
+  SetFontColor(clBlue);
+  WriteString(ALeftX, ARightX, AY, AText, AAlignment);
+  W:= FontWidth(AText);
+  H:= FontHeight + FontDesc;
+  Y:= AY + FontDesc;
+  FPage.AddExternalLink(ALeftX, Y, W, H, AURL, False);
+  Y:= AY + FontDesc/2;
+  FPage.SetColor(clBlue, True);
+  FPage.DrawLine(ALeftX, Y, ALeftX+W, Y,  0.5*FontDesc, True);
+  SetFontColor(C);
+end;
+
+
+
+procedure TPDFWriter.SaveToFile(const AFileName: String);
+begin
+  FDocument.SaveToFile(AFileName);
+end;
+
+
+
+end.
+

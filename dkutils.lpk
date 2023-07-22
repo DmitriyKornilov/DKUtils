@@ -84,6 +84,10 @@
         <Filename Value="source\dk_heaptrace.pas"/>
         <UnitName Value="DK_HeapTrace"/>
       </Item>
+      <Item>
+        <Filename Value="source\dk_pdf.pas"/>
+        <UnitName Value="DK_PDF"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
