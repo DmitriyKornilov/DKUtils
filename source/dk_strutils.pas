@@ -51,6 +51,8 @@ type
   function SNameLong(const AFamily, AName, APatronymic: String): String;
   function SNameShort(const AFamily, AName, APatronymic: String): String;
   function SFileName(const AFileName, AExtention: String): String;
+  function SFromStrings(const AStrings: TStrings; const ADelimiter: String = SYMBOL_SPACE): String;
+  procedure SToStrings(const AStr: String; const AStrings: TStrings; const ADelimiter: String);
 
 implementation
 
@@ -359,7 +361,49 @@ begin
     Result:= Result + '.' + AExtention;
 end;
 
+function SFromStrings(const AStrings: TStrings; const ADelimiter: String = SYMBOL_SPACE): String;
+var
+  i: Integer;
+begin
+  Result:= EmptyStr;
+  if AStrings.Count<=0 then Exit;
+  Result:= AStrings[0];
+  for i:= 1 to AStrings.Count-1 do
+  Result:= Result + ADelimiter + AStrings[i];
+end;
 
+procedure SToStrings(const AStr: String; const AStrings: TStrings; const ADelimiter: String);
+var
+  S: String;
+  n, LDelimiter: Integer;
+begin
+  if not Assigned(AStrings) then Exit;
+  AStrings.Clear;
+  if SLength(AStr)=0 then Exit;
+
+  LDelimiter:= SLength(ADelimiter);
+  if (LDelimiter=0) then
+  begin
+    AStrings.Append(AStr);
+    Exit;
+  end;
+
+  S:= AStr;
+  n:= SPos(S, ADelimiter);
+  while n>0 do
+  begin
+    if n=1 then
+      S:= SDel(S, 1, LDelimiter)
+    else begin
+      AStrings.Append(SCopy(S, 1, n-1));
+      S:= SDel(S, 1, n+LDelimiter-1);
+    end;
+    n:= SPos(S, ADelimiter);
+  end;
+
+  if SLength(S)>0 then
+    AStrings.Append(S);
+end;
 
 end.
 

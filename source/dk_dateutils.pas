@@ -9,7 +9,7 @@ uses
 
   {ДАТЫ ПРОПИСЬЮ В ИМЕНИТЕЛЬНОМ И РОДИТЕЛЬНОМ ПАДЕЖАХ}
   function DateToStrNominative(const ADate: TDate): String;
-  function DateToStrGenitive(const ADate: TDate): String;
+  function DateToStrGenitive(const ADate: TDate; const AYearMarkFull: Boolean = False): String;
 
   {ИЗВЛЕЧЕНИЕ ЧАСТЕЙ ДАТЫ}
   function DayOfDate(const ADate: TDate): Word;
@@ -100,11 +100,15 @@ begin
            FormatDateTime('yyyy', ADate) + 'г.';
 end;
 
-function DateToStrGenitive(const ADate: TDate): String;
+function DateToStrGenitive(const ADate: TDate; const AYearMarkFull: Boolean = False): String;
 begin
   Result:= FormatDateTime('dd', ADate) + ' ' +
            MONTHSGEN[MonthOf(ADate)] + ' ' +
-           FormatDateTime('yyyy', ADate) + 'г.';
+           FormatDateTime('yyyy', ADate);
+  if AYearMarkFull then
+    Result:= Result + ' года'
+  else
+    Result:= Result + 'г.';
 end;
 
 {ИЗВЛЕЧЕНИЕ ЧАСТЕЙ ДАТЫ}

@@ -3424,7 +3424,7 @@ function VReplace(const V: TStrVector; const Indexes: TIntVector): TStrVector;
 var
   i: Integer;
 begin
-  VDim(Result, Length(V));
+  VDim(Result{%H-}, Length(V));
   for i:= 0 to High(Indexes) do
     Result[i]:= V[Indexes[i]];
 end;
@@ -3433,17 +3433,16 @@ function VReplace(const V: TIntVector; const Indexes: TIntVector): TIntVector;
 var
   i: Integer;
 begin
-  VDim(Result, Length(V));
+  VDim(Result{%H-}, Length(V));
   for i:= 0 to High(Indexes) do
     Result[i]:= V[Indexes[i]];
 end;
 
-function VReplace(const V: TInt64Vector; const Indexes: TIntVector
-  ): TInt64Vector;
+function VReplace(const V: TInt64Vector; const Indexes: TIntVector): TInt64Vector;
 var
   i: Integer;
 begin
-  VDim(Result, Length(V));
+  VDim(Result{%H-}, Length(V));
   for i:= 0 to High(Indexes) do
     Result[i]:= V[Indexes[i]];
 end;
@@ -3452,7 +3451,7 @@ function VReplace(const V: TDblVector; const Indexes: TIntVector): TDblVector;
 var
   i: Integer;
 begin
-  VDim(Result, Length(V));
+  VDim(Result{%H-}, Length(V));
   for i:= 0 to High(Indexes) do
     Result[i]:= V[Indexes[i]];
 end;
@@ -3461,7 +3460,7 @@ function VReplace(const V: TBoolVector; const Indexes: TIntVector): TBoolVector;
 var
   i: Integer;
 begin
-  VDim(Result, Length(V));
+  VDim(Result{%H-}, Length(V));
   for i:= 0 to High(Indexes) do
     Result[i]:= V[Indexes[i]];
 end;
@@ -3472,7 +3471,7 @@ function VReverse(const V: TIntVector): TIntVector;
 var
   i, n: Integer;
 begin
-  VDim(Result, Length(V));
+  VDim(Result{%H-}, Length(V));
   n:= High(V);
   for i:= n downto 0 do
     Result[n-i]:= V[i];
@@ -3482,7 +3481,7 @@ function VReverse(const V: TInt64Vector): TInt64Vector;
 var
   i, n: Integer;
 begin
-  VDim(Result, Length(V));
+  VDim(Result{%H-}, Length(V));
   n:= High(V);
   for i:= n downto 0 do
     Result[n-i]:= V[i];
@@ -3492,7 +3491,7 @@ function VReverse(const V: TDblVector): TDblVector;
 var
   i, n: Integer;
 begin
-  VDim(Result, Length(V));
+  VDim(Result{%H-}, Length(V));
   n:= High(V);
   for i:= n downto 0 do
     Result[n-i]:= V[i];
@@ -3502,7 +3501,7 @@ function VReverse(const V: TStrVector): TStrVector;
 var
   i, n: Integer;
 begin
-  VDim(Result, Length(V));
+  VDim(Result{%H-}, Length(V));
   n:= High(V);
   for i:= n downto 0 do
     Result[n-i]:= V[i];
