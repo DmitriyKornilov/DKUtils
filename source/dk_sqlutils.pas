@@ -50,6 +50,8 @@ uses
   function SqlSpaces(const AStr: String): String;
   function SqlBrackets(const AStr: String): String;
   function SqlExprLogic(const ALeftArg, AAssertion, ARightArg: String): String;
+  function SqlFieldsEnum(const AFieldNames: array of String;
+                         const ATableNamePrefix: String = ''): String;
   function SqlOR(const AExpressions: array of String): String;
   function SqlAND(const AExpressions: array of String): String;
   function SqlCROSS(const AMin1, AMax1, AMin2, AMax2: String): String;
@@ -369,6 +371,29 @@ end;
 function SqlExprLogic(const ALeftArg, AAssertion, ARightArg: String): String;
 begin
   Result:= ALeftArg + SqlSpaces(AAssertion) + ARightArg;
+end;
+
+// SqlFieldsEnum(['A', 'B', 'C'], '') -->  ' [A], [B], [C] '
+// SqlFieldsEnum(['A', 'B', 'C'], 't1') -->  ' t1.[A], t2.[B], t3[C] '
+function SqlFieldsEnum(const AFieldNames: array of String;
+                       const ATableNamePrefix: String = ''): String;
+var
+  i: Integer;
+begin
+  Result:= EmptyStr;
+  if Length(AFieldNames)=0 then Exit;
+  if ATableNamePrefix<>'' then
+    Result:= ATableNamePrefix + '.' + SqlEsc(AFieldNames[0])
+  else
+    Result:= SqlEsc(AFieldNames[0]);
+  for i:= 1 to High(AFieldNames) do
+  begin
+    if ATableNamePrefix<>'' then
+      Result:= Result + ', ' + ATableNamePrefix + '.' + SqlEsc(AFieldNames[i])
+    else
+      Result:= Result + ', ' + SqlEsc(AFieldNames[i]);
+  end;
+  Result:= SqlSpaces(Result);
 end;
 
 // SqlOR(['A<B', 'A>C', 'A=D']) -->  ' (A<B) OR (A>C) OR (A=D) '
