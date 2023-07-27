@@ -3114,7 +3114,10 @@ begin
   while n>0 do
   begin
     if n=1 then
-      S:= SDel(S, 1, LDelimiter)
+    begin
+      VAppend(Result, EmptyStr);
+      S:= SDel(S, 1, LDelimiter);
+    end
     else begin
       VAppend(Result, SCopy(S, 1, n-1));
       S:= SDel(S, 1, n+LDelimiter-1);
