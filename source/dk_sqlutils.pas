@@ -29,6 +29,7 @@ uses
   procedure QParamStr(const AParamName: String; const AParamValue: String);
   procedure QParamDT(const AParamName: String; const AParamValue: TDateTime);
   procedure QParamFloat(const AParamName: String; const AParamValue: Double);
+  procedure QParamFile(const AParamName: String; const AFileName: String);
 
   procedure QParamsInt(const AParamValues: array of Integer; const AValueName: String = '');
   procedure QParamsInt64(const AParamValues: array of Int64; const AValueName: String = '');
@@ -45,6 +46,7 @@ uses
   function QFieldStr(const AFieldName: String): String;
   function QFieldDT(const AFieldName: String): TDateTime;
   function QFieldFloat(const AFieldName: String): Double;
+  function QFieldFile(const AFieldName: String; var AStream: TMemoryStream): Boolean;
 
   {SQL Utils}
   function SqlSpaces(const AStr: String): String;
@@ -202,6 +204,12 @@ begin
   SqlUtilsQuery.ParamByName(AParamName).AsFloat:= AParamValue;
 end;
 
+procedure QParamFile(const AParamName: String; const AFileName: String);
+begin
+  if not FileExists(AFileName) then Exit;
+  SqlUtilsQuery.ParamByName(AParamName).LoadFromFile(AFileName, ftBlob);
+end;
+
 procedure QParamsInt(const AParamValues: array of Integer;
   const AValueName: String);
 var
@@ -305,6 +313,16 @@ begin
   Result:= 0;
   if not QIsNull(AFieldName) then
     Result:= SqlUtilsQuery.FieldByName(AFieldName).AsFloat;
+end;
+
+function QFieldFile(const AFieldName: String; var AStream: TMemoryStream): Boolean;
+begin
+  Result:= False;
+  if Assigned(AStream) and (not QIsNull(AFieldName)) then
+  begin
+    (SqlUtilsQuery.FieldByName(AFieldName) as TBlobField).SaveToStream(AStream);
+    AStream.Position:= 0;
+  end;
 end;
 
 {SQL Utils}
