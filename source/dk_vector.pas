@@ -261,8 +261,12 @@ type
   {СТРОКОВЫЙ ВЕКТОР И СТРОКА}
   function VStrToVector(const Str, Delimiter: String): TStrVector;
   function VVectorToStr(const V: TStrVector; const Delimiter: String): String;
+  function VChangeDelimiters(const V: TStrVector; const OldDelimiter, NewDelimiter: String): TStrVector;
 
   {СУММА/КОНКАТЕНАЦИЯ}
+  function VSum(const V: TStrVector; const S: String): TStrVector;
+  function VSum(const S: String; const V: TStrVector): TStrVector;
+
   function VSum(const V1,V2: TIntVector)  : TIntVector;
   function VSum(const V1,V2: TInt64Vector): TInt64Vector;
   function VSum(const V1,V2: TStrVector): TStrVector;
@@ -2578,6 +2582,26 @@ begin
     Result[i]:= V1[i] + V2[i];
 end;
 
+function VSum(const V: TStrVector; const S: String): TStrVector;
+var
+  Values: TStrVector;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Values, Length(V), S);
+  Result:= VSum(V, Values);
+end;
+
+function VSum(const S: String; const V: TStrVector): TStrVector;
+var
+  Values: TStrVector;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Values, Length(V), S);
+  Result:= VSum(Values, V);
+end;
+
 function VSum(const V1,V2: TIntVector): TIntVector;
 var
   i: Integer;
@@ -3140,6 +3164,21 @@ begin
   Result:= V[0];
   for i:= 1 to High(V) do
     Result:= Result + Delimiter + V[i];
+end;
+
+function VChangeDelimiters(const V: TStrVector; const OldDelimiter, NewDelimiter: String): TStrVector;
+var
+  i: Integer;
+  TmpV: TStrVector;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+  begin
+    TmpV:= VStrToVector(V[i], OldDelimiter);
+    Result[i]:= VVectorToStr(TmpV, NewDelimiter);
+  end;
 end;
 
 {ДЛЯ ВЕКТОРА ДАТ}
