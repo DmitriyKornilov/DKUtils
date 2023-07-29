@@ -28,6 +28,7 @@ type
   function SEmpty(const AStr: String): Boolean;
   function SCompare(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Integer;
   function SPos(const AStr, AValue: String; const AStartPos: Integer = 1): Integer;
+  function SFind(const AStr, AValue: String; const ACaseSensitivity: Boolean = True): Boolean;
   function SCopy(const AStr: String; const AStart, AEnd: Integer): String;
   function SCopyCount(const AStr: String; const AStart, ACount: Integer): String;
   function SDivide(const AStr: String; const ADivideSymbol: String; out APart1, APart2: String): Boolean;
@@ -152,6 +153,14 @@ end;
 function SPos(const AStr, AValue: String; const AStartPos: Integer = 1): Integer;
 begin
   Result:= UTF8Pos(AValue, AStr, AStartPos);
+end;
+
+function SFind(const AStr, AValue: String; const ACaseSensitivity: Boolean): Boolean;
+begin
+  if ACaseSensitivity then
+    Result:= SPos(AStr, AValue)>0
+  else
+    Result:= SPos(SUpper(AStr), SUpper(AValue))>0;
 end;
 
 function SCopy(const AStr: String; const AStart, AEnd: Integer): String;

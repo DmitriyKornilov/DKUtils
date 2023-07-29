@@ -5,7 +5,7 @@ unit DK_PDF;
 interface
 
 uses
-  Classes, SysUtils, fpPDF, fpTTF, DK_Vector, DK_TextUtils, DK_StrUtils;
+  Classes, SysUtils, fpPDF, fpImage, fpTTF, DK_Vector, DK_TextUtils, DK_StrUtils;
 
 type
   TPDFFloat = type fpPDF.TPDFFloat;
@@ -121,11 +121,6 @@ type
     property FontHeight: TPDFFloat read FCurrentFontHeight;
     property FontDesc: TPDFFloat read FCurrentFontDesc;
     function FontWidth(const AText: String): TPDFFloat;
-
-
-
-
-
   end;
 
   { TPDFLetter }
@@ -133,9 +128,26 @@ type
   TPDFLetter = class (TPDFWriter)
   private
     FCurrentY: TPDFFloat;
+    procedure WriteSignature(const AText: TStrVector;
+                             const AName: String;
+                             const ASignIndex, AStampIndex: Integer;
+                             const AInterval: TPDFFloat = 1.0;
+                             const AIndentMM: TPDFFloat = 0.0;
+                             const ASignWidth: TPDFFloat = 30.0;
+                             const AStampWidth: TPDFFloat = 40.0;
+                             const AAfterSpace: TPDFFloat = 0.0
+                             );
+    procedure GetImageIndexes(const ASignFileName, AStampFileName: String;
+                              out ASignIndex, AStampIndex: Integer);
+    procedure GetImageIndexes(const ASignImage: TMemoryStream;
+                              const ASignFileExtension: String;
+                              const AStampImage: TMemoryStream;
+                              const AStampFileExtension: String;
+                              out ASignIndex, AStampIndex: Integer);
   protected
+    function BusyBottomSpace: TPDFFloat; virtual;
     procedure NextString(const AInterval: TPDFFloat=1.0);
-    function NextPage(const ARowHeight, ABusyBottomSace, ANewPageTopSpace: TPDFFloat): Boolean;
+    function NextPage(const ARowHeight, ANewPageTopSpace: TPDFFloat): Boolean;
   public
     property CurrentY: TPDFFloat read  FCurrentY;
     procedure WriteSpace(const ADeltaY: TPDFFloat);  // inc CurrentY
@@ -148,26 +160,43 @@ type
     procedure WriteImageFitWidth(const AFileName: String;
                                  const ACoordX1, ACoordX2: TPDFFloat);
 
-    procedure WriteHyperlink(const ABusyBottomSace: TPDFFloat;
-                        const AText, AURL: String;
+    procedure WriteHyperlink(const AText, AURL: String;
                         const AAlignment: TStringAlignment;
                         const AInterval: TPDFFloat = 1.0;
                         const AIndentMM: TPDFFloat = 0.0);
-    procedure WriteTextRow(const ABusyBottomSace: TPDFFloat;
-                        const AText: String;
+    procedure WriteTextRow(const AText: String;
                         const AAlignment: TStringAlignment;
                         const AInterval: TPDFFloat = 1.0;
                         const AIndentMM: TPDFFloat = 0.0);
-    procedure WriteTextRows(const ABusyBottomSace: TPDFFloat;
-                        const AText: TStrVector;
+    procedure WriteTextRows(const AText: TStrVector;
                         const AAlignment: TStringAlignment;
                         const AInterval: TPDFFloat = 1.0;
                         const AIndentMM: TPDFFloat = 0.0);
-    procedure WriteTextParagraph(const ABusyBottomSace: TPDFFloat;
-                        const AText: String;
+    procedure WriteTextParagraph(const AText: String;
                         const AAlignment: TStringAlignment;
                         const AInterval: TPDFFloat = 1.0;
                         const AFirstIndentMM: TPDFFloat = 0.0);
+
+    procedure WriteSignature(const AText: TStrVector;
+                             const AName: String;
+                             const AInterval: TPDFFloat = 1.0;
+                             const AIndentMM: TPDFFloat = 0.0;
+                             const AAfterSpace: TPDFFloat = 0.0;
+                             const ASignImage: TMemoryStream = nil;
+                             const ASignFileExtension: String = '';
+                             const ASignWidth: TPDFFloat = 30.0;
+                             const AStampImage: TMemoryStream = nil;
+                             const AStampFileExtension: String = '';
+                             const AStampWidth: TPDFFloat = 40.0);
+    procedure WriteSignature(const AText: TStrVector;
+                             const AName: String;
+                             const AInterval: TPDFFloat = 1.0;
+                             const AIndentMM: TPDFFloat = 0.0;
+                             const AAfterSpace: TPDFFloat = 0.0;
+                             const ASignFileName: String = '';
+                             const ASignWidth: TPDFFloat = 30.0;
+                             const AStampFileName: String = '';
+                             const AStampWidth: TPDFFloat = 40.0);
 
   end;
 
@@ -176,6 +205,135 @@ type
 implementation
 
 { TPDFLetter }
+
+function TPDFLetter.BusyBottomSpace: TPDFFloat;
+begin
+  Result:= 0;
+end;
+
+procedure TPDFLetter.WriteSignature(const AText: TStrVector;
+                             const AName: String;
+                             const ASignIndex, AStampIndex: Integer;
+                             const AInterval: TPDFFloat = 1.0;
+                             const AIndentMM: TPDFFloat = 0.0;
+                             const ASignWidth: TPDFFloat = 30.0;
+                             const AStampWidth: TPDFFloat = 40.0;
+                             const AAfterSpace: TPDFFloat = 0.0);
+var
+  i: Integer;
+  ImageWidth, ImageHeight, W, H, X, Y: TPDFFloat;
+  RowHeight, LeftMaxWidth, TextHeight, TotalHeight: TPDFFloat;
+begin
+
+  //высота строки текста
+  RowHeight:= FontHeight*(1+AInterval);
+  //высота, занимаемая текстом слева
+  TextHeight:= Length(AText)*RowHeight;
+
+  //максимальная ширина подписи
+  LeftMaxWidth:= 0;
+  for i:= 0 to High(AText) do
+  begin
+    X:= FontWidth(AText[i]);
+    if X>LeftMaxWidth then LeftMaxWidth:= X;
+  end;
+
+  NextString(AInterval);
+  if (AStampIndex<0) and (ASignIndex<0) then //нет ни факсимиле ни печати
+  begin
+    TotalHeight:= TextHeight + AAfterSpace;
+    NextPage(TotalHeight, 0);
+    WriteTextRows(AText, saLeft, AInterval, AIndentMM);
+    AlignString(PageX1, PageX2, CurrentY, AName, saRight);
+  end
+  else begin
+    if AStampIndex>=0 then //есть печать
+    begin
+      ImageWidth:= PDFtoMM(Document.Images[AStampIndex].Width);
+      ImageHeight:= PDFtoMM(Document.Images[AStampIndex].Height);
+      W:= AStampWidth;
+      H:= ImageHeight * W / ImageWidth;
+
+      //высота занимаемая всей подписью
+      TotalHeight:= TextHeight + AAfterSpace;
+      if H>TextHeight then
+        TotalHeight:= H;
+      NextPage(TotalHeight, 0);
+
+      Y:= H/2 - TextHeight;
+      if Y>0 then
+        WriteSpace(Y);
+      WriteTextRows(AText, saLeft, AInterval, AIndentMM);
+      AlignString(PageX1, PageX2, CurrentY, AName, saRight);
+
+      Y:= CurrentY + H/2;
+      X:= PageX1 + AIndentMM + LeftMaxWidth + 1.0{!!!};
+      Page.DrawImage(X, Y, W, H, AStampIndex);
+    end;
+    if ASignIndex>=0 then   //есть факсимиле
+    begin
+      ImageWidth:= PDFtoMM(Document.Images[ASignIndex].Width);
+      ImageHeight:= PDFtoMM(Document.Images[ASignIndex].Height);
+      W:= ASignWidth;
+      H:= ImageHeight * W / ImageWidth;
+      if AStampIndex<0 then //нет печати
+      begin
+        //высота занимаемая всей подписью
+        TotalHeight:= TextHeight  + AAfterSpace;
+        if H>TextHeight then
+          TotalHeight:= H;
+        NextPage(TotalHeight, 0);
+
+        Y:= H/2 - TextHeight;
+        if Y>0 then
+          WriteSpace(Y);
+        WriteTextRows(AText, saLeft, AInterval, AIndentMM);
+        AlignString(PageX1, PageX2, CurrentY, AName, saRight);
+      end;
+
+      Y:= CurrentY + H/2;
+      X:= PageX1 + AIndentMM + LeftMaxWidth + 1.0{!!!} + AStampWidth + 1.0{!!!};
+      Page.DrawImage(X, Y, W, H, ASignIndex);
+    end;
+  end;
+end;
+
+procedure TPDFLetter.GetImageIndexes(const ASignFileName, AStampFileName: String;
+                              out ASignIndex, AStampIndex: Integer);
+begin
+  ASignIndex:= -1;
+  if not Sempty(ASignFileName) then
+    if FileExists(ASignFileName) then
+      ASignIndex:= Document.Images.AddFromFile(ASignFileName);
+
+  AStampIndex:= -1;
+  if not Sempty(AStampFileName) then
+    if FileExists(AStampFileName) then
+      AStampIndex:= Document.Images.AddFromFile(AStampFileName);
+end;
+
+procedure TPDFLetter.GetImageIndexes(const ASignImage: TMemoryStream;
+                              const ASignFileExtension: String;
+                              const AStampImage: TMemoryStream;
+                              const AStampFileExtension: String;
+                              out ASignIndex, AStampIndex: Integer);
+var
+  Handler: TFPCustomImageReaderClass;
+begin
+  ASignIndex:= -1;
+  if Assigned(ASignImage) and (not SEmpty(ASignFileExtension)) then
+  begin
+    Handler:= TFPCustomImage.FindReaderFromExtension(ASignFileExtension);
+    ASignIndex:= Document.Images.AddFromStream(ASignImage, Handler);
+  end;
+
+  AStampIndex:= -1;
+  if Assigned(AStampImage) and (not SEmpty(AStampFileExtension)) then
+  begin
+    Handler:= TFPCustomImage.FindReaderFromExtension(AStampFileExtension);
+    AStampIndex:= Document.Images.AddFromStream(AStampImage, Handler);
+  end;
+end;
 
 procedure TPDFLetter.NextString(const AInterval: TPDFFloat = 1.0);
 var
@@ -209,7 +367,7 @@ begin
   WriteSpace(H);
 end;
 
-procedure TPDFLetter.WriteHyperlink(const ABusyBottomSace: TPDFFloat;
+procedure TPDFLetter.WriteHyperlink(
                 const AText, AURL: String;
                 const AAlignment: TStringAlignment;
                 const AInterval: TPDFFloat = 1.0;
@@ -219,18 +377,17 @@ var
 begin
   NextString(AInterval);
   RowHeight:= (1 + AInterval) * FontHeight;
-  NextPage(RowHeight, ABusyBottomSace, RowHeight);
+  NextPage(RowHeight, RowHeight);
   WriteURL(PageX1+AIndentMM, PageX2, FCurrentY, AText, AURL, AAlignment);
 end;
 
-function TPDFLetter.NextPage(const ARowHeight, ABusyBottomSace,
-  ANewPageTopSpace: TPDFFloat): Boolean;
+function TPDFLetter.NextPage(const ARowHeight, ANewPageTopSpace: TPDFFloat): Boolean;
 var
   PageSpace: TPDFFloat;
 begin
   Result:= False;
   //свободное место до конца страницы с учетом данных внизу страницы
-  PageSpace:= PageY2 - ABusyBottomSace - FCurrentY;
+  PageSpace:= PageY2 - BusyBottomSpace - FCurrentY;
   if ARowHeight>PageSpace then
   begin
     //свободное место до конца страницы без учета данных внизу страницы
@@ -245,7 +402,7 @@ begin
   end;
 end;
 
-procedure TPDFLetter.WriteTextRow(const ABusyBottomSace: TPDFFloat;
+procedure TPDFLetter.WriteTextRow(
                     const AText: String;
                     const AAlignment: TStringAlignment;
                     const AInterval: TPDFFloat = 1.0;
@@ -255,12 +412,11 @@ var
 begin
   NextString(AInterval);
   RowHeight:= (1 + AInterval) * FontHeight;
-  NextPage(RowHeight, ABusyBottomSace, RowHeight);
+  NextPage(RowHeight, RowHeight);
   WriteString(PageX1+AIndentMM, PageX2, FCurrentY, AText, AAlignment);
 end;
 
-procedure TPDFLetter.WriteTextRows(const ABusyBottomSace: TPDFFloat;
-                                   const AText: TStrVector;
+procedure TPDFLetter.WriteTextRows(const AText: TStrVector;
                                    const AAlignment: TStringAlignment;
                                    const AInterval: TPDFFloat = 1.0;
                                    const AIndentMM: TPDFFloat = 0.0);
@@ -268,11 +424,10 @@ var
   i: Integer;
 begin
   for i:= 0 to High(AText) do
-    WriteTextRow(ABusyBottomSace, AText[i], AAlignment, AInterval, AIndentMM);
+    WriteTextRow(AText[i], AAlignment, AInterval, AIndentMM);
 end;
 
-procedure TPDFLetter.WriteTextParagraph(const ABusyBottomSace: TPDFFloat;
-                                        const AText: String;
+procedure TPDFLetter.WriteTextParagraph(const AText: String;
                                         const AAlignment: TStringAlignment;
                                         const AInterval: TPDFFloat = 1.0;
                                         const AFirstIndentMM: TPDFFloat = 0.0);
@@ -289,7 +444,7 @@ begin
   TotalW:= PageX2 - PageX1;
   if FontWidth(AText)<=TotalW then // one row text
   begin
-    WriteTextRow(ABusyBottomSace, AText, AAlignment, AInterval, AFirstIndentMM);
+    WriteTextRow(AText, AAlignment, AInterval, AFirstIndentMM);
     Exit;
   end;
 
@@ -322,19 +477,56 @@ begin
 
   if AAlignment<>saFit then
   begin
-    WriteTextRow(ABusyBottomSace, TextRows[0], AAlignment, AInterval, AFirstIndentMM);
+    WriteTextRow(TextRows[0], AAlignment, AInterval, AFirstIndentMM);
     for i:= 1 to High(TextRows) do
-      WriteTextRow(ABusyBottomSace, TextRows[i], AAlignment, AInterval, 0.0);
+      WriteTextRow(TextRows[i], AAlignment, AInterval, 0.0);
   end else
   begin
     if Length(TextRows)=1 then
-      WriteTextRow(ABusyBottomSace, TextRows[0], saLeft, AInterval, AFirstIndentMM)
+      WriteTextRow(TextRows[0], saLeft, AInterval, AFirstIndentMM)
     else
-      WriteTextRow(ABusyBottomSace, TextRows[0], saFit, AInterval, AFirstIndentMM);
+      WriteTextRow(TextRows[0], saFit, AInterval, AFirstIndentMM);
     for i:= 1 to High(TextRows)-1 do
-      WriteTextRow(ABusyBottomSace, TextRows[i], saFit, AInterval, 0.0);
-    WriteTextRow(ABusyBottomSace, VLast(TextRows), saLeft, AInterval, 0.0);
+      WriteTextRow(TextRows[i], saFit, AInterval, 0.0);
+    WriteTextRow(VLast(TextRows), saLeft, AInterval, 0.0);
   end;
+end;
+
+procedure TPDFLetter.WriteSignature(const AText: TStrVector;
+                             const AName: String;
+                             const AInterval: TPDFFloat = 1.0;
+                             const AIndentMM: TPDFFloat = 0.0;
+                             const AAfterSpace: TPDFFloat = 0.0;
+                             const ASignImage: TMemoryStream = nil;
+                             const ASignFileExtension: String = '';
+                             const ASignWidth: TPDFFloat = 30.0;
+                             const AStampImage: TMemoryStream = nil;
+                             const AStampFileExtension: String = '';
+                             const AStampWidth: TPDFFloat = 40.0);
+var
+  I1, I2: Integer;
+begin
+  GetImageIndexes(ASignImage, ASignFileExtension,
+                  AStampImage, AStampFileExtension, I1, I2);
+  WriteSignature(AText, AName, I1, I2, AInterval, AIndentMM,
+                 ASignWidth, AStampWidth, AAfterSpace);
+end;
+
+procedure TPDFLetter.WriteSignature(const AText: TStrVector;
+                             const AName: String;
+                             const AInterval: TPDFFloat = 1.0;
+                             const AIndentMM: TPDFFloat = 0.0;
+                             const AAfterSpace: TPDFFloat = 0.0;
+                             const ASignFileName: String = '';
+                             const ASignWidth: TPDFFloat = 30.0;
+                             const AStampFileName: String = '';
+                             const AStampWidth: TPDFFloat = 40.0);
+var
+  I1, I2: Integer;
+begin
+  GetImageIndexes(ASignFileName, AStampFileName, I1, I2);
+  WriteSignature(AText, AName, I1, I2, AInterval, AIndentMM,
+                 ASignWidth, AStampWidth, AAfterSpace);
 end;
 
 
