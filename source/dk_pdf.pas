@@ -772,6 +772,8 @@ end;
 function TPDFWriter.LoadImage(const AFileName: String;
                               out AImageWidth, AImageHeight: TPDFFloat): Integer;
 begin
+  Result:= -1;
+  if not FileExists(AFileName) then Exit;
   Result:= FDocument.Images.AddFromFile(AFileName);
   AImageWidth:= PDFtoMM(FDocument.Images[Result].Width);
   AImageHeight:= PDFtoMM(FDocument.Images[Result].Height);
@@ -801,6 +803,7 @@ var
   Ind: Integer;
 begin
   Ind:= LoadImage(AFileName, AImageWidth, AImageHeight);
+  if Ind<0 then Exit;
   FPage.DrawImage(AX, AY+AImageHeight, AImageWidth, AImageHeight, Ind);
 end;
 
@@ -811,6 +814,7 @@ var
   Ind: Integer;
 begin
   Ind:= LoadImage(AStream, AExtension, AImageWidth, AImageHeight);
+  if Ind<0 then Exit;
   FPage.DrawImage(AX, AY+AImageHeight, AImageWidth, AImageHeight, Ind);
 end;
 
@@ -821,6 +825,7 @@ var
   Ind: Integer;
 begin
   Ind:= LoadImage(AFileName, AImageWidth, AImageHeight);
+  if Ind<0 then Exit;
   FPage.DrawImage(AX, AY, AImageWidth, AImageHeight, Ind);
 end;
 
@@ -831,6 +836,7 @@ var
   Ind: Integer;
 begin
   Ind:= LoadImage(AStream, AExtension, AImageWidth, AImageHeight);
+  if Ind<0 then Exit;
   FPage.DrawImage(AX, AY, AImageWidth, AImageHeight, Ind);
 end;
 
@@ -843,6 +849,7 @@ var
   ImageWidth, ImageHeight: TPDFFloat;
 begin
   Ind:= LoadImage(AFileName, ImageWidth, ImageHeight);
+  if Ind<0 then Exit;
   AImageHeight:= ImageHeight * ANeedWidth / ImageWidth;
   FPage.DrawImage(AX, AY+AImageHeight, ANeedWidth, AImageHeight, Ind);
 end;
@@ -857,6 +864,7 @@ var
   ImageWidth, ImageHeight: TPDFFloat;
 begin
   Ind:= LoadImage(AStream, AExtension, ImageWidth, ImageHeight);
+  if Ind<0 then Exit;
   AImageHeight:= ImageHeight * ANeedWidth / ImageWidth;
   FPage.DrawImage(AX, AY+AImageHeight, ANeedWidth, AImageHeight, Ind);
 end;
@@ -870,6 +878,7 @@ var
   ImageWidth, ImageHeight: TPDFFloat;
 begin
   Ind:= LoadImage(AFileName, ImageWidth, ImageHeight);
+  if Ind<0 then Exit;
   AImageHeight:= ImageHeight * ANeedWidth / ImageWidth;
   FPage.DrawImage(AX, AY, ANeedWidth, AImageHeight, Ind);
 end;
@@ -884,6 +893,7 @@ var
   ImageWidth, ImageHeight: TPDFFloat;
 begin
   Ind:= LoadImage(AStream, AExtension, ImageWidth, ImageHeight);
+  if Ind<0 then Exit;
   AImageHeight:= ImageHeight * ANeedWidth / ImageWidth;
   FPage.DrawImage(AX, AY, ANeedWidth, AImageHeight, Ind);
 end;
