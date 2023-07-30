@@ -10,8 +10,11 @@ uses
   {'1234,56' -> 123456 или '1 234,56' -> 123456}
   function PriceStrToInt(const APrice: String): Int64;
 
-  {ANeedThousandSeparator=False: 123456 -> '1234,56'; True: 123456 -> '1 234,56'}
-  function PriceIntToStr(const APrice: Int64; const ANeedThousandSeparator: Boolean = False): String;
+  {ANeedThousandSeparator=False: 123456 -> '1234,56'; True: 123456 -> '1 234,56'
+   AEmptyIfZero=False: 0 -> '0,00'; True: 0 -> ''}
+  function PriceIntToStr(const APrice: Int64;
+                         const ANeedThousandSeparator: Boolean = False;
+                         const AEmptyIfZero: Boolean = False): String;
 
   {ANeedThousandSeparator=False: 123456 -> '1234 руб. 56 коп.'; True: 123456 -> '1 234 руб. 56 коп.' '}
   function PriceToString(const APrice: Int64; const ANeedThousandSeparator: Boolean = False): String;
@@ -49,6 +52,8 @@ function PriceStrToInt(const APrice: String): Int64;
 var
   Rub, Kop, Price: String;
 begin
+  Result:= 0;
+  if SEmpty(APrice) then Exit;
   Price:= StringReplace(APrice, FormatSettings.ThousandSeparator, EmptyStr, [rfReplaceAll]);
   if SDivide(Price, FormatSettings.DecimalSeparator, Rub, Kop) then
   begin
@@ -59,10 +64,14 @@ begin
     Result:= StrToInt64(Price)*100;
 end;
 
-function PriceIntToStr(const APrice: Int64; const ANeedThousandSeparator: Boolean = False): String;
+function PriceIntToStr(const APrice: Int64;
+                       const ANeedThousandSeparator: Boolean = False;
+                       const AEmptyIfZero: Boolean = False): String;
 var
   Rub, Kop: String;
 begin
+  Result:= EmptyStr;
+  if (APrice=0) and AEmptyIfZero then Exit;
   PriceIntToRubKop(APrice, Rub, Kop, ANeedThousandSeparator);
   Result:= Rub + FormatSettings.DecimalSeparator + Kop;
 end;

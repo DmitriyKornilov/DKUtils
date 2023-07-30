@@ -5,7 +5,8 @@ unit DK_Vector;
 interface
 
 uses
-  Classes, SysUtils, DateUtils, Graphics, DK_Const, DK_DateUtils, DK_StrUtils;
+  Classes, SysUtils, DateUtils, Graphics,
+  DK_Const, DK_DateUtils, DK_StrUtils, DK_PriceUtils;
 
 type
   TOrderType = (otNone, otAscending, otDescending);
@@ -262,6 +263,13 @@ type
   function VStrToVector(const Str, Delimiter: String): TStrVector;
   function VVectorToStr(const V: TStrVector; const Delimiter: String): String;
   function VChangeDelimiters(const V: TStrVector; const OldDelimiter, NewDelimiter: String): TStrVector;
+
+  {PRICE}
+  function VPriceStrToInt(const APrices: TStrVector): TInt64Vector;
+  function VPriceIntToStr(const APrices: TInt64Vector;
+                          const ANeedThousandSeparator: Boolean = False;
+                          const AEmptyIfZero: Boolean = False): TStrVector;
+
 
   {СУММА/КОНКАТЕНАЦИЯ}
   function VSum(const V: TStrVector; const S: String): TStrVector;
@@ -3179,6 +3187,30 @@ begin
     TmpV:= VStrToVector(V[i], OldDelimiter);
     Result[i]:= VVectorToStr(TmpV, NewDelimiter);
   end;
+end;
+
+function VPriceStrToInt(const APrices: TStrVector): TInt64Vector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(APrices) then Exit;
+  VDim(Result, Length(APrices));
+  for i:= 0 to High(APrices) do
+    Result[i]:= PriceStrToInt(APrices[i]);
+end;
+
+function VPriceIntToStr(const APrices: TInt64Vector;
+                        const ANeedThousandSeparator: Boolean;
+                        const AEmptyIfZero: Boolean = False): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(APrices) then Exit;
+  VDim(Result, Length(APrices));
+  for i:= 0 to High(APrices) do
+    Result[i]:= PriceIntToStr(APrices[i], ANeedThousandSeparator, AEmptyIfZero);
 end;
 
 {ДЛЯ ВЕКТОРА ДАТ}
