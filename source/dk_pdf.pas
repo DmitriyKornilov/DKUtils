@@ -50,6 +50,8 @@ type
 
     function LoadImage(const AFileName: String;
                        out AImageWidth, AImageHeight: TPDFFloat): Integer;
+    function LoadImage(const AStream: TMemoryStream; const AExtension: String;
+                       out AImageWidth, AImageHeight: TPDFFloat): Integer;
   public
     constructor Create(const AFontDir: String);
     destructor  Destroy; override;
@@ -69,14 +71,35 @@ type
     procedure WriteImageTopLeft(const AFileName: String;
                                 const AX, AY: TPDFFloat; // top left point
                                 out AImageWidth, AImageHeight: TPDFFloat);
+    procedure WriteImageTopLeft(const AStream: TMemoryStream;
+                                const AExtension: String;
+                                const AX, AY: TPDFFloat; // top left point
+                                out AImageWidth, AImageHeight: TPDFFloat);
+
     procedure WriteImageBottomLeft(const AFileName: String;
                                 const AX, AY: TPDFFloat; // bottom left point
                                 out AImageWidth, AImageHeight: TPDFFloat);
+    procedure WriteImageBottomLeft(const AStream: TMemoryStream;
+                                const AExtension: String;
+                                const AX, AY: TPDFFloat; // bottom left point
+                                out AImageWidth, AImageHeight: TPDFFloat);
+
     procedure WriteImageTopLeftFitWidth(const AFileName: String;
                                 const AX, AY: TPDFFloat; // top left point
                                 const ANeedWidth: TPDFFloat;
                                 out AImageHeight: TPDFFloat);
+    procedure WriteImageTopLeftFitWidth(const AStream: TMemoryStream;
+                                const AExtension: String;
+                                const AX, AY: TPDFFloat; // top left point
+                                const ANeedWidth: TPDFFloat;
+                                out AImageHeight: TPDFFloat);
+
     procedure WriteImageBottomLeftFitWidth(const AFileName: String;
+                                const AX, AY: TPDFFloat; // bottom left point
+                                const ANeedWidth: TPDFFloat;
+                                out AImageHeight: TPDFFloat);
+    procedure WriteImageBottomLeftFitWidth(const AStream: TMemoryStream;
+                                const AExtension: String;
                                 const AX, AY: TPDFFloat; // bottom left point
                                 const ANeedWidth: TPDFFloat;
                                 out AImageHeight: TPDFFloat);
@@ -159,6 +182,11 @@ type
     // fit from ACoordX1 to ACoordX2 with keep image proportions
     procedure WriteImageFitWidth(const AFileName: String;
                                  const ACoordX1, ACoordX2: TPDFFloat);
+    procedure WriteImageFitWidth(const AStream: TMemoryStream;
+                                 const AExtension: String;
+                                 const ACoordX1, ACoordX2: TPDFFloat);
+
+
 
     procedure WriteHyperlink(const AText, AURL: String;
                         const AAlignment: TStringAlignment;
@@ -367,6 +395,17 @@ begin
   WriteSpace(H);
 end;
 
+procedure TPDFLetter.WriteImageFitWidth(const AStream: TMemoryStream;
+                                 const AExtension: String;
+                                 const ACoordX1, ACoordX2: TPDFFloat);
+var
+  W, H: TPDFFloat;
+begin
+  W:= ACoordX2 - ACoordX1;
+  WriteImageTopLeftFitWidth(AStream, AExtension, ACoordX1, FCurrentY, W, H);
+  WriteSpace(H);
+end;
+
 procedure TPDFLetter.WriteHyperlink(
                 const AText, AURL: String;
                 const AAlignment: TStringAlignment;
@@ -554,10 +593,6 @@ begin
     AWidths[i]:= FontWidth(AWords[i]);
 end;
 
-
-
-
-
 procedure TPDFWriter.AlignString(const ALeftX, ARightX, AY: TPDFFloat;
                                  const AText: String;
                                  const AAlignment: TStringAlignment);
@@ -724,7 +759,6 @@ begin
   FX2:= PDFToMM(FPage.Paper.W) - FMarginRight;
   FY2:= PDFToMM(FPage.Paper.H) - FMarginBottom;
 
-
   if ShowFrame then
   begin
     W:= 1;
@@ -735,14 +769,29 @@ begin
   end;
 end;
 
-
-
 function TPDFWriter.LoadImage(const AFileName: String;
                               out AImageWidth, AImageHeight: TPDFFloat): Integer;
 begin
   Result:= FDocument.Images.AddFromFile(AFileName);
   AImageWidth:= PDFtoMM(FDocument.Images[Result].Width);
   AImageHeight:= PDFtoMM(FDocument.Images[Result].Height);
+end;
+
+function TPDFWriter.LoadImage(const AStream: TMemoryStream;
+  const AExtension: String; out AImageWidth, AImageHeight: TPDFFloat): Integer;
+var
+  Handler: TFPCustomImageReaderClass;
+begin
+  Result:= -1;
+  AImageWidth:= 0;
+  AImageHeight:= 0;
+  if Assigned(AStream) and (not SEmpty(AExtension)) then
+  begin
+    Handler:= TFPCustomImage.FindReaderFromExtension(AExtension);
+    Result:= Document.Images.AddFromStream(AStream, Handler);
+    AImageWidth:= PDFtoMM(FDocument.Images[Result].Width);
+    AImageHeight:= PDFtoMM(FDocument.Images[Result].Height);
+  end;
 end;
 
 procedure TPDFWriter.WriteImageTopLeft(const AFileName: String;
@@ -752,6 +801,16 @@ var
   Ind: Integer;
 begin
   Ind:= LoadImage(AFileName, AImageWidth, AImageHeight);
+  FPage.DrawImage(AX, AY+AImageHeight, AImageWidth, AImageHeight, Ind);
+end;
+
+procedure TPDFWriter.WriteImageTopLeft(const AStream: TMemoryStream; const AExtension: String;
+                                const AX, AY: TPDFFloat; // top left point
+                                out AImageWidth, AImageHeight: TPDFFloat);
+var
+  Ind: Integer;
+begin
+  Ind:= LoadImage(AStream, AExtension, AImageWidth, AImageHeight);
   FPage.DrawImage(AX, AY+AImageHeight, AImageWidth, AImageHeight, Ind);
 end;
 
@@ -765,6 +824,16 @@ begin
   FPage.DrawImage(AX, AY, AImageWidth, AImageHeight, Ind);
 end;
 
+procedure TPDFWriter.WriteImageBottomLeft(const AStream: TMemoryStream; const AExtension: String;
+                                const AX, AY: TPDFFloat; // bottom left point
+                                out AImageWidth, AImageHeight: TPDFFloat);
+var
+  Ind: Integer;
+begin
+  Ind:= LoadImage(AStream, AExtension, AImageWidth, AImageHeight);
+  FPage.DrawImage(AX, AY, AImageWidth, AImageHeight, Ind);
+end;
+
 procedure TPDFWriter.WriteImageTopLeftFitWidth(const AFileName: String;
                                 const AX, AY: TPDFFloat; // top left point
                                 const ANeedWidth: TPDFFloat;
@@ -774,6 +843,20 @@ var
   ImageWidth, ImageHeight: TPDFFloat;
 begin
   Ind:= LoadImage(AFileName, ImageWidth, ImageHeight);
+  AImageHeight:= ImageHeight * ANeedWidth / ImageWidth;
+  FPage.DrawImage(AX, AY+AImageHeight, ANeedWidth, AImageHeight, Ind);
+end;
+
+procedure TPDFWriter.WriteImageTopLeftFitWidth(const AStream: TMemoryStream;
+                                const AExtension: String;
+                                const AX, AY: TPDFFloat; // top left point
+                                const ANeedWidth: TPDFFloat;
+                                out AImageHeight: TPDFFloat);
+var
+  Ind: Integer;
+  ImageWidth, ImageHeight: TPDFFloat;
+begin
+  Ind:= LoadImage(AStream, AExtension, ImageWidth, ImageHeight);
   AImageHeight:= ImageHeight * ANeedWidth / ImageWidth;
   FPage.DrawImage(AX, AY+AImageHeight, ANeedWidth, AImageHeight, Ind);
 end;
@@ -791,9 +874,19 @@ begin
   FPage.DrawImage(AX, AY, ANeedWidth, AImageHeight, Ind);
 end;
 
-
-
-
+procedure TPDFWriter.WriteImageBottomLeftFitWidth(const AStream: TMemoryStream;
+                                const AExtension: String;
+                                const AX, AY: TPDFFloat; // bottom left point
+                                const ANeedWidth: TPDFFloat;
+                                out AImageHeight: TPDFFloat);
+var
+  Ind: Integer;
+  ImageWidth, ImageHeight: TPDFFloat;
+begin
+  Ind:= LoadImage(AStream, AExtension, ImageWidth, ImageHeight);
+  AImageHeight:= ImageHeight * ANeedWidth / ImageWidth;
+  FPage.DrawImage(AX, AY, ANeedWidth, AImageHeight, Ind);
+end;
 
 procedure TPDFWriter.WriteURL(const ALeftX, ARightX, AY: TPDFFloat;
                         const AText, AURL: String;
@@ -815,14 +908,10 @@ begin
   SetFontColor(C);
 end;
 
-
-
 procedure TPDFWriter.SaveToFile(const AFileName: String);
 begin
   FDocument.SaveToFile(AFileName);
 end;
-
-
 
 end.
 

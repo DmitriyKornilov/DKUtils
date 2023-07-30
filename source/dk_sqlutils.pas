@@ -319,6 +319,7 @@ function QFieldFile(const AFieldName: String; var AStream: TMemoryStream): Boole
 begin
   Result:= False;
   if (not Assigned(AStream)) or QIsNull(AFieldName) then Exit;
+  AStream.Clear;
   (SqlUtilsQuery.FieldByName(AFieldName) as TBlobField).SaveToStream(AStream);
   AStream.Position:= 0;
   Result:= True;
