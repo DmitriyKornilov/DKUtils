@@ -170,7 +170,8 @@ type
   protected
     function BusyBottomSpace: TPDFFloat; virtual;
     procedure NextString(const AInterval: TPDFFloat=1.0);
-    function NextPage(const ARowHeight, ANewPageTopSpace: TPDFFloat): Boolean;
+    function NextPage(const ARowHeight, ANewPageTopSpace: TPDFFloat;
+                      const AIsNotWrap: Boolean): Boolean;
   public
     property CurrentY: TPDFFloat read  FCurrentY;
     procedure WriteSpace(const ADeltaY: TPDFFloat);  // inc CurrentY
@@ -252,7 +253,6 @@ var
   ImageWidth, ImageHeight, W, H, X, Y: TPDFFloat;
   RowHeight, LeftMaxWidth, TextHeight, TotalHeight: TPDFFloat;
 begin
-
   //высота строки текста
   RowHeight:= FontHeight*(1+AInterval);
   //высота, занимаемая текстом слева
@@ -270,7 +270,7 @@ begin
   if (AStampIndex<0) and (ASignIndex<0) then //нет ни факсимиле ни печати
   begin
     TotalHeight:= TextHeight + AAfterSpace;
-    NextPage(TotalHeight, 0);
+    NextPage(TotalHeight, 0, True {нельзя разрывать});
     WriteTextRows(AText, saLeft, AInterval, AIndentMM);
     AlignString(PageX1, PageX2, CurrentY, AName, saRight);
   end
@@ -286,7 +286,7 @@ begin
       TotalHeight:= TextHeight + AAfterSpace;
       if H>TextHeight then
         TotalHeight:= H;
-      NextPage(TotalHeight, 0);
+      NextPage(TotalHeight, 0, True {нельзя разрывать});
 
       Y:= H/2 - TextHeight;
       if Y>0 then
@@ -310,7 +310,7 @@ begin
         TotalHeight:= TextHeight  + AAfterSpace;
         if H>TextHeight then
           TotalHeight:= H;
-        NextPage(TotalHeight, 0);
+        NextPage(TotalHeight, 0, True {нельзя разрывать});
 
         Y:= H/2 - TextHeight;
         if Y>0 then
@@ -416,29 +416,35 @@ var
 begin
   NextString(AInterval);
   RowHeight:= (1 + AInterval) * FontHeight;
-  NextPage(RowHeight, RowHeight);
+  NextPage(RowHeight, RowHeight, False {можно перенести});
   WriteURL(PageX1+AIndentMM, PageX2, FCurrentY, AText, AURL, AAlignment);
 end;
 
-function TPDFLetter.NextPage(const ARowHeight, ANewPageTopSpace: TPDFFloat): Boolean;
+function TPDFLetter.NextPage(const ARowHeight, ANewPageTopSpace: TPDFFloat;
+                             const AIsNotWrap: Boolean): Boolean;
 var
   PageSpace: TPDFFloat;
 begin
-  Result:= False;
+  Result:= False; //переход на следующую страницу не нужен
   //свободное место до конца страницы с учетом данных внизу страницы
   PageSpace:= PageY2 - BusyBottomSpace - FCurrentY;
-  if ARowHeight>PageSpace then
+
+  if ARowHeight>PageSpace then //текст не умещается на странице
   begin
-    //свободное место до конца страницы без учета данных внизу страницы
-    PageSpace:= PageY2 - FCurrentY;
-    if ARowHeight>PageSpace then
-    begin
-      AddPage(MarginLeft, MarginRight, MarginTop, MarginBottom);
-      SetFont(FCurrentFontIndex, FCurrentFontSize);
-      WriteSpace(ANewPageTopSpace);
-      Result:= True;
+    if AIsNotWrap then //текст не может быть разорван
+      Result:= True    //т.е. обязательно нужен переход на следующую страницу
+    else begin         //текст может быть разорван
+      //свободное место до конца страницы без учета данных внизу страницы
+      PageSpace:= PageY2 - FCurrentY;
+      if ARowHeight>PageSpace then //текст все равно не умещается
+        Result:= True;             //т.е. нужен переход на следующую страницу
     end;
   end;
+
+  if not Result then Exit;
+  AddPage(MarginLeft, MarginRight, MarginTop, MarginBottom);
+  SetFont(FCurrentFontIndex, FCurrentFontSize);
+  WriteSpace(ANewPageTopSpace);
 end;
 
 procedure TPDFLetter.WriteTextRow(
@@ -451,7 +457,7 @@ var
 begin
   NextString(AInterval);
   RowHeight:= (1 + AInterval) * FontHeight;
-  NextPage(RowHeight, RowHeight);
+  NextPage(RowHeight, RowHeight, False {можно перенести});
   WriteString(PageX1+AIndentMM, PageX2, FCurrentY, AText, AAlignment);
 end;
 
