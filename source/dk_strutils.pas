@@ -51,11 +51,14 @@ type
   function SMetric(const AFont: TFont): TLCLTextMetric;
   function SNameLong(const AFamily, AName, APatronymic: String): String;
   function SNameShort(const AFamily, AName, APatronymic: String): String;
+  function SNameShort(const AFullName: String): String;
   function SFileName(const AFileName, AExtention: String): String;
   function SFromStrings(const AStrings: TStrings; const ADelimiter: String = SYMBOL_SPACE): String;
   procedure SToStrings(const AStr: String; const AStrings: TStrings; const ADelimiter: String);
 
 implementation
+
+uses DK_Vector;
 
 function SSetUTF8(const AStr: String): String;
 var
@@ -356,6 +359,20 @@ begin
     Result:= Result + ' ' + SCopy(AName, 1, 1) + '.';
   if not SSame(APatronymic, EmptyStr) then
     Result:= Result + SCopy(APatronymic, 1, 1) + '.';
+end;
+
+function SNameShort(const AFullName: String): String;
+var
+  V: TStrVector;
+begin
+  Result:= EmptyStr;
+  V:= VStrToVector(AFullName, SYMBOL_SPACE);
+  if VIsNil(V) then Exit;
+  Result:= STrim(SFirstUpper(V[0]));
+  if Length(V)>1 then
+    Result:= Result + SYMBOL_SPACE + SUpper(SSymbolFirst(STrim(V[1]))) + '.';
+  if Length(V)>2 then
+    Result:= Result + SUpper(SSymbolFirst(STrim(V[2]))) + '.';
 end;
 
 function SFileName(const AFileName, AExtention: String): String;
