@@ -27,7 +27,7 @@ type
   function SSame(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Boolean;
   function SEmpty(const AStr: String): Boolean;
   function SCompare(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Integer;
-  function SPos(const AStr, AValue: String; const AStartPos: Integer = 1): Integer;
+  function SPos(const AStr, AValue: String; const AStartPos: Integer = 1; const ACaseSensitivity: Boolean = True): Integer;
   function SFind(const AStr, AValue: String; const ACaseSensitivity: Boolean = True): Boolean;
   function SCopy(const AStr: String; const AStart, AEnd: Integer): String;
   function SCopyCount(const AStr: String; const AStart, ACount: Integer): String;
@@ -43,6 +43,7 @@ type
   function SFillLeft(const AStr: String; const ANeedLength: Integer): String;
   function SSymbolType(const ASymbol: String): TSymbolType;
   function SSymbolType(const AStr: String; const ASymbolPos: Integer): TSymbolType;
+  function SIsHyphenSymbol(const ASymbol: String): Boolean;
   function SFont(const AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): TFont;
   function SWidth(const AStr: String; const AFont: TFont): Integer;
   function SWidth(const AStr, AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): Integer;
@@ -53,6 +54,9 @@ type
   function SNameShort(const AFamily, AName, APatronymic: String): String;
   function SNameShort(const AFullName: String): String;
   function SFileName(const AFileName, AExtention: String): String;
+  function SFileNameCheck(const AFileName, ASymbolInsteadBad: String): String;
+  function SReplace(const AStr, AOld, ANew: String; const ACaseSensitivity: Boolean = True;
+                    const AMaxReplaceCount: Integer = 0 {replace all} ): String;
   function SFromStrings(const AStrings: TStrings; const ADelimiter: String = SYMBOL_SPACE): String;
   procedure SToStrings(const AStr: String; const AStrings: TStrings; const ADelimiter: String);
 
@@ -153,9 +157,12 @@ begin
     Result:= UTF8CompareStr(SUpper(AStr1), SUpper(AStr2));
 end;
 
-function SPos(const AStr, AValue: String; const AStartPos: Integer = 1): Integer;
+function SPos(const AStr, AValue: String; const AStartPos: Integer = 1; const ACaseSensitivity: Boolean = True): Integer;
 begin
-  Result:= UTF8Pos(AValue, AStr, AStartPos);
+  if ACaseSensitivity then
+    Result:= UTF8Pos(AValue, AStr, AStartPos)
+  else
+    Result:= UTF8Pos(SUpper(AValue), SUpper(AStr), AStartPos);
 end;
 
 function SFind(const AStr, AValue: String; const ACaseSensitivity: Boolean): Boolean;
@@ -268,6 +275,11 @@ end;
 function SSymbolType(const AStr: String; const ASymbolPos: Integer): TSymbolType;
 begin
   Result:=  SSymbolType(SSymbol(AStr,ASymbolPos));
+end;
+
+function SIsHyphenSymbol(const ASymbol: String): Boolean;
+begin
+  Result:= SSame(ASymbol, SYMBOL_HYPHEN);
 end;
 
 function SFont(const AFontName: String; const AFontSize: Single; const AFontStyle: TFontStyles=[]): TFont;
@@ -385,6 +397,36 @@ begin
   S:= SRight(AFileName, N);
   if not SSame(S, AExtention) then
     Result:= Result + '.' + AExtention;
+end;
+
+function SFileNameCheck(const AFileName, ASymbolInsteadBad: String): String;
+var
+  i, n: Integer;
+begin
+  Result:= EmptyStr;
+  if SEmpty(AFileName) then Exit;
+  n:= Length(SYMBOLS_BADFILENAME);
+  Result:= AFileName;
+  for i:= 1 to n do
+    Result:= SReplace(Result, SSymbol(SYMBOLS_BADFILENAME, i), ASymbolInsteadBad);
+end;
+
+function SReplace(const AStr, AOld, ANew: String;
+                  const ACaseSensitivity: Boolean = True;
+                  const AMaxReplaceCount: Integer = 0 {replace all}): String;
+var
+  V: TStrVector;
+begin
+  V:= VStrToVector(AStr, AOld, ACaseSensitivity);
+  if Length(V)<=1 then
+    Result:= AStr
+  else if AMaxReplaceCount=0 then
+    Result:= VVectorToStr(V, ANew)
+  else if High(V)<=AMaxReplaceCount then
+    Result:= VVectorToStr(V, ANew)
+  else
+    Result:= VVectorToStr(VCut(V,0,AMaxReplaceCount), ANew) + AOld +
+             VVectorToStr(VCut(V,AMaxReplaceCount+1), AOld);
 end;
 
 function SFromStrings(const AStrings: TStrings; const ADelimiter: String = SYMBOL_SPACE): String;

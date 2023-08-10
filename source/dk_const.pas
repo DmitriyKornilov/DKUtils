@@ -16,7 +16,7 @@ const
   SYMBOL_OPENBRACKET  = '(';
   SYMBOL_CLOSEBRACKET = ')';
   SYMBOL_SPACE        = ' ';                      //пробел
-  SYMBOL_CARRY        = '-';                      //символ переноса слова
+  SYMBOL_HYPHEN       = '-';                      //символ переноса слова
   SYMBOLS_SEPARATOR   = SYMBOL_SPACE;             //символы разделения слов
   SYMBOLS_PUNCTUATION = '-,;:.?!/\()"«»';         //пунктуация, разделители
   SYMBOLS_VOWEL       = 'АЕЁИОУЭЫЮЯ';             //гласные буквы
@@ -34,6 +34,8 @@ const
   SYMBOLS_KEYBOARD = SYMBOLS_DIGITS + SYMBOLS_OTHER + SYMBOL_SPACE +
                      LETTERS_ENGLISH_LOWER + LETTERS_ENGLISH_UPPER +
                      LETTERS_RUSSIAN_LOWER + LETTERS_RUSSIAN_UPPER;
+
+  SYMBOLS_BADFILENAME = '/\:*?<>|';
 
   STR_TRUE     = 'да';
   STR_FALSE    = 'нет';

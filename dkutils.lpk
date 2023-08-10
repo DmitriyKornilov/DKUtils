@@ -78,7 +78,7 @@
       </Item>
       <Item>
         <Filename Value="source\dk_ppi.pas"/>
-        <UnitName Value="dk_ppi"/>
+        <UnitName Value="DK_PPI"/>
       </Item>
       <Item>
         <Filename Value="source\dk_heaptrace.pas"/>
@@ -87,6 +87,10 @@
       <Item>
         <Filename Value="source\dk_pdf.pas"/>
         <UnitName Value="DK_PDF"/>
+      </Item>
+      <Item>
+        <Filename Value="source\dk_ctrlutils.pas"/>
+        <UnitName Value="dk_ctrlutils"/>
       </Item>
     </Files>
     <RequiredPkgs>

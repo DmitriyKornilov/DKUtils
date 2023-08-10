@@ -593,7 +593,7 @@ procedure TPDFWriter.GetWords(const AText: String;
 var
   i: Integer;
 begin
-  AWords:= TextToWords(AText);
+  AWords:= TextToWords(AText, False);
   VDim(AWidths{%H-}, Length(AWords));
   for i:= 0 to High(AWords) do
     AWidths[i]:= FontWidth(AWords[i]);
@@ -627,8 +627,14 @@ var
 begin
   SpaceWidth:= FontWidth(' ');
   GetWords(AText, Words, Widths);
-  TotalWidth:= VSum(Widths);
+  if VIsNil(Words) then Exit;
+  if Length(Words)=1 then
+  begin
+    AlignString(ALeftX, ARightX, AY, VFirst(Words), saLeft);
+    Exit;
+  end;
 
+  TotalWidth:= VSum(Widths);
   //extra space
   SpaceWidth:= (ARightX - ALeftX - TotalWidth) / High(Words);
 

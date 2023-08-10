@@ -10,8 +10,9 @@ uses
  {TextToParts - разбивает текст AText на части, разделенные ADelimiter . Возвращает вектор этих частей}
  function TextToParts(const AText, ADelimiter: String): TStrVector;
 
- {TextToWords - разбивает текст AText на слова. Возвращает вектор этих слов}
- function TextToWords(const AText: String): TStrVector;
+ {TextToWords - разбивает текст AText на слова. Возвращает вектор этих слов
+  ADivideByHyphen=True - разделяет сложные слова по дефису}
+ function TextToWords(const AText: String; const ADivideByHyphen: Boolean): TStrVector;
 
  {WordToParts - разбивает слово на слоги для возможного переноса на другую строку.
  Возвращает вектор этих слогов.
@@ -29,6 +30,7 @@ uses
  function TextToCell(var AText: String; const AFont: TFont;
                    const ACellWidth: Integer;
                    const ARedLineWidth: Integer = 0;
+                   const ADivideByHyphen: Boolean = False;
                    const AWrapToWordParts: Boolean = False;
                    const ABreakSymbol: String = SYMBOL_BREAK): Integer; //result:= CellHeight
  {TextToWidth - разбивает в текст AText с шрифтом AFont на части так,
@@ -40,6 +42,7 @@ uses
  procedure TextToWidth(const AText: String; const AFont: TFont; const AWidth: Integer;
                   out AHeight: Integer;
                   out ARows: TStrVector;
+                  const ADivideByHyphen: Boolean;
                   const AWrapToWordParts: Boolean = False;
                   const ARedLineWidth: Integer = 0);
 
@@ -70,16 +73,18 @@ begin
 end;
 
 //вектор слов из текста
-function TextToWords(const AText: String): TStrVector;
+function TextToWords(const AText: String; const ADivideByHyphen: Boolean): TStrVector;
 var
   i, WordBegin, WordEnd, N: PtrInt;
   Text, S: String;
+  IsWordEnd: Boolean;
 begin
   Result:= nil;
   Text:= STrim(AText);
   N:= SLength(Text);
   if N=0 then Exit;
   WordBegin:= 1;
+  IsWordEnd:= False;
   i:= 1;
   while i<N do
   begin
@@ -87,11 +92,21 @@ begin
     if SSymbolType(SSymbol(Text,i))= stSeparator then
     begin
       WordEnd:= i-1;
+      IsWordEnd:= True;
+    end
+    else if ADivideByHyphen and SIsHyphenSymbol(SSymbol(Text,i)) then
+    begin
+      WordEnd:= i;
+      IsWordEnd:= True;
+    end;
+    if IsWordEnd then
+    begin
       S:= STrim(SCopy(Text, WordBegin, WordEnd));
       if not SSame(S, EmptyStr) then
         VAppend(Result, S);
       Inc(i);
       WordBegin:= i;
+      IsWordEnd:= False;
     end;
   end;
   S:= STrim(SCopy(Text, WordBegin, N));
@@ -201,6 +216,7 @@ end;
 procedure TextToWidth(const AText: String; const AFont: TFont; const AWidth: Integer;
                   out AHeight: Integer;
                   out ARows: TStrVector;
+                  const ADivideByHyphen: Boolean;
                   const AWrapToWordParts: Boolean = False;
                   const ARedLineWidth: Integer = 0);
 var
@@ -225,7 +241,7 @@ var
     while n<=High(WordParts) do
     begin
       NewValue:= NewValue + WordParts[n];
-      if SWidth(NewValue + SYMBOL_CARRY, AFont)<ARowWidth then
+      if SWidth(NewValue + SYMBOL_HYPHEN, AFont)<ARowWidth then
       begin
         OldValue:= NewValue;
         n:= n + 1;
@@ -243,7 +259,7 @@ var
           n:= n + 1;
         end;
         if VIsNil(ARowValues) or ANeedCarrySymbolAfterFirst then
-          VAppend(ARowValues, OldValue + SYMBOL_CARRY)
+          VAppend(ARowValues, OldValue + SYMBOL_HYPHEN)
         else
           VAppend(ARowValues, OldValue);
         NewValue:= EmptyStr;
@@ -263,7 +279,7 @@ begin
   //ширина ячейки
   RowWidth:= AWidth - SpaceWidth;
   //разбиваем текст на слова
-  Words:= TextToWords(Strim(AText));
+  Words:= TextToWords(Strim(AText), ADivideByHyphen);
   //добавляем красную строку перед первым словом, если нужно
   if ARedLineWidth>0 then
     Words[0]:= SRedLine(ARedLineWidth div SpaceWidth) + Words[0];
@@ -326,78 +342,20 @@ begin
   end;
 
   AHeight:= SHeight(AFont) * Length(ARows) + 2;
-
-  {AHeight:= 0;
-  ARows:= nil;
-  if SEmpty(AText) then Exit;
-
-  //ширина пробела
-  SpaceWidth:= SWidth(SYMBOL_SPACE, AFont);
-  //ширина ячейки
-  RowWidth:= AWidth - SpaceWidth;
-  //разбиваем текст на слова
-  Words:= TextToWords(Strim(AText));
-  //добавляем красную строку перед первым словом, если нужно
-  if ARedLineWidth>0 then
-    Words[0]:= SRedLine(ARedLineWidth div SpaceWidth) + Words[0];
-
-  //заполняем строки
-  OldRowValue:= Words[0];
-  for i:= 1 to High(Words) do
-  begin
-    NewRowValue:= OldRowValue + SYMBOL_SPACE + Words[i]; //добавляем пробел и слово
-    if SWidth(NewRowValue, AFont)<RowWidth then
-      OldRowValue:= NewRowValue
-    else begin
-      if AWrapToWordParts then //перенос по слогам
-      begin
-        WordParts:= WordToParts(Words[i]); //разбиваем слово на слоги
-        OldRowValue2:= OldRowValue;
-        NewRowValue:= OldRowValue + SYMBOL_SPACE;
-        for j:=0 to High(WordParts) do
-        begin
-          NewRowValue:= NewRowValue + WordParts[j];
-          if SWidth(NewRowValue + SYMBOL_CARRY, AFont)<RowWidth then
-            OldRowValue2:= NewRowValue
-          else begin
-            if SSame(OldRowValue, OldRowValue2) then //не поместилось ни одного слога
-            begin
-              VAppend(ARows, OldRowValue);
-              OldRowValue:= Words[i];
-            end
-            else begin //поместилась какая-то часть слогов
-              VAppend(ARows, OldRowValue2 + SYMBOL_CARRY);
-              OldRowValue:= EmptyStr;
-              for k:= j to High(WordParts) do
-                OldRowValue:= OldRowValue + WordParts[k];
-            end;
-            break;
-          end;
-        end;
-      end
-      else begin //сохранять целые слова
-        VAppend(ARows, OldRowValue);
-        OldRowValue:= Words[i];
-      end;
-    end;
-  end;
-  VAppend(ARows, OldRowValue); //последнее значение
-
-  AHeight:= SHeight('Х', AFont) * Length(ARows) + 2;  }
 end;
 
 function TextToCell(var AText: String; const AFont: TFont;
                     const ACellWidth: Integer;
                     const ARedLineWidth: Integer = 0;
+                    const ADivideByHyphen: Boolean = False;
                     const AWrapToWordParts: Boolean = False;
                     const ABreakSymbol: String = SYMBOL_BREAK): Integer; //result:= CellHeight
 var
   TotalHeight: Integer;
   RowValues: TStrVector;
 begin
-  TextToWidth(AText, AFont, ACellWidth,
-                 TotalHeight, RowValues,
-                 AWrapToWordParts, ARedLineWidth);
+  TextToWidth(AText, AFont, ACellWidth, TotalHeight, RowValues,
+              ADivideByHyphen, AWrapToWordParts, ARedLineWidth);
 
   if TotalHeight>0 then
   begin

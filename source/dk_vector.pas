@@ -260,9 +260,11 @@ type
   procedure VToStrings(const V: TStrVector; const S: TStrings);
 
   {СТРОКОВЫЙ ВЕКТОР И СТРОКА}
-  function VStrToVector(const Str, Delimiter: String): TStrVector;
+  function VStrToVector(const Str, Delimiter: String; const ACaseSensitivity: Boolean = True): TStrVector;
   function VVectorToStr(const V: TStrVector; const Delimiter: String): String;
-  function VChangeDelimiters(const V: TStrVector; const OldDelimiter, NewDelimiter: String): TStrVector;
+  function VStringReplace(const V: TStrVector; const OldString, NewString: String;
+                          const ACaseSensitivity: Boolean = True;
+                          const AMaxReplaceCount: Integer = 0 {replace all}): TStrVector;
 
   {PRICE}
   function VPriceStrToInt(const APrices: TStrVector): TInt64Vector;
@@ -3126,7 +3128,7 @@ end;
 
 {СТРОКОВЫЙ ВЕКТОР И СТРОКА}
 
-function VStrToVector(const Str, Delimiter: String): TStrVector;
+function VStrToVector(const Str, Delimiter: String; const ACaseSensitivity: Boolean = True): TStrVector;
 var
   S: String;
   n, LDelimiter: Integer;
@@ -3142,7 +3144,7 @@ begin
   end;
 
   S:= Str;
-  n:= SPos(S, Delimiter);
+  n:= SPos(S, Delimiter, 1, ACaseSensitivity);
   while n>0 do
   begin
     if n=1 then
@@ -3154,13 +3156,11 @@ begin
       VAppend(Result, SCopy(S, 1, n-1));
       S:= SDel(S, 1, n+LDelimiter-1);
     end;
-    n:= SPos(S, Delimiter);
+    n:= SPos(S, Delimiter, 1, ACaseSensitivity);
   end;
 
   if SLength(S)>0 then
     VAppend(Result, S);
-
-
 end;
 
 function VVectorToStr(const V: TStrVector; const Delimiter: String): String;
@@ -3174,19 +3174,17 @@ begin
     Result:= Result + Delimiter + V[i];
 end;
 
-function VChangeDelimiters(const V: TStrVector; const OldDelimiter, NewDelimiter: String): TStrVector;
+function VStringReplace(const V: TStrVector; const OldString, NewString: String;
+                        const ACaseSensitivity: Boolean = True;
+                        const AMaxReplaceCount: Integer = 0 {replace all}): TStrVector;
 var
   i: Integer;
-  TmpV: TStrVector;
 begin
   Result:= nil;
   if VIsNil(V) then Exit;
   VDim(Result, Length(V));
   for i:= 0 to High(V) do
-  begin
-    TmpV:= VStrToVector(V[i], OldDelimiter);
-    Result[i]:= VVectorToStr(TmpV, NewDelimiter);
-  end;
+    SReplace(V[i], OldString, NewString, ACaseSensitivity, AMaxReplaceCount);
 end;
 
 function VPriceStrToInt(const APrices: TStrVector): TInt64Vector;
