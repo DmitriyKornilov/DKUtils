@@ -3184,7 +3184,7 @@ begin
   if VIsNil(V) then Exit;
   VDim(Result, Length(V));
   for i:= 0 to High(V) do
-    SReplace(V[i], OldString, NewString, ACaseSensitivity, AMaxReplaceCount);
+    Result[i]:= SReplace(V[i], OldString, NewString, ACaseSensitivity, AMaxReplaceCount);
 end;
 
 function VPriceStrToInt(const APrices: TStrVector): TInt64Vector;
