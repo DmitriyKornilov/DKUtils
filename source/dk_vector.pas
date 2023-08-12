@@ -76,6 +76,15 @@ type
   procedure VChangeIf(var V: TBoolVector;  const IfValue, NewValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1);
   procedure VChangeIf(var V: TColorVector; const IfValue, NewValue: TColor; FromIndex: Integer=-1; ToIndex: Integer=-1);
 
+  procedure VChangeIf(var V: TIntVector; const NewValue: Integer;    const IfVector: TIntVector; const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1);
+  procedure VChangeIf(var V: TInt64Vector; const NewValue: Int64;    const IfVector: TIntVector; const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1);
+  procedure VChangeIf(var V: TStrVector; const NewValue: String;     const IfVector: TIntVector; const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1);
+  procedure VChangeIfDate(var V: TDateVector; const NewValue: TDate; const IfVector: TIntVector; const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1);
+  procedure VChangeIfTime(var V: TTimeVector; const NewValue: TTime; const IfVector: TIntVector; const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1);
+  procedure VChangeIf(var V: TBoolVector; const NewValue: Boolean;   const IfVector: TIntVector; const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1);
+  procedure VChangeIf(var V: TColorVector; const NewValue: TColor;   const IfVector: TIntVector; const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1);
+
+
   {ПЕРВЫЙ И ПОСЛЕДНИЙ ЭЛЕМЕНТЫ ВЕКТОРА}
   function VFirst(const V: TIntVector): Integer;
   function VFirst(const V: TInt64Vector): Int64;
@@ -795,6 +804,90 @@ begin
   if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
     for i:= FromIndex to ToIndex do
       if V[i]=IfValue then V[i]:= NewValue;
+end;
+
+procedure VChangeIf(var V: TIntVector; const NewValue: Integer;
+                    const IfVector: TIntVector; const IfValue: Integer;
+                    FromIndex: Integer; ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if Length(V)<>Length(IfVector) then Exit;
+  if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
+    for i:= FromIndex to ToIndex do
+      if IfVector[i]=IfValue then V[i]:= NewValue;
+end;
+
+procedure VChangeIf(var V: TInt64Vector; const NewValue: Int64;
+                    const IfVector: TIntVector; const IfValue: Integer;
+                    FromIndex: Integer; ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if Length(V)<>Length(IfVector) then Exit;
+  if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
+    for i:= FromIndex to ToIndex do
+      if IfVector[i]=IfValue then V[i]:= NewValue;
+end;
+
+procedure VChangeIf(var V: TStrVector; const NewValue: String;
+                    const IfVector: TIntVector; const IfValue: Integer;
+                    FromIndex: Integer; ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if Length(V)<>Length(IfVector) then Exit;
+  if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
+    for i:= FromIndex to ToIndex do
+      if IfVector[i]=IfValue then V[i]:= NewValue;
+end;
+
+procedure VChangeIfDate(var V: TDateVector; const NewValue: TDate;
+                        const IfVector: TIntVector; const IfValue: Integer;
+                        FromIndex: Integer; ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if Length(V)<>Length(IfVector) then Exit;
+  if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
+    for i:= FromIndex to ToIndex do
+      if IfVector[i]=IfValue then V[i]:= NewValue;
+end;
+
+procedure VChangeIfTime(var V: TTimeVector; const NewValue: TTime;
+                        const IfVector: TIntVector; const IfValue: Integer;
+                        FromIndex: Integer; ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if Length(V)<>Length(IfVector) then Exit;
+  if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
+    for i:= FromIndex to ToIndex do
+      if IfVector[i]=IfValue then V[i]:= NewValue;
+end;
+
+procedure VChangeIf(var V: TBoolVector; const NewValue: Boolean;
+                    const IfVector: TIntVector; const IfValue: Integer;
+                    FromIndex: Integer; ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if Length(V)<>Length(IfVector) then Exit;
+  if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
+    for i:= FromIndex to ToIndex do
+      if IfVector[i]=IfValue then V[i]:= NewValue;
+end;
+
+procedure VChangeIf(var V: TColorVector; const NewValue: TColor;
+                    const IfVector: TIntVector; const IfValue: Integer;
+                    FromIndex: Integer; ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if Length(V)<>Length(IfVector) then Exit;
+  if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
+    for i:= FromIndex to ToIndex do
+      if IfVector[i]=IfValue then V[i]:= NewValue;
 end;
 
 //VChangeNotIn
@@ -2598,7 +2691,7 @@ var
 begin
   Result:= nil;
   if VIsNil(V) then Exit;
-  VDim(Values, Length(V), S);
+  VDim(Values{%H-}, Length(V), S);
   Result:= VSum(V, Values);
 end;
 
@@ -2608,7 +2701,7 @@ var
 begin
   Result:= nil;
   if VIsNil(V) then Exit;
-  VDim(Values, Length(V), S);
+  VDim(Values{%H-}, Length(V), S);
   Result:= VSum(Values, V);
 end;
 

@@ -74,6 +74,7 @@ begin
   if (APrice=0) and AEmptyIfZero then Exit;
   PriceIntToRubKop(APrice, Rub, Kop, ANeedThousandSeparator);
   Result:= Rub + FormatSettings.DecimalSeparator + Kop;
+  Result:= STrim(Result);
 end;
 
 function PriceToString(const APrice: Int64; const ANeedThousandSeparator: Boolean = False): String;
@@ -82,6 +83,7 @@ var
 begin
   PriceIntToRubKop(APrice, Rub, Kop, ANeedThousandSeparator);
   Result:= Rub + ' руб. ' + Kop + ' коп.';
+  Result:= STrim(Result);
 end;
 
 function NumToStr(s: String): String;
