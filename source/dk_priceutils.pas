@@ -5,7 +5,7 @@ unit DK_PriceUtils;
 interface
 
 uses
-  Classes, SysUtils, Math, DK_StrUtils;
+  Classes, SysUtils, Math, DK_StrUtils, DK_Const;
 
   {'1234,56' -> 123456 или '1 234,56' -> 123456}
   function PriceStrToInt(const APrice: String): Int64;
@@ -74,7 +74,7 @@ begin
   if (APrice=0) and AEmptyIfZero then Exit;
   PriceIntToRubKop(APrice, Rub, Kop, ANeedThousandSeparator);
   Result:= Rub + FormatSettings.DecimalSeparator + Kop;
-  Result:= STrim(Result);
+  Result:= SReplace(STrim(Result), SYMBOL_SPACE, SYMBOL_SPACE_NONBREAK);
 end;
 
 function PriceToString(const APrice: Int64; const ANeedThousandSeparator: Boolean = False): String;

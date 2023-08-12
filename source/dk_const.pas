@@ -10,6 +10,8 @@ var
   DefaultSelectionBGColor: TColor;
 
 const
+  SYMBOL_SPACE_NONBREAK: String = Char($C2) + Char($A0);  //неразрывный пробел
+
   SYMBOL_BREAK        = LineEnding;
   SYMBOL_EMPTY        = '';
   SYMBOL_COMMA        = ',';
