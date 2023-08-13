@@ -11,7 +11,10 @@ uses
  function TextToParts(const AText, ADelimiter: String): TStrVector;
 
  {TextToWords - разбивает текст AText на слова. Возвращает вектор этих слов
-  ADivideByHyphen=True - разделяет сложные слова по дефису}
+  ADivideByHyphen=True - разделяет сложные слова по дефису;
+  AIsSecondWordParts[i]=True, если i-ое слово является второй частью сложного слова, разделенного по дефису}
+ function TextToWords(const AText: String; const ADivideByHyphen: Boolean;
+                      out AIsSecondWordParts: TBoolVector): TStrVector;
  function TextToWords(const AText: String; const ADivideByHyphen: Boolean): TStrVector;
 
  {WordToParts - разбивает слово на слоги для возможного переноса на другую строку.
@@ -72,20 +75,30 @@ begin
     VAppend(Result, S);
 end;
 
-//вектор слов из текста
 function TextToWords(const AText: String; const ADivideByHyphen: Boolean): TStrVector;
+var
+  V: TBoolVector;
+begin
+  Result:= TextToWords(AText, ADivideByHyphen, V);
+end;
+
+//вектор слов из текста
+function TextToWords(const AText: String; const ADivideByHyphen: Boolean;
+                     out AIsSecondWordParts: TBoolVector): TStrVector;
 var
   i, WordBegin, WordEnd, N: PtrInt;
   Text, S: String;
   IsWordEnd: Boolean;
 begin
   Result:= nil;
+  AIsSecondWordParts:= nil;
   Text:= STrim(AText);
   N:= SLength(Text);
   if N=0 then Exit;
   WordBegin:= 1;
   IsWordEnd:= False;
   i:= 1;
+  VAppend(AIsSecondWordParts, False);
   while i<N do
   begin
     Inc(i);
@@ -93,11 +106,13 @@ begin
     begin
       WordEnd:= i-1;
       IsWordEnd:= True;
+      VAppend(AIsSecondWordParts, False);
     end
     else if ADivideByHyphen and SIsHyphenSymbol(SSymbol(Text,i)) then
     begin
       WordEnd:= i;
       IsWordEnd:= True;
+      VAppend(AIsSecondWordParts, True);
     end;
     if IsWordEnd then
     begin
@@ -222,6 +237,7 @@ procedure TextToWidth(const AText: String; const AFont: TFont; const AWidth: Int
 var
   i, SpaceWidth, RowWidth, TmpWidth: Integer;
   Words, RowValues: TStrVector;
+  IsOneWordFlags: TBoolVector;
   OldRowValue, NewRowValue: String;
 
   procedure DoWrapWord(const AWord: String; const ARowWidth: Integer;
@@ -279,7 +295,7 @@ begin
   //ширина ячейки
   RowWidth:= AWidth - SpaceWidth;
   //разбиваем текст на слова
-  Words:= TextToWords(Strim(AText), ADivideByHyphen);
+  Words:= TextToWords(Strim(AText), ADivideByHyphen, IsOneWordFlags);
   //добавляем красную строку перед первым словом, если нужно
   if ARedLineWidth>0 then
     Words[0]:= SRedLine(ARedLineWidth div SpaceWidth) + Words[0];
@@ -301,6 +317,8 @@ begin
     begin
        if SEmpty(OldRowValue) then
          NewRowValue:= Words[i]
+       else if IsOneWordFlags[i] then  //вторая часть сложного слова, разделенного по дефису
+         NewRowValue:= OldRowValue + Words[i] //добавляем вторую часть слова (дефис уже есть в первой части)
        else
          NewRowValue:= OldRowValue + SYMBOL_SPACE + Words[i]; //добавляем пробел и слово
        TmpWidth:= SWidth(NewRowValue, AFont);
