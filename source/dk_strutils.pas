@@ -38,6 +38,7 @@ type
   function SSymbolFirst(const AStr: String): String;
   function SSymbolLast(const AStr: String): String;
   function SDigit(const AStr: String; const ASymbolPos: Integer): Byte;
+  function SIsDigit(const ASymbol: String): Boolean;
   function SRedLine(const ASpacesCount: Integer): String;
   function SFillRight(const AStr: String; const ANeedLength: Integer): String;
   function SFillLeft(const AStr: String; const ANeedLength: Integer): String;
@@ -229,6 +230,11 @@ end;
 function SDigit(const AStr: String; const ASymbolPos: Integer): Byte;
 begin
   Result:= StrToInt(SSymbol(AStr, ASymbolPos));
+end;
+
+function SIsDigit(const ASymbol: String): Boolean;
+begin
+  Result:= SFind(SYMBOLS_DIGITS, ASymbol);
 end;
 
 function SRedLine(const ASpacesCount: Integer): String;
