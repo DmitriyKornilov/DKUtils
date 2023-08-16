@@ -176,38 +176,59 @@ begin
   SqlUtilsQuery.EnableControls;
 end;
 
-procedure QParamInt(const AParamName: String;
-  const AParamValue: Integer);
+function QParamByName(const AParamName: String; out AParam: TParam): Boolean;
 begin
-  SqlUtilsQuery.ParamByName(AParamName).AsInteger:= AParamValue;
+  AParam:= SqlUtilsQuery.Params.FindParam(AParamName);
+  Result:= Assigned(AParam);
+end;
+
+procedure QParamInt(const AParamName: String; const AParamValue: Integer);
+var
+  Param: TParam;
+begin
+  if QParamByName(AParamName, Param) then
+    Param.AsInteger:= AParamValue;
 end;
 
 procedure QParamInt64(const AParamName: String; const AParamValue: Int64);
+var
+  Param: TParam;
 begin
-  SqlUtilsQuery.ParamByName(AParamName).AsLargeInt:= AParamValue;
+  if QParamByName(AParamName, Param) then
+    Param.AsLargeInt:= AParamValue;
 end;
 
-procedure QParamStr(const AParamName: String;
-  const AParamValue: String);
+procedure QParamStr(const AParamName: String; const AParamValue: String);
+var
+  Param: TParam;
 begin
-  SqlUtilsQuery.ParamByName(AParamName).AsString:= AParamValue;
+  if QParamByName(AParamName, Param) then
+    Param.AsString:= AParamValue;
 end;
 
-procedure QParamDT(const AParamName: String;
-  const AParamValue: TDateTime);
+procedure QParamDT(const AParamName: String; const AParamValue: TDateTime);
+var
+  Param: TParam;
 begin
-  SqlUtilsQuery.ParamByName(AParamName).AsDateTime:= AParamValue;
+  if QParamByName(AParamName, Param) then
+    Param.AsDateTime:= AParamValue;
 end;
 
 procedure QParamFloat(const AParamName: String; const AParamValue: Double);
+var
+  Param: TParam;
 begin
-  SqlUtilsQuery.ParamByName(AParamName).AsFloat:= AParamValue;
+  if QParamByName(AParamName, Param) then
+    Param.AsFloat:= AParamValue;
 end;
 
 procedure QParamFile(const AParamName: String; const AFileName: String);
+var
+  Param: TParam;
 begin
   if not FileExists(AFileName) then Exit;
-  SqlUtilsQuery.ParamByName(AParamName).LoadFromFile(AFileName, ftBlob);
+  if QParamByName(AParamName, Param) then
+    Param.LoadFromFile(AFileName, ftBlob);
 end;
 
 procedure QParamsInt(const AParamValues: array of Integer;
