@@ -24,11 +24,12 @@ uses
   procedure QGotoBookmark(ABookmark: TBookmark);
   procedure QDisableControls;
   procedure QEnableControls;
-  procedure QParamInt(const AParamName: String; const AParamValue: Integer);
-  procedure QParamInt64(const AParamName: String; const AParamValue: Int64);
-  procedure QParamStr(const AParamName: String; const AParamValue: String);
-  procedure QParamDT(const AParamName: String; const AParamValue: TDateTime);
-  procedure QParamFloat(const AParamName: String; const AParamValue: Double);
+  procedure QParamNull(const AParamName: String);
+  procedure QParamInt(const AParamName: String; const AParamValue: Integer; const AIsNotNull: Boolean = True);
+  procedure QParamInt64(const AParamName: String; const AParamValue: Int64; const AIsNotNull: Boolean = True);
+  procedure QParamStr(const AParamName: String; const AParamValue: String; const AIsNotNull: Boolean = True);
+  procedure QParamDT(const AParamName: String; const AParamValue: TDateTime; const AIsNotNull: Boolean = True);
+  procedure QParamFloat(const AParamName: String; const AParamValue: Double; const AIsNotNull: Boolean = True);
   procedure QParamFile(const AParamName: String; const AFileName: String);
 
   procedure QParamsInt(const AParamValues: array of Integer; const AValueName: String = '');
@@ -182,57 +183,81 @@ begin
   Result:= Assigned(AParam);
 end;
 
-procedure QParamInt(const AParamName: String; const AParamValue: Integer);
+procedure QParamNull(const AParamName: String);
 var
   Param: TParam;
 begin
   if QParamByName(AParamName, Param) then
-    Param.AsInteger:= AParamValue;
+    Param.Value:= Null;
 end;
 
-procedure QParamInt64(const AParamName: String; const AParamValue: Int64);
+procedure QParamInt(const AParamName: String; const AParamValue: Integer; const AIsNotNull: Boolean = True);
 var
   Param: TParam;
 begin
-  if QParamByName(AParamName, Param) then
-    Param.AsLargeInt:= AParamValue;
+  if not QParamByName(AParamName, Param) then Exit;
+  if AIsNotNull then
+    Param.AsInteger:= AParamValue
+  else
+    Param.Value:= Null;
 end;
 
-procedure QParamStr(const AParamName: String; const AParamValue: String);
+procedure QParamInt64(const AParamName: String; const AParamValue: Int64; const AIsNotNull: Boolean = True);
 var
   Param: TParam;
 begin
-  if QParamByName(AParamName, Param) then
-    Param.AsString:= AParamValue;
+  if not QParamByName(AParamName, Param) then Exit;
+  if AIsNotNull then
+    Param.AsLargeInt:= AParamValue
+  else
+    Param.Value:= Null;
 end;
 
-procedure QParamDT(const AParamName: String; const AParamValue: TDateTime);
+procedure QParamStr(const AParamName: String; const AParamValue: String; const AIsNotNull: Boolean = True);
 var
   Param: TParam;
 begin
-  if QParamByName(AParamName, Param) then
-    Param.AsDateTime:= AParamValue;
+  if not QParamByName(AParamName, Param) then Exit;
+  if AIsNotNull then
+    Param.AsString:= AParamValue
+  else
+    Param.Value:= Null;
 end;
 
-procedure QParamFloat(const AParamName: String; const AParamValue: Double);
+procedure QParamDT(const AParamName: String; const AParamValue: TDateTime; const AIsNotNull: Boolean = True);
 var
   Param: TParam;
 begin
-  if QParamByName(AParamName, Param) then
-    Param.AsFloat:= AParamValue;
+  if not QParamByName(AParamName, Param) then Exit;
+  if AIsNotNull then
+    Param.AsDateTime:= AParamValue
+  else
+    Param.Value:= Null;
+end;
+
+procedure QParamFloat(const AParamName: String; const AParamValue: Double; const AIsNotNull: Boolean = True);
+var
+  Param: TParam;
+begin
+  if not QParamByName(AParamName, Param) then Exit;
+  if AIsNotNull then
+    Param.AsFloat:= AParamValue
+  else
+    Param.Value:= Null;
 end;
 
 procedure QParamFile(const AParamName: String; const AFileName: String);
 var
   Param: TParam;
 begin
-  if not FileExists(AFileName) then Exit;
-  if QParamByName(AParamName, Param) then
-    Param.LoadFromFile(AFileName, ftBlob);
+  if not QParamByName(AParamName, Param) then Exit;
+  if FileExists(AFileName) then
+    Param.LoadFromFile(AFileName, ftBlob)
+  else
+    Param.Value:= Null;
 end;
 
-procedure QParamsInt(const AParamValues: array of Integer;
-  const AValueName: String);
+procedure QParamsInt(const AParamValues: array of Integer; const AValueName: String);
 var
   i: Integer;
   S: String;
@@ -245,8 +270,7 @@ begin
       QParamInt(S + IntToStr(i+1), AParamValues[i]);
 end;
 
-procedure QParamsInt64(const AParamValues: array of Int64;
-  const AValueName: String);
+procedure QParamsInt64(const AParamValues: array of Int64; const AValueName: String);
 var
   i: Integer;
   S: String;
@@ -259,8 +283,7 @@ begin
       QParamInt64(S + IntToStr(i+1), AParamValues[i]);
 end;
 
-procedure QParamsStr(const AParamValues: array of String;
-  const AValueName: String);
+procedure QParamsStr(const AParamValues: array of String; const AValueName: String);
 var
   i: Integer;
   S: String;
@@ -273,8 +296,7 @@ begin
       QParamStr(S + IntToStr(i+1), AParamValues[i]);
 end;
 
-procedure QParamsDT(const AParamValues: array of TDateTime;
-  const AValueName: String);
+procedure QParamsDT(const AParamValues: array of TDateTime;  const AValueName: String);
 var
   i: Integer;
   S: String;
@@ -287,8 +309,7 @@ begin
       QParamDT(S + IntToStr(i+1), AParamValues[i]);
 end;
 
-procedure QParamsFloat(const AParamValues: array of Double;
-  const AValueName: String);
+procedure QParamsFloat(const AParamValues: array of Double; const AValueName: String);
 var
   i: Integer;
   S: String;
