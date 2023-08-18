@@ -63,6 +63,8 @@ uses
   function SqlUPDATE(const ATableName: String; const AFields: array of String): String;
   function SqlIN(const ATablePseud, AFieldName: String; const AValuesCount: Integer;
                  const AValueName: String = ''): String;
+  function SqlNOTIN(const ATablePseud, AFieldName: String; const AValuesCount: Integer;
+                 const AValueName: String = ''): String;
   function SqlEsc(const AStr: String; const ANeedSpaces: Boolean = True): String;
 
 implementation
@@ -525,6 +527,31 @@ begin
   for i:= 1 to AValuesCount-1 do
     Result:= Result + ', :' + S + IntToStr(i+1);
   Result:= Result + ')) ';
+end;
+
+function SqlNOTIN(const ATablePseud, AFieldName: String;
+                  const AValuesCount: Integer; const AValueName: String): String;
+var
+  i: Integer;
+  S: String;
+begin
+  Result:= EmptyStr;
+  if (AValuesCount<=0) or (AFieldName=EmptyStr) then Exit;
+  S:= EmptyStr;
+  if ATablePseud<>EmptyStr then
+    S:= SqlEsc(ATablePseud, False) + '.';
+  S:= S + SqlEsc(AFieldName, False);
+
+  Result:= ' (' + S;
+
+  S:= AValueName;
+  if S=EmptyStr then
+    S:= 'Value';
+  Result:= Result + ' NOT IN (:' + S + '1';
+  for i:= 1 to AValuesCount-1 do
+    Result:= Result + ', :' + S + IntToStr(i+1);
+  Result:= Result + ')) ';
+
 end;
 
 function SqlEsc(const AStr: String; const ANeedSpaces: Boolean = True): String;

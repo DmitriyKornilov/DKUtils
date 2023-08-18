@@ -5,9 +5,16 @@ unit DK_CtrlUtils;
 interface
 
 uses
-  Classes, SysUtils, Controls, Menus;
+  Classes, SysUtils, Controls, ExtCtrls, Menus, Forms;
 
- procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
+type
+
+TFormClass = class of TForm;
+
+procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
+
+function FormModalShow(AFormClass: TFormClass): Integer;
+function FormOnPanelCreate(AFormClass: TFormClass; APanel: TPanel): TForm;
 
 implementation
 
@@ -21,6 +28,30 @@ begin
   P := Point(0, C.Height);
   P := C.ClientToScreen(P);
   AMenu.Popup(P.X, P.Y);
+end;
+
+function FormModalShow(AFormClass: TFormClass): Integer;
+var
+  Frm: TForm;
+begin
+  Frm:= AFormClass.Create(nil);
+  try
+    Result:= Frm.ShowModal;
+  finally
+    FreeAndNil(Frm);
+  end;
+end;
+
+function FormOnPanelCreate(AFormClass: TFormClass; APanel: TPanel): TForm;
+begin
+  Result:= AFormClass.Create(APanel);
+  Result.BorderStyle:= bsNone;
+  Result.Parent:= APanel;
+  Result.Left:= 0;
+  Result.Top:= 0;
+  Result.Align:= alClient;
+  Result.MakeFullyVisible();
+  //Result.Show;
 end;
 
 end.
