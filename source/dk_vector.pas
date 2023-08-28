@@ -181,6 +181,9 @@ type
   function VIndexOf(const V: TBoolVector;  const FindValue: Boolean): Integer;
   function VIndexOf(const V: TColorVector; const FindValue: TColor):  Integer;
 
+  {ПОИСК В ДИАПАЗОНЕ}
+  function VIndexOf(const VMin, VMax: TIntVector; const FindValue: Integer): Integer;
+
   {ПОЗИЦИЯ ДЛЯ ВСТАВКИ В УПОРЯДОЧЕННОМ ВЕКТОРЕ}
   function VInsOfAsc(const V: TIntVector;   const InsValue: Integer): Integer;
   function VInsOfAsc(const V: TInt64Vector; const InsValue: Int64):   Integer;
@@ -251,7 +254,7 @@ type
   {ПРЕОБРАЗОВНИЕ К СТРОКОВОМУ ВЕКТОРУ}
   function VIntToStr(const V: TIntVector; const ZeroIsEmpty: Boolean = False): TStrVector;
   function VIntToStr(const V: TInt64Vector; const ZeroIsEmpty: Boolean = False): TStrVector;
-  function VBoolToStr(const V: TBoolVector): TStrVector;
+  function VBoolToStr(const V: TBoolVector; const StrTrue: String = STR_TRUE; const StrFalse: String = STR_False): TStrVector;
   function VFloatToStr(const V: TDblVector): TStrVector;
   function VDateToStr(const V: TDateVector; const BoundaryIsEmpty: Boolean = False): TStrVector;
   function VTimeToStr(const V: TTimeVector): TStrVector;
@@ -1820,6 +1823,22 @@ end;
 
 //VInsOfAsc
 
+function VIndexOf(const VMin, VMax: TIntVector; const FindValue: Integer): Integer;
+var
+  i: Integer;
+begin
+  Result:= -1;
+  if Length(VMin)<>Length(VMax) then Exit;
+  for i:= 0 to High(VMin) do
+  begin
+    if (FindValue>=VMin[i]) and (FindValue<=VMax[i]) then
+    begin
+      Result:= i;
+      break;
+    end;
+  end;
+end;
+
 function VInsOfAsc(const V: TIntVector;   const InsValue: Integer): Integer;
 var
   i: Integer;
@@ -3094,7 +3113,8 @@ begin
       Result[i]:= DateToStr(V[i]);
 end;
 
-function VBoolToStr(const V: TBoolVector): TStrVector;
+function VBoolToStr(const V: TBoolVector;
+   const StrTrue: String = STR_TRUE; const StrFalse: String = STR_False): TStrVector;
 var
   i: Integer;
 begin
@@ -3103,9 +3123,9 @@ begin
   VDim(Result, Length(V));
   for i:=0 to High(V) do
     if V[i] then
-      Result[i]:= STR_TRUE
+      Result[i]:= StrTrue
     else
-      Result[i]:= STR_FALSE;
+      Result[i]:= StrFalse;
 end;
 
 function VFloatToStr(const V: TDblVector): TStrVector;

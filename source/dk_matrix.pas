@@ -209,7 +209,7 @@ type
   {ПРЕОБРАЗОВНИЕ К СТРОКОВОЙ МАТРИЦЕ}
   function MIntToStr(const M: TIntMatrix; const ZeroIsEmpty: Boolean = False): TStrMatrix;
   function MIntToStr(const M: TInt64Matrix; const ZeroIsEmpty: Boolean = False): TStrMatrix;
-  function MBoolToStr(const M: TBoolMatrix): TStrMatrix;
+  function MBoolToStr(const M: TBoolMatrix; const StrTrue: String = STR_TRUE; const StrFalse: String = STR_False): TStrMatrix;
   function MFloatToStr(const M: TDblMatrix): TStrMatrix;
   function MDateToStr(const M: TDateMatrix; const BoundaryIsEmpty: Boolean = False): TStrMatrix;
   function MTimeToStr(const M: TTimeMatrix): TStrMatrix;
@@ -1894,14 +1894,15 @@ begin
       MAppend(Result, VIntToStr(M[i], ZeroIsEmpty));
 end;
 
-function MBoolToStr(const M: TBoolMatrix): TStrMatrix;
+function MBoolToStr(const M: TBoolMatrix;
+                 const StrTrue: String = STR_TRUE; const StrFalse: String = STR_False): TStrMatrix;
 var
   i: Integer;
 begin
   Result:= nil;
   if Length(M)>0 then
     for i:=0 to High(M) do
-      MAppend(Result, VBoolToStr(M[i]));
+      MAppend(Result, VBoolToStr(M[i], StrTrue, StrFalse));
 end;
 
 function MFloatToStr(const M: TDblMatrix): TStrMatrix;
