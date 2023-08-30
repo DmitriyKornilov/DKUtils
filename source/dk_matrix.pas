@@ -226,6 +226,11 @@ type
   function MFormatDateTime(const FormatStr: String; const M: TDblMatrix3D;
                            const BoundaryIsEmpty: Boolean = False;
                            Options: TFormatDateTimeOptions = []): TStrMatrix3D;
+  {ЗАМЕНА ЗНАЧЕНИЙ}
+  procedure MChangeIf(var M: TIntMatrix;   const IfValue, NewValue: Integer);
+  procedure MChangeIf(var M: TInt64Matrix; const IfValue, NewValue: Int64);
+  procedure MChangeIf(var M: TStrMatrix;   const IfValue, NewValue: String; const ACaseSensitivity: Boolean = True);
+
   {ТРАНСПОНИРОВАНИЕ}
   function MTranspose(const M: TIntMatrix): TIntMatrix;
   function MTranspose(const M: TInt64Matrix): TInt64Matrix;
@@ -2017,6 +2022,31 @@ begin
   if Length(M)>0 then
     for i:=0 to High(M) do
       MAppend(Result, MFormatDateTime(FormatStr, M[i], BoundaryIsEmpty, Options));
+end;
+
+procedure MChangeIf(var M: TIntMatrix; const IfValue, NewValue: Integer);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(M) do
+    VChangeIf(M[i], IfValue, NewValue);
+end;
+
+procedure MChangeIf(var M: TInt64Matrix; const IfValue, NewValue: Int64);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(M) do
+    VChangeIf(M[i], IfValue, NewValue);
+end;
+
+procedure MChangeIf(var M: TStrMatrix; const IfValue, NewValue: String;
+  const ACaseSensitivity: Boolean);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(M) do
+    VChangeIf(M[i], IfValue, NewValue, -1, -1, ACaseSensitivity);
 end;
 
 function MTranspose(const M: TIntMatrix): TIntMatrix;

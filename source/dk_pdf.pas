@@ -487,7 +487,7 @@ var
   S: String;
 begin
   TotalW:= PageX2 - PageX1;
-  if FontWidth(AText)<=TotalW then // one row text
+  if (FontWidth(AText)+AFirstIndentMM)<=TotalW then // one row text
   begin
     WriteTextRow(AText, AAlignment, AInterval, AFirstIndentMM);
     Exit;
