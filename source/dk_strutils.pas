@@ -5,7 +5,7 @@ unit DK_StrUtils;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, Graphics, DK_Const;
+  Classes, SysUtils, LazUTF8, Graphics, RegExpr, DK_Const;
 
 type
   TSymbolType = (stUnknown, stPunctuation, stSeparator, stVowel, stConsonant, stSpecial);
@@ -60,6 +60,7 @@ type
                     const AMaxReplaceCount: Integer = 0 {replace all} ): String;
   function SFromStrings(const AStrings: TStrings; const ADelimiter: String = SYMBOL_SPACE): String;
   procedure SToStrings(const AStr: String; const AStrings: TStrings; const ADelimiter: String);
+  function SDate(const AStr: String): String;
 
 implementation
 
@@ -477,6 +478,21 @@ begin
 
   if SLength(S)>0 then
     AStrings.Append(S);
+end;
+
+function SDate(const AStr: String): String;
+var
+  RegExpr: TRegExpr;
+begin
+  Result:= EmptyStr;
+  RegExpr:= TRegExpr.Create;
+  try
+    RegExpr.Expression := '\d{1,4}[\/.-]\d{1,2}[\/.-]\d{1,4}';
+    if RegExpr.Exec(AStr) then
+      Result:= RegExpr.Match[0];
+  finally
+    FreeAndNil(RegExpr);
+  end;
 end;
 
 end.
