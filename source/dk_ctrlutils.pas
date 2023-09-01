@@ -51,7 +51,6 @@ begin
   Result.Top:= 0;
   Result.Align:= alClient;
   Result.MakeFullyVisible();
-  //Result.Show;
 end;
 
 end.
