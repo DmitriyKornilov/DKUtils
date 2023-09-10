@@ -5,9 +5,35 @@ unit DK_Const;
 interface
 
 uses
-  Graphics, GraphUtil;
+  Graphics, GraphUtil, SysUtils;
 var
   DefaultSelectionBGColor: TColor;
+
+  DefaultFormatSettingsRus : TFormatSettings = (
+    CurrencyFormat: 3;
+    NegCurrFormat: 8;
+    ThousandSeparator: ' ';
+    DecimalSeparator: ',';
+    CurrencyDecimals: 2;
+    DateSeparator: '.';
+    TimeSeparator: ':';
+    ListSeparator: ';';
+    CurrencyString: '₽';
+    ShortDateFormat: 'dd.mm.yyyy';
+    LongDateFormat: 'd mmmm yyyy ''г.''';
+    TimeAMString: '';
+    TimePMString: '';
+    ShortTimeFormat: 'hh:nn';
+    LongTimeFormat: 'hh:nn:ss';
+    ShortMonthNames: ('Янв','Фев','Мар','Апр','Май','Июн',
+                      'Июл','Авг','Сен','Окт','Ноя','Дек');
+    LongMonthNames: ('Январь','Февраль','Март','Апрель','Май','Июнь',
+                     'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь');
+    ShortDayNames: ('Вс','Пн','Вт','Ср','Чт','Пт','Сб');
+    LongDayNames:  ('Воскресенье','Понедельник','Вторник','Среда',
+                    'Четверг','Пятница','Суббота');
+    TwoDigitYearCenturyWindow: 50;
+  );
 
 const
   SYMBOL_SPACE_NONBREAK: String = Char($C2) + Char($A0);  //неразрывный пробел
