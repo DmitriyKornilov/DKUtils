@@ -67,6 +67,8 @@ type
                       const ATopMargin   : TPDFFloat = 10.0;
                       const ABottomMargin: TPDFFloat = 10.0); virtual;
 
+    procedure DrawLine(const AX1, AY1, AX2, AY2, AWidth: TPDFFloat;
+                       const AColor: TARGBColor = clBlack);
 
     procedure WriteImageTopLeft(const AFileName: String;
                                 const AX, AY: TPDFFloat; // top left point
@@ -187,7 +189,8 @@ type
                                  const AExtension: String;
                                  const ACoordX1, ACoordX2: TPDFFloat);
 
-
+    procedure DrawHorizLine(const AX1, AX2, AWidth: TPDFFloat;
+                            const AColor: TARGBColor = clBlack);
 
     procedure WriteHyperlink(const AText, AURL: String;
                         const AAlignment: TStringAlignment;
@@ -367,6 +370,7 @@ procedure TPDFLetter.NextString(const AInterval: TPDFFloat = 1.0);
 var
   H: TPDFFloat;
 begin
+  if AInterval<0 then Exit;
   H:= FontHeight * (1 + AInterval);
   WriteSpace(H);
 end;
@@ -404,6 +408,12 @@ begin
   W:= ACoordX2 - ACoordX1;
   WriteImageTopLeftFitWidth(AStream, AExtension, ACoordX1, FCurrentY, W, H);
   WriteSpace(H);
+end;
+
+procedure TPDFLetter.DrawHorizLine(const AX1, AX2, AWidth: TPDFFloat;
+  const AColor: TARGBColor = clBlack);
+begin
+  DrawLine(AX1, FCurrentY, AX2, FCurrentY, AWidth, AColor);
 end;
 
 procedure TPDFLetter.WriteHyperlink(
@@ -779,6 +789,13 @@ begin
     FPage.DrawLine(FX2, FY2, FX1, FY2, W, True);
     FPage.DrawLine(FX1, FY2, FX1, FY1, W, True);
   end;
+end;
+
+procedure TPDFWriter.DrawLine(const AX1, AY1, AX2, AY2, AWidth: TPDFFloat;
+  const AColor: TARGBColor = clBlack);
+begin
+  FPage.SetColor(AColor, True);
+  FPage.DrawLine(AX1, AY1, AX2, AY2, AWidth, True);
 end;
 
 function TPDFWriter.LoadImage(const AFileName: String;
