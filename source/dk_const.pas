@@ -37,6 +37,7 @@ var
 
 const
   SYMBOL_SPACE_NONBREAK: String = Char($C2) + Char($A0);  //неразрывный пробел
+  SYMBOL_SPACE_NONBREAK_STR = ' '; //неразрывный пробел: U+00A0
 
   SYMBOL_BREAK        = LineEnding;
   SYMBOL_EMPTY        = '';
