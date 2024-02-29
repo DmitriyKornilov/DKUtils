@@ -388,7 +388,7 @@ type
   function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector; const SourceVector: TIntVector; out Value: Integer): Boolean;
   function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector; const SourceVector: TInt64Vector; out Value: Int64): Boolean;
 
-  function VSameIndexValues(const SearchVector: TIntVector; const SourceVector: TIntVector; const ValueVector: TIntVector): TIntVector;
+  function VCorr(const FindValues: TIntVector; const SearchVector, CorrVector: TIntVector): TIntVector;
 implementation
 
 //проверка диапазона индексов
@@ -3761,18 +3761,17 @@ begin
   Value:= SourceVector[Index];
 end;
 
-function VSameIndexValues(const SearchVector: TIntVector;
-  const SourceVector: TIntVector; const ValueVector: TIntVector): TIntVector;
+function VCorr(const FindValues: TIntVector; const SearchVector, CorrVector: TIntVector): TIntVector;
 var
   Index, i: Integer;
 begin
   Result:= nil;
-  VDim(Result, Length(SourceVector));
-  for i:= 0 to High(SourceVector) do
+  VDim(Result, Length(FindValues));
+  for i:= 0 to High(FindValues) do
   begin
-    Index:= VIndexOf(SearchVector, SourceVector[i]);
+    Index:= VIndexOf(SearchVector, FindValues[i]);
     if Index>=0 then
-      Result[i]:= ValueVector[Index]
+      Result[i]:= CorrVector[Index]
     else
       Result[i]:= -1;
   end;
