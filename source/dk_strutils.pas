@@ -39,9 +39,10 @@ type
   function SSymbolLast(const AStr: String): String;
   function SDigit(const AStr: String; const ASymbolPos: Integer): Byte;
   function SIsDigit(const ASymbol: String): Boolean;
+  function SRepeat(const ACount: Integer; const AStr: String): String;
   function SRedLine(const ASpacesCount: Integer): String;
-  function SFillRight(const AStr: String; const ANeedLength: Integer): String;
-  function SFillLeft(const AStr: String; const ANeedLength: Integer): String;
+  function SFillRight(const AStr: String; const ANeedLength: Integer; const AFillStr: String = SYMBOL_SPACE): String;
+  function SFillLeft(const AStr: String; const ANeedLength: Integer; const AFillStr: String = SYMBOL_SPACE): String;
   function SSymbolType(const ASymbol: String): TSymbolType;
   function SSymbolType(const AStr: String; const ASymbolPos: Integer): TSymbolType;
   function SIsHyphenSymbol(const ASymbol: String): Boolean;
@@ -238,35 +239,40 @@ begin
   Result:= SFind(SYMBOLS_DIGITS, ASymbol);
 end;
 
-function SRedLine(const ASpacesCount: Integer): String;
+function SRepeat(const ACount: Integer; const AStr: String): String;
 var
   i: Integer;
 begin
   Result:= EmptyStr;
-  for i:= 1 to ASpacesCount do
-    Result:= Result + SYMBOL_SPACE;
+  for i:= 1 to ACount do
+    Result:= Result + AStr;
 end;
 
-function SFillRight(const AStr: String; const ANeedLength: Integer): String;
+function SRedLine(const ASpacesCount: Integer): String;
+begin
+  Result:= SRepeat(ASpacesCount, SYMBOL_SPACE);
+end;
+
+function GetFillStr(const AStr: String; const ANeedLength: Integer; const AFillStr: String): String;
 var
   n: Integer;
 begin
+  Result:= EmptyStr;
   n:= ANeedLength - Length(AStr);
-  if n<=0 then
-    Result:= AStr
-  else
-    Result:= AStr + SRedLine(n);
+  if (n<=0) or SEmpty(AFillStr) then Exit;
+  Result:= SRepeat(n, AFillStr);
+  if SLength(Result)>n then
+    Result:= SCopyCount(Result, 1, n);
 end;
 
-function SFillLeft(const AStr: String; const ANeedLength: Integer): String;
-var
-  n: Integer;
+function SFillRight(const AStr: String; const ANeedLength: Integer; const AFillStr: String = SYMBOL_SPACE): String;
 begin
-  n:= ANeedLength - Length(AStr);
-  if n<=0 then
-    Result:= AStr
-  else
-    Result:= SRedLine(n) + AStr;
+  Result:= AStr + GetFillStr(AStr, ANeedLength, AFillStr);
+end;
+
+function SFillLeft(const AStr: String; const ANeedLength: Integer; const AFillStr: String = SYMBOL_SPACE): String;
+begin
+  Result:= GetFillStr(AStr, ANeedLength, AFillStr) + AStr;
 end;
 
 function SSymbolType(const ASymbol: String): TSymbolType;
