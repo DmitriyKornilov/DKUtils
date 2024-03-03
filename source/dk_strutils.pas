@@ -5,7 +5,7 @@ unit DK_StrUtils;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, Graphics, RegExpr, DK_Const;
+  Classes, SysUtils, LazUTF8, Graphics, RegExpr, Math, DK_Const;
 
 type
   TSymbolType = (stUnknown, stPunctuation, stSeparator, stVowel, stConsonant, stSpecial);
@@ -255,12 +255,13 @@ end;
 
 function GetFillStr(const AStr: String; const ANeedLength: Integer; const AFillStr: String): String;
 var
-  n: Integer;
+  n, k: Integer;
 begin
   Result:= EmptyStr;
   n:= ANeedLength - Length(AStr);
   if (n<=0) or SEmpty(AFillStr) then Exit;
-  Result:= SRepeat(n, AFillStr);
+  k:= Ceil(n/Length(AFillStr));
+  Result:= SRepeat(k, AFillStr);
   if SLength(Result)>n then
     Result:= SCopyCount(Result, 1, n);
 end;
