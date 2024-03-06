@@ -251,6 +251,11 @@ type
   function VCountIfNot(const V: TBoolVector;  const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIfNot(const V: TColorVector; const IfValue: TColor;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 
+  function VStrToInt(const V: TStrVector): TIntVector;
+  function VStrToInt64(const V: TStrVector): TInt64Vector;
+  function VStrToDate(const V: TStrVector): TDateVector;
+  function VStrToTime(const V: TStrVector): TTimeVector;
+
   {ПРЕОБРАЗОВНИЕ К СТРОКОВОМУ ВЕКТОРУ}
   function VIntToStr(const V: TIntVector; const ZeroIsEmpty: Boolean = False): TStrVector;
   function VIntToStr(const V: TInt64Vector; const ZeroIsEmpty: Boolean = False): TStrVector;
@@ -3075,6 +3080,56 @@ begin
   for i:=FromIndex to ToIndex do
     if not SameTime(IfVector[i], IfValue) then
       Result:= Result + V[i];
+end;
+
+//VStrToXXX
+
+function VStrToInt(const V: TStrVector): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    if not SEmpty(V[i]) then
+      Result[i]:= StrToInt(V[i]);
+end;
+
+function VStrToInt64(const V: TStrVector): TInt64Vector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    if not SEmpty(V[i]) then
+      Result[i]:= StrToInt64(V[i]);
+end;
+
+function VStrToDate(const V: TStrVector): TDateVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    if not SEmpty(V[i]) then
+      Result[i]:= StrToDate(V[i]);
+end;
+
+function VStrToTime(const V: TStrVector): TTimeVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    if not SEmpty(V[i]) then
+      Result[i]:= StrToTime(V[i]);
 end;
 
 {ПРЕОБРАЗОВНИЕ К СТРОКОВОМУ ВЕКТОРУ}
