@@ -5,18 +5,45 @@ unit DK_CtrlUtils;
 interface
 
 uses
-  Classes, SysUtils, Controls, ExtCtrls, Menus, Forms;
+  Classes, SysUtils, Controls, ExtCtrls, Menus, Forms,
+
+  DK_PPI;
 
 type
 
 TFormClass = class of TForm;
 
+function ToolPanelHeight: Integer;
+function ToolButtonWidth: Integer;
+
+procedure ToolPanelSettings(const APanel: TPanel);
 procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
 
 function FormModalShow(AFormClass: TFormClass): Integer;
 function FormOnPanelCreate(AFormClass: TFormClass; APanel: TPanel): TForm;
 
 implementation
+
+const
+  //sizes for 96 PPI
+  TOOL_PANEL_HEIGHT_DEFAULT = 34;
+  TOOL_BUTTON_WIDTH_DEFAULT = TOOL_PANEL_HEIGHT_DEFAULT - 2;
+
+function ToolPanelHeight: Integer;
+begin
+  Result:= HeightFromDefaultToScreen(TOOL_PANEL_HEIGHT_DEFAULT);
+end;
+
+function ToolButtonWidth: Integer;
+begin
+  Result:= WidthFromDefaultToScreen(TOOL_BUTTON_WIDTH_DEFAULT);
+end;
+
+procedure ToolPanelSettings(const APanel: TPanel);
+begin
+  APanel.AutoSize:= False;
+  APanel.Height:= ToolPanelHeight;
+end;
 
 procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
 var

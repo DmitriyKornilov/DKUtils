@@ -5,7 +5,7 @@ unit DK_PPI;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Math;
+  Classes, SysUtils, Graphics;
 
 const
   DEFAULT_PPI = 96;
@@ -43,7 +43,7 @@ implementation
 
 function SizeFromPPIToPPI(const ASize, AFromPPI, AToPPI: Integer): Integer;
 begin
-  Result:= Ceil(ASize*AToPPI/AFromPPI);
+  Result:= Round(ASize*AToPPI/AFromPPI);
 end;
 
 function SizeFromDefaultToDesignTime(const AHeight, ADesignTimePPI: Integer): Integer;

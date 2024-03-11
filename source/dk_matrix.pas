@@ -237,11 +237,29 @@ type
   function MTranspose(const M: TDblMatrix): TDblMatrix;
 
   {ВЕКТОР ПО ВТОРОМУ ИЗМЕРЕНИЮ}
-  function MIndex2(const M: TIntMatrix;   const Index2: Integer): TIntVector;
-  function MIndex2(const M: TInt64Matrix; const Index2: Integer): TInt64Vector;
-  function MIndex2(const M: TStrMatrix;   const Index2: Integer): TStrVector;
-  function MIndex2(const M: TDblMatrix;   const Index2: Integer): TDblVector;
-  function MIndex2(const M: TBoolMatrix;  const Index2: Integer): TBoolVector;
+  function MRowGet(const M: TIntMatrix;   const RowIndex: Integer): TIntVector;
+  function MRowGet(const M: TInt64Matrix; const RowIndex: Integer): TInt64Vector;
+  function MRowGet(const M: TStrMatrix;   const RowIndex: Integer): TStrVector;
+  function MRowGet(const M: TDblMatrix;   const RowIndex: Integer): TDblVector;
+  function MRowGet(const M: TBoolMatrix;  const RowIndex: Integer): TBoolVector;
+
+  procedure MRowSet(var M: TIntMatrix;   const RowIndex: Integer; const RowValues: TIntVector);
+  procedure MRowSet(var M: TInt64Matrix; const RowIndex: Integer; const RowValues: TInt64Vector);
+  procedure MRowSet(var M: TStrMatrix;   const RowIndex: Integer; const RowValues: TStrVector);
+  procedure MRowSet(var M: TDblMatrix;   const RowIndex: Integer; const RowValues: TDblVector);
+  procedure MRowSet(var M: TBoolMatrix;  const RowIndex: Integer; const RowValues: TBoolVector);
+
+  procedure MRowIns(var M: TIntMatrix;   const RowIndex: Integer; const RowValues: TIntVector = nil);
+  procedure MRowIns(var M: TInt64Matrix; const RowIndex: Integer; const RowValues: TInt64Vector = nil);
+  procedure MRowIns(var M: TStrMatrix;   const RowIndex: Integer; const RowValues: TStrVector = nil);
+  procedure MRowIns(var M: TDblMatrix;   const RowIndex: Integer; const RowValues: TDblVector = nil);
+  procedure MRowIns(var M: TBoolMatrix;  const RowIndex: Integer; const RowValues: TBoolVector = nil);
+
+  procedure MRowDel(var M: TIntMatrix;   const RowIndex: Integer);
+  procedure MRowDel(var M: TInt64Matrix; const RowIndex: Integer);
+  procedure MRowDel(var M: TStrMatrix;   const RowIndex: Integer);
+  procedure MRowDel(var M: TDblMatrix;   const RowIndex: Integer);
+  procedure MRowDel(var M: TBoolMatrix;  const RowIndex: Integer);
 
   {МАТРИЦА ИЗ ВЕКТОРОВ ПО ИНДЕКСУ}
   function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;
@@ -2091,7 +2109,7 @@ begin
       Result[j,i]:= M[i,j];
 end;
 
-function MIndex2(const M: TIntMatrix; const Index2: Integer): TIntVector;
+function MRowGet(const M: TIntMatrix; const RowIndex: Integer): TIntVector;
 var
   i: Integer;
 begin
@@ -2099,11 +2117,11 @@ begin
   if MIsNil(M) then Exit;
   VDim(Result, Length(M));
   for i:=0 to High(M) do
-    if Index2>=High(M[i]) then
-      Result[i]:= M[i, Index2];
+    if RowIndex<=High(M[i]) then
+      Result[i]:= M[i, RowIndex];
 end;
 
-function MIndex2(const M: TInt64Matrix; const Index2: Integer): TInt64Vector;
+function MRowGet(const M: TInt64Matrix; const RowIndex: Integer): TInt64Vector;
 var
   i: Integer;
 begin
@@ -2111,11 +2129,11 @@ begin
   if MIsNil(M) then Exit;
   VDim(Result, Length(M));
   for i:=0 to High(M) do
-    if Index2>=High(M[i]) then
-      Result[i]:= M[i, Index2];
+    if RowIndex<=High(M[i]) then
+      Result[i]:= M[i, RowIndex];
 end;
 
-function MIndex2(const M: TStrMatrix; const Index2: Integer): TStrVector;
+function MRowGet(const M: TStrMatrix; const RowIndex: Integer): TStrVector;
 var
   i: Integer;
 begin
@@ -2123,11 +2141,11 @@ begin
   if MIsNil(M) then Exit;
   VDim(Result, Length(M));
   for i:=0 to High(M) do
-    if Index2>=High(M[i]) then
-      Result[i]:= M[i, Index2];
+    if RowIndex<=High(M[i]) then
+      Result[i]:= M[i, RowIndex];
 end;
 
-function MIndex2(const M: TDblMatrix; const Index2: Integer): TDblVector;
+function MRowGet(const M: TDblMatrix; const RowIndex: Integer): TDblVector;
 var
   i: Integer;
 begin
@@ -2135,11 +2153,11 @@ begin
   if MIsNil(M) then Exit;
   VDim(Result, Length(M));
   for i:=0 to High(M) do
-    if Index2>=High(M[i]) then
-      Result[i]:= M[i, Index2];
+    if RowIndex<=High(M[i]) then
+      Result[i]:= M[i, RowIndex];
 end;
 
-function MIndex2(const M: TBoolMatrix; const Index2: Integer): TBoolVector;
+function MRowGet(const M: TBoolMatrix; const RowIndex: Integer): TBoolVector;
 var
   i: Integer;
 begin
@@ -2147,8 +2165,168 @@ begin
   if MIsNil(M) then Exit;
   VDim(Result, Length(M));
   for i:=0 to High(M) do
-    if Index2>=High(M[i]) then
-      Result[i]:= M[i, Index2];
+    if RowIndex<=High(M[i]) then
+      Result[i]:= M[i, RowIndex];
+end;
+
+procedure MRowSet(var M: TIntMatrix; const RowIndex: Integer; const RowValues: TIntVector);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  if Length(RowValues)<>Length(M) then Exit;
+  for i:=0 to High(M) do
+    if RowIndex<=High(M[i]) then
+      M[i, RowIndex]:= RowValues[i];
+end;
+
+procedure MRowSet(var M: TInt64Matrix; const RowIndex: Integer; const RowValues: TInt64Vector);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  if Length(RowValues)<>Length(M) then Exit;
+  for i:=0 to High(M) do
+    if RowIndex<=High(M[i]) then
+      M[i, RowIndex]:= RowValues[i];
+end;
+
+procedure MRowSet(var M: TStrMatrix; const RowIndex: Integer; const RowValues: TStrVector);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  if Length(RowValues)<>Length(M) then Exit;
+  for i:=0 to High(M) do
+    if RowIndex<=High(M[i]) then
+      M[i, RowIndex]:= RowValues[i];
+end;
+
+procedure MRowSet(var M: TDblMatrix; const RowIndex: Integer; const RowValues: TDblVector);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  if Length(RowValues)<>Length(M) then Exit;
+  for i:=0 to High(M) do
+    if RowIndex<=High(M[i]) then
+      M[i, RowIndex]:= RowValues[i];
+end;
+
+procedure MRowSet(var M: TBoolMatrix; const RowIndex: Integer; const RowValues: TBoolVector);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  if Length(RowValues)<>Length(M) then Exit;
+  for i:=0 to High(M) do
+    if RowIndex<=High(M[i]) then
+      M[i, RowIndex]:= RowValues[i];
+end;
+
+procedure MRowIns(var M: TIntMatrix; const RowIndex: Integer; const RowValues: TIntVector);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  for i:=0 to High(M) do
+    VIns(M[i], RowIndex);
+  if Length(RowValues)<>Length(M) then Exit;
+  MRowSet(M, RowIndex, RowValues);
+end;
+
+procedure MRowIns(var M: TInt64Matrix; const RowIndex: Integer; const RowValues: TInt64Vector);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  for i:=0 to High(M) do
+    VIns(M[i], RowIndex);
+  if Length(RowValues)<>Length(M) then Exit;
+  MRowSet(M, RowIndex, RowValues);
+end;
+
+procedure MRowIns(var M: TStrMatrix; const RowIndex: Integer; const RowValues: TStrVector);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  for i:=0 to High(M) do
+    VIns(M[i], RowIndex);
+  if Length(RowValues)<>Length(M) then Exit;
+  MRowSet(M, RowIndex, RowValues);
+end;
+
+procedure MRowIns(var M: TDblMatrix; const RowIndex: Integer; const RowValues: TDblVector);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  for i:=0 to High(M) do
+    VIns(M[i], RowIndex);
+  if Length(RowValues)<>Length(M) then Exit;
+  MRowSet(M, RowIndex, RowValues);
+end;
+
+procedure MRowIns(var M: TBoolMatrix; const RowIndex: Integer; const RowValues: TBoolVector);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  for i:=0 to High(M) do
+    VIns(M[i], RowIndex);
+  if Length(RowValues)<>Length(M) then Exit;
+  MRowSet(M, RowIndex, RowValues);
+end;
+
+procedure MRowDel(var M: TIntMatrix; const RowIndex: Integer);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  for i:=0 to High(M) do
+    if RowIndex<=High(M[i]) then
+      VDel(M[i], RowIndex);
+end;
+
+procedure MRowDel(var M: TInt64Matrix; const RowIndex: Integer);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  for i:=0 to High(M) do
+    if RowIndex<=High(M[i]) then
+      VDel(M[i], RowIndex);
+end;
+
+procedure MRowDel(var M: TStrMatrix; const RowIndex: Integer);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  for i:=0 to High(M) do
+    if RowIndex<=High(M[i]) then
+      VDel(M[i], RowIndex);
+end;
+
+procedure MRowDel(var M: TDblMatrix; const RowIndex: Integer);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  for i:=0 to High(M) do
+    if RowIndex<=High(M[i]) then
+      VDel(M[i], RowIndex);
+end;
+
+procedure MRowDel(var M: TBoolMatrix; const RowIndex: Integer);
+var
+  i: Integer;
+begin
+  if MIsNil(M) then Exit;
+  for i:=0 to High(M) do
+    if RowIndex<=High(M[i]) then
+      VDel(M[i], RowIndex);
 end;
 
 function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;

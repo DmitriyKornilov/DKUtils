@@ -157,12 +157,12 @@ type
   procedure VAppend(var V: TColorVector; const Value: TColor);
 
   {ВСТАВКА}
-  procedure VIns(var V: TIntVector;   const Ind: Integer; const Value: Integer);
-  procedure VIns(var V: TInt64Vector; const Ind: Integer; const Value: Int64);
-  procedure VIns(var V: TStrVector;   const Ind: Integer; const Value: String);
-  procedure VIns(var V: TDblVector;   const Ind: Integer; const Value: Double);
-  procedure VIns(var V: TBoolVector;  const Ind: Integer; const Value: Boolean);
-  procedure VIns(var V: TColorVector; const Ind: Integer; const Value: TColor);
+  procedure VIns(var V: TIntVector;   const Ind: Integer; const Value: Integer = VECTOR_INT_DEFAULT_VALUE);
+  procedure VIns(var V: TInt64Vector; const Ind: Integer; const Value: Int64 = VECTOR_INT64_DEFAULT_VALUE);
+  procedure VIns(var V: TStrVector;   const Ind: Integer; const Value: String = VECTOR_STR_DEFAULT_VALUE);
+  procedure VIns(var V: TDblVector;   const Ind: Integer; const Value: Double = VECTOR_DBL_DEFAULT_VALUE);
+  procedure VIns(var V: TBoolVector;  const Ind: Integer; const Value: Boolean = VECTOR_BOOL_DEFAULT_VALUE);
+  procedure VIns(var V: TColorVector; const Ind: Integer; const Value: TColor = VECTOR_COLOR_DEFAULT_VALUE);
 
   procedure VIns(var V: TIntVector;   const Ind: Integer; const Source: TIntVector);
   procedure VIns(var V: TInt64Vector; const Ind: Integer; const Source: TInt64Vector);
