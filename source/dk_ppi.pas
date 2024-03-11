@@ -5,10 +5,12 @@ unit DK_PPI;
 interface
 
 uses
-  Classes, SysUtils, Graphics;
+  Classes, SysUtils, Graphics, Controls, Forms;
 
 const
   DEFAULT_PPI = 96;
+
+  function ControlDesignTimePPI(const AControl: TControl): Integer;
 
   function SizeFromPPIToPPI(const ASize, AFromPPI, AToPPI: Integer): Integer;
 
@@ -40,6 +42,16 @@ const
   function YFactorDefaultDivScreen: Double;
 
 implementation
+
+function ControlDesignTimePPI(const AControl: TControl): Integer;
+var
+  C: TControl;
+begin
+  C:= AControl;
+  while not (C is TForm) do
+    C:= C.Parent;
+  Result:= (C as TForm).DesignTimePPI;
+end;
 
 function SizeFromPPIToPPI(const ASize, AFromPPI, AToPPI: Integer): Integer;
 begin

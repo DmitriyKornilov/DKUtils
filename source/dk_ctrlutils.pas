@@ -9,14 +9,18 @@ uses
 
   DK_PPI;
 
+const
+  //sizes for 96 PPI
+  TOOL_PANEL_HEIGHT_DEFAULT = 34;
+  TOOL_BUTTON_WIDTH_DEFAULT = TOOL_PANEL_HEIGHT_DEFAULT;// - 2;
+
 type
 
 TFormClass = class of TForm;
 
-function ToolPanelHeight: Integer;
-function ToolButtonWidth: Integer;
+procedure ControlHeight(const AControl: TControl; const ADefaultHeight{PPI=96}: Integer);
+procedure ControlWidth(const AControl: TControl; const ADefaultWidth{PPI=96}: Integer);
 
-procedure ToolPanelSettings(const APanel: TPanel);
 procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
 
 function FormModalShow(AFormClass: TFormClass): Integer;
@@ -24,25 +28,24 @@ function FormOnPanelCreate(AFormClass: TFormClass; APanel: TPanel): TForm;
 
 implementation
 
-const
-  //sizes for 96 PPI
-  TOOL_PANEL_HEIGHT_DEFAULT = 34;
-  TOOL_BUTTON_WIDTH_DEFAULT = TOOL_PANEL_HEIGHT_DEFAULT - 2;
-
-function ToolPanelHeight: Integer;
+function ControlSize(const AControl: TControl; const ADefaultSize: Integer): Integer;
 begin
-  Result:= HeightFromDefaultToScreen(TOOL_PANEL_HEIGHT_DEFAULT);
+  AControl.AutoSize:= False;
+  AControl.Constraints.MaxHeight:= 0;
+  AControl.Constraints.MinHeight:= 0;
+  AControl.Constraints.MaxWidth:= 0;
+  AControl.Constraints.MinWidth:= 0;
+  Result:= SizeFromDefaultToDesignTime(ADefaultSize, ControlDesignTimePPI(AControl));
 end;
 
-function ToolButtonWidth: Integer;
+procedure ControlHeight(const AControl: TControl; const ADefaultHeight: Integer);
 begin
-  Result:= WidthFromDefaultToScreen(TOOL_BUTTON_WIDTH_DEFAULT);
+  AControl.Height:= ControlSize(AControl, ADefaultHeight);
 end;
 
-procedure ToolPanelSettings(const APanel: TPanel);
+procedure ControlWidth(const AControl: TControl; const ADefaultWidth: Integer);
 begin
-  APanel.AutoSize:= False;
-  APanel.Height:= ToolPanelHeight;
+  AControl.Width:= ControlSize(AControl, ADefaultWidth);
 end;
 
 procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
