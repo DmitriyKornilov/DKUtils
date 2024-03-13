@@ -23,6 +23,7 @@ procedure ControlWidth(const AControl: TControl; const ADefaultWidth{PPI=96}: In
 
 procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
 
+procedure FormToScreenCenter(const AForm: TForm);
 function FormModalShow(AFormClass: TFormClass): Integer;
 function FormOnPanelCreate(AFormClass: TFormClass; APanel: TPanel): TForm;
 
@@ -58,6 +59,12 @@ begin
   P := Point(0, C.Height);
   P := C.ClientToScreen(P);
   AMenu.Popup(P.X, P.Y);
+end;
+
+procedure FormToScreenCenter(const AForm: TForm);
+begin
+  AForm.Left:= (Screen.Width - AForm.Width) div 2;
+  AForm.Top:= (Screen.Height - AForm.Height) div 2;
 end;
 
 function FormModalShow(AFormClass: TFormClass): Integer;
