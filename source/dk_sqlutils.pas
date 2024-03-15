@@ -5,7 +5,7 @@ unit DK_SQLUtils;
 interface
 
 uses
-  Classes, SysUtils, SqlDB, db, DK_Dialogs, DK_Const;
+  Classes, SysUtils, SqlDB, db, DK_Dialogs, DK_Const, DK_StrUtils;
 
 
   {Query Utils}
@@ -24,13 +24,21 @@ uses
   procedure QGotoBookmark(ABookmark: TBookmark);
   procedure QDisableControls;
   procedure QEnableControls;
+
   procedure QParamNull(const AParamName: String);
+  procedure QParamFile(const AParamName: String; const AFileName: String);
+
   procedure QParamInt(const AParamName: String; const AParamValue: Integer; const AIsNotNull: Boolean = True);
   procedure QParamInt64(const AParamName: String; const AParamValue: Int64; const AIsNotNull: Boolean = True);
   procedure QParamStr(const AParamName: String; const AParamValue: String; const AIsNotNull: Boolean = True);
   procedure QParamDT(const AParamName: String; const AParamValue: TDateTime; const AIsNotNull: Boolean = True);
   procedure QParamFloat(const AParamName: String; const AParamValue: Double; const AIsNotNull: Boolean = True);
-  procedure QParamFile(const AParamName: String; const AFileName: String);
+
+  procedure QParamIntFromStr(const AParamName: String; const AParamValue: String = '');
+  procedure QParamInt64FromStr(const AParamName: String; const AParamValue: String = '');
+  procedure QParamStrFromStr(const AParamName: String; const AParamValue: String = '');
+  procedure QParamDTFromStr(const AParamName: String; const AParamValue: String = '');
+  procedure QParamFloatFromStr(const AParamName: String; const AParamValue: String = '');
 
   procedure QParamsInt(const AParamValues: array of Integer; const AValueName: String = '');
   procedure QParamsInt64(const AParamValues: array of Int64; const AValueName: String = '');
@@ -204,6 +212,20 @@ begin
     Param.Value:= Null;
 end;
 
+procedure QParamIntFromStr(const AParamName: String; const AParamValue: String = '');
+var
+  Param: TParam;
+  ParamValue: Integer;
+begin
+  if not QParamByName(AParamName, Param) then Exit;
+  if SEmpty(AParamValue) then
+    Param.Value:= Null
+  else if TryStrToInt(AParamValue, ParamValue) then
+    Param.AsInteger:= ParamValue
+  else
+    Param.Value:= Null;
+end;
+
 procedure QParamInt64(const AParamName: String; const AParamValue: Int64; const AIsNotNull: Boolean = True);
 var
   Param: TParam;
@@ -211,6 +233,20 @@ begin
   if not QParamByName(AParamName, Param) then Exit;
   if AIsNotNull then
     Param.AsLargeInt:= AParamValue
+  else
+    Param.Value:= Null;
+end;
+
+procedure QParamInt64FromStr(const AParamName: String; const AParamValue: String = '');
+var
+  Param: TParam;
+  ParamValue: Int64;
+begin
+  if not QParamByName(AParamName, Param) then Exit;
+  if SEmpty(AParamValue) then
+    Param.Value:= Null
+  else if TryStrToInt64(AParamValue, ParamValue) then
+    Param.AsLargeInt:= ParamValue
   else
     Param.Value:= Null;
 end;
@@ -226,6 +262,17 @@ begin
     Param.Value:= Null;
 end;
 
+procedure QParamStrFromStr(const AParamName: String; const AParamValue: String = '');
+var
+  Param: TParam;
+begin
+  if not QParamByName(AParamName, Param) then Exit;
+  if SEmpty(AParamValue) then
+    Param.Value:= Null
+  else
+    Param.AsString:= AParamValue;
+end;
+
 procedure QParamDT(const AParamName: String; const AParamValue: TDateTime; const AIsNotNull: Boolean = True);
 var
   Param: TParam;
@@ -237,6 +284,20 @@ begin
     Param.Value:= Null;
 end;
 
+procedure QParamDTFromStr(const AParamName: String; const AParamValue: String = '');
+var
+  Param: TParam;
+  ParamValue: TDateTime;
+begin
+  if not QParamByName(AParamName, Param) then Exit;
+  if SEmpty(AParamValue) then
+    Param.Value:= Null
+  else if TryStrToDateTime(AParamValue, ParamValue) then
+    Param.AsDateTime:= ParamValue
+  else
+    Param.Value:= Null;
+end;
+
 procedure QParamFloat(const AParamName: String; const AParamValue: Double; const AIsNotNull: Boolean = True);
 var
   Param: TParam;
@@ -244,6 +305,20 @@ begin
   if not QParamByName(AParamName, Param) then Exit;
   if AIsNotNull then
     Param.AsFloat:= AParamValue
+  else
+    Param.Value:= Null;
+end;
+
+procedure QParamFloatFromStr(const AParamName: String; const AParamValue: String = '');
+var
+  Param: TParam;
+  ParamValue: Double;
+begin
+  if not QParamByName(AParamName, Param) then Exit;
+  if SEmpty(AParamValue) then
+    Param.Value:= Null
+  else if TryStrToFloat(AParamValue, ParamValue) then
+    Param.AsFloat:= ParamValue
   else
     Param.Value:= Null;
 end;
