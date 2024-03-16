@@ -372,18 +372,18 @@ end;
 function SNameLong(const AFamily, AName, APatronymic: String): String;
 begin
   Result:= AFamily;
-  if not SSame(AName, EmptyStr) then
+  if not SEmpty(AName) then
     Result:= Result + ' ' + AName;
-  if not SSame(APatronymic, EmptyStr) then
+  if not SEmpty(APatronymic) then
     Result:= Result + ' ' + APatronymic;
 end;
 
 function SNameShort(const AFamily, AName, APatronymic: String): String;
 begin
   Result:= AFamily;
-  if not SSame(AName, EmptyStr) then
+  if not SEmpty(AName) then
     Result:= Result + ' ' + SCopy(AName, 1, 1) + '.';
-  if not SSame(APatronymic, EmptyStr) then
+  if not SEmpty(APatronymic) then
     Result:= Result + SCopy(APatronymic, 1, 1) + '.';
 end;
 
