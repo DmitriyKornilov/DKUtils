@@ -387,13 +387,16 @@ type
   function VNameLong(const AFs, ANs, APs: TStrVector): TStrVector;
   function VNameShort(const AFs, ANs, APs: TStrVector): TStrVector;
 
-
   function VSameIndexValue(const FindValue: Integer; const SearchVector: TIntVector; const SourceVector: TIntVector; out Value: Integer): Boolean;
   function VSameIndexValue(const FindValue: Integer; const SearchVector: TIntVector; const SourceVector: TInt64Vector; out Value: Int64): Boolean;
   function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector; const SourceVector: TIntVector; out Value: Integer): Boolean;
   function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector; const SourceVector: TInt64Vector; out Value: Int64): Boolean;
 
-  function VCorr(const FindValues: TIntVector; const SearchVector, CorrVector: TIntVector): TIntVector;
+  {ЗАМЕНА КЛЮЧЕЙ НА ЗНАЧЕНИЕ}
+  function VPickFromKey(const Values: TIntVector; const Keys: TIntVector; const Picks: TIntVector): TIntVector;
+  function VPickFromKey(const Values: TIntVector; const Keys: TIntVector; const Picks: TStrVector): TStrVector;
+  function VPickFromKey(const Values: TInt64Vector; const Keys: TInt64Vector; const Picks: TStrVector): TStrVector;
+
 implementation
 
 //проверка диапазона индексов
@@ -3816,19 +3819,50 @@ begin
   Value:= SourceVector[Index];
 end;
 
-function VCorr(const FindValues: TIntVector; const SearchVector, CorrVector: TIntVector): TIntVector;
+function VPickFromKey(const Values: TIntVector;
+                      const Keys: TIntVector; const Picks: TIntVector): TIntVector;
 var
   Index, i: Integer;
 begin
   Result:= nil;
-  VDim(Result, Length(FindValues));
-  for i:= 0 to High(FindValues) do
+  VDim(Result, Length(Values), -1);
+  for i:= 0 to High(Values) do
   begin
-    Index:= VIndexOf(SearchVector, FindValues[i]);
+    Index:= VIndexOf(Keys, Values[i]);
     if Index>=0 then
-      Result[i]:= CorrVector[Index]
-    else
-      Result[i]:= -1;
+      Result[i]:= Picks[Index];
+  end;
+end;
+
+function VPickFromKey(const Values: TIntVector;
+                      const Keys: TIntVector; const Picks: TStrVector): TStrVector;
+var
+  Index, i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(Values) then Exit;
+  VDim(Result, Length(Values), EmptyStr);
+  for i:= 0 to High(Values) do
+  begin
+    Index:= VIndexOf(Keys, Values[i]);
+    if Index>=0 then
+      Result[i]:= Picks[Index];
+  end;
+end;
+
+function VPickFromKey(const Values: TInt64Vector;
+                      const Keys: TInt64Vector; const Picks: TStrVector): TStrVector;
+var
+  Index, i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(Values) then Exit;
+  VDim(Result, Length(Values), EmptyStr);
+  for i:= 0 to High(Values) do
+  begin
+    Index:= VIndexOf(Keys, Values[i]);
+    if Index>=0 then
+      Result[i]:= Picks[Index];
   end;
 end;
 
