@@ -66,6 +66,7 @@ uses
   function SqlOR(const AExpressions: array of String): String;
   function SqlAND(const AExpressions: array of String): String;
   function SqlCROSS(const AMin1, AMax1, AMin2, AMax2: String): String;
+  function SqlSELECT(const ATableName: String; const AFields: array of String): String;
   function SqlINSERT(const ATableName: String; const AFields: array of String;
                      const AORExpression: String = SYMBOL_EMPTY): String;
   function SqlUPDATE(const ATableName: String; const AFields: array of String): String;
@@ -551,6 +552,12 @@ begin
                   SqlAND([SqlExprLogic(AMin1, '<=', AMin2), SqlExprLogic(AMax1, '>=', AMin2)]),
                   SqlAND([SqlExprLogic(AMin1, '<=', AMax2), SqlExprLogic(AMax1, '>=', AMax2)]),
                   SqlAND([SqlExprLogic(AMin1, '>=', AMin2), SqlExprLogic(AMax1, '<=', AMax2)])]);
+end;
+
+function SqlSELECT(const ATableName: String; const AFields: array of String): String;
+begin
+  Result:= 'SELECT' + SqlExprList(AFields, True) +
+           'FROM' + SqlEsc(ATableName);
 end;
 
 function SqlINSERT(const ATableName: String; const AFields: array of String;
