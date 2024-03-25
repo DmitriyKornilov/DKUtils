@@ -6,9 +6,8 @@ interface
 
 uses
   Graphics, GraphUtil, SysUtils;
-var
-  DefaultSelectionBGColor: TColor;
 
+var
   DefaultFormatSettingsRus : TFormatSettings = (
     CurrencyFormat: 3;
     NegCurrFormat: 8;
@@ -36,6 +35,7 @@ var
   );
 
 const
+
   SYMBOL_SPACE_NONBREAK: String = Char($C2) + Char($A0);  //неразрывный пробел
   SYMBOL_SPACE_NONBREAK_STR = ' '; //неразрывный пробел: U+00A0
 
@@ -93,19 +93,6 @@ const
   VECTOR_COLOR_DEFAULT_VALUE = 0;
 
 implementation
-
-function SetDefaultSelectionBGColor: TColor;
-var
-  H, L, S: Byte;
-begin
-  ColorToHLS(clHighlight, H, L, S);
-  L:= L + 110;
-  Result:= HLSToColor(H, L, S);
-end;
-
-initialization
-
-DefaultSelectionBGColor:= SetDefaultSelectionBGColor;
 
 end.
 
