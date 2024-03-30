@@ -171,7 +171,20 @@ type
   procedure VIns(var V: TBoolVector;  const Ind: Integer; const Source: TBoolVector);
   procedure VIns(var V: TColorVector; const Ind: Integer; const Source: TColorVector);
 
-  {ПОИСК В ВЕКТОРЕ}
+  {ВСТАВКА В УПОРЯДОЧЕННЫЙ ВЕКТОР}
+  procedure VInsAsc(var V: TIntVector;   const Value: Integer);
+  procedure VInsAsc(var V: TInt64Vector; const Value: Int64);
+  procedure VInsAsc(var V: TStrVector;   const Value: String; const ACaseSensitivity: Boolean = True);
+  procedure VInsAscDate(var V: TDateVector; const Value: TDate);
+  procedure VInsAscTime(var V: TTimeVector; const Value: TTime);
+
+  procedure VInsDesc(var V: TIntVector;   const Value: Integer);
+  procedure VInsDesc(var V: TInt64Vector; const Value: Int64);
+  procedure VInsDesc(var V: TStrVector;   const Value: String; const ACaseSensitivity: Boolean = True);
+  procedure VInsDescDate(var V: TDateVector; const Value: TDate);
+  procedure VInsDescTime(var V: TTimeVector; const Value: TTime);
+
+  {ПОИСК ИНДЕКСА ЗНАЧЕНИЯ В ВЕКТОРЕ}
   function VIndexOf(const V: TIntVector;   const FindValue: Integer): Integer;
   function VIndexOf(const V: TInt64Vector; const FindValue: Int64):   Integer;
   function VIndexOf(const V: TStrVector;   const FindValue: String;
@@ -185,19 +198,19 @@ type
   function VIndexOf(const VMin, VMax: TIntVector; const FindValue: Integer): Integer;
 
   {ПОЗИЦИЯ ДЛЯ ВСТАВКИ В УПОРЯДОЧЕННОМ ВЕКТОРЕ}
-  function VInsOfAsc(const V: TIntVector;   const InsValue: Integer): Integer;
-  function VInsOfAsc(const V: TInt64Vector; const InsValue: Int64):   Integer;
-  function VInsOfAsc(const V: TStrVector;   const InsValue: String;
+  function VIndexOfAsc(const V: TIntVector;   const InsValue: Integer): Integer;
+  function VIndexOfAsc(const V: TInt64Vector; const InsValue: Int64):   Integer;
+  function VIndexOfAsc(const V: TStrVector;   const InsValue: String;
                      const ACaseSensitivity: Boolean = True):  Integer;
-  function VInsOfAscDate(const V: TDateVector; const InsValue: TDate):    Integer;
-  function VInsOfAscTime(const V: TTimeVector; const InsValue: TTime):    Integer;
+  function VIndexOfAscDate(const V: TDateVector; const InsValue: TDate):    Integer;
+  function VIndexOfAscTime(const V: TTimeVector; const InsValue: TTime):    Integer;
 
-  function VInsOfDesc(const V: TIntVector;   const InsValue: Integer): Integer;
-  function VInsOfDesc(const V: TInt64Vector; const InsValue: Int64):   Integer;
-  function VInsOfDesc(const V: TStrVector;   const InsValue: String;
+  function VIndexOfDesc(const V: TIntVector;   const InsValue: Integer): Integer;
+  function VIndexOfDesc(const V: TInt64Vector; const InsValue: Int64):   Integer;
+  function VIndexOfDesc(const V: TStrVector;   const InsValue: String;
                       const ACaseSensitivity: Boolean = True):  Integer;
-  function VInsOfDescDate(const V: TDateVector; const InsValue: TDate):    Integer;
-  function VInsOfDescTime(const V: TTimeVector; const InsValue: TTime):    Integer;
+  function VIndexOfDescDate(const V: TDateVector; const InsValue: TDate):    Integer;
+  function VIndexOfDescTime(const V: TTimeVector; const InsValue: TTime):    Integer;
 
   {УНИКАЛЬНЫЕ ЗНАЧЕНИЯ}
   function VUnique(const V: TIntVector): TIntVector;
@@ -1722,6 +1735,60 @@ begin
   end;
 end;
 
+//VInsAsc
+
+procedure VInsAsc(var V: TIntVector; const Value: Integer);
+begin
+  VIns(V, VIndexOfAsc(V, Value), Value);
+end;
+
+procedure VInsAsc(var V: TInt64Vector; const Value: Int64);
+begin
+  VIns(V, VIndexOfAsc(V, Value), Value);
+end;
+
+procedure VInsAsc(var V: TStrVector; const Value: String; const ACaseSensitivity: Boolean = True);
+begin
+  VIns(V, VIndexOfAsc(V, Value, ACaseSensitivity), Value);
+end;
+
+procedure VInsAscDate(var V: TDateVector; const Value: TDate);
+begin
+  VIns(V, VIndexOfAscDate(V, Value), Value);
+end;
+
+procedure VInsAscTime(var V: TTimeVector; const Value: TTime);
+begin
+  VIns(V, VIndexOfAscTime(V, Value), Value);
+end;
+
+//VInsDesc
+
+procedure VInsDesc(var V: TIntVector; const Value: Integer);
+begin
+  VIns(V, VIndexOfDesc(V, Value), Value);
+end;
+
+procedure VInsDesc(var V: TInt64Vector; const Value: Int64);
+begin
+  VIns(V, VIndexOfDesc(V, Value), Value);
+end;
+
+procedure VInsDesc(var V: TStrVector; const Value: String; const ACaseSensitivity: Boolean = True);
+begin
+  VIns(V, VIndexOfDesc(V, Value, ACaseSensitivity), Value);
+end;
+
+procedure VInsDescDate(var V: TDateVector; const Value: TDate);
+begin
+  VIns(V, VIndexOfDescDate(V, Value), Value);
+end;
+
+procedure VInsDescTime(var V: TTimeVector; const Value: TTime);
+begin
+  VIns(V, VIndexOfDescTime(V, Value), Value);
+end;
+
 //VIndexOf
 
 function VIndexOf(const V: TIntVector; const FindValue: Integer): Integer;
@@ -1830,8 +1897,6 @@ begin
   end;
 end;
 
-//VInsOfAsc
-
 function VIndexOf(const VMin, VMax: TIntVector; const FindValue: Integer): Integer;
 var
   i: Integer;
@@ -1848,7 +1913,9 @@ begin
   end;
 end;
 
-function VInsOfAsc(const V: TIntVector;   const InsValue: Integer): Integer;
+//VIndexOfAsc
+
+function VIndexOfAsc(const V: TIntVector;   const InsValue: Integer): Integer;
 var
   i: Integer;
 begin
@@ -1870,7 +1937,7 @@ begin
   end;
 end;
 
-function VInsOfAsc(const V: TInt64Vector; const InsValue: Int64):   Integer;
+function VIndexOfAsc(const V: TInt64Vector; const InsValue: Int64):   Integer;
 var
   i: Integer;
 begin
@@ -1892,7 +1959,7 @@ begin
   end;
 end;
 
-function VInsOfAsc(const V: TStrVector;   const InsValue: String;
+function VIndexOfAsc(const V: TStrVector;   const InsValue: String;
                    const ACaseSensitivity: Boolean = True):  Integer;
 var
   i: Integer;
@@ -1918,7 +1985,7 @@ begin
   end;
 end;
 
-function VInsOfAscDate(const V: TDateVector; const InsValue: TDate):   Integer;
+function VIndexOfAscDate(const V: TDateVector; const InsValue: TDate):   Integer;
 var
   i: Integer;
 begin
@@ -1943,7 +2010,7 @@ begin
   end;
 end;
 
-function VInsOfAscTime(const V: TTimeVector; const InsValue: TTime): Integer;
+function VIndexOfAscTime(const V: TTimeVector; const InsValue: TTime): Integer;
 var
   i: Integer;
 begin
@@ -1968,9 +2035,9 @@ begin
   end;
 end;
 
-//VInsOfDesc
+//VIndexOfDesc
 
-function VInsOfDesc(const V: TIntVector;   const InsValue: Integer): Integer;
+function VIndexOfDesc(const V: TIntVector;   const InsValue: Integer): Integer;
 var
   i: Integer;
 begin
@@ -1992,7 +2059,7 @@ begin
   end;
 end;
 
-function VInsOfDesc(const V: TInt64Vector; const InsValue: Int64):   Integer;
+function VIndexOfDesc(const V: TInt64Vector; const InsValue: Int64):   Integer;
 var
   i: Integer;
 begin
@@ -2014,7 +2081,7 @@ begin
   end;
 end;
 
-function VInsOfDesc(const V: TStrVector;   const InsValue: String;
+function VIndexOfDesc(const V: TStrVector;   const InsValue: String;
                     const ACaseSensitivity: Boolean = True):  Integer;
 var
   i: Integer;
@@ -2040,7 +2107,7 @@ begin
   end;
 end;
 
-function VInsOfDescDate(const V: TDateVector; const InsValue: TDate):    Integer;
+function VIndexOfDescDate(const V: TDateVector; const InsValue: TDate): Integer;
 var
   i: Integer;
 begin
@@ -2065,7 +2132,7 @@ begin
   end;
 end;
 
-function VInsOfDescTime(const V: TTimeVector; const InsValue: TTime): Integer;
+function VIndexOfDescTime(const V: TTimeVector; const InsValue: TTime): Integer;
 var
   i: Integer;
 begin
