@@ -60,6 +60,13 @@ type
   procedure VChangeIn(var V: TBoolVector;  const NewValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1);
   procedure VChangeIn(var V: TColorVector; const NewValue: TColor;  FromIndex: Integer=-1; ToIndex: Integer=-1);
 
+  procedure VChangeIn(var V: TIntVector;   const NewValues: TIntVector; FromIndex, ToIndex: Integer);
+  procedure VChangeIn(var V: TInt64Vector; const NewValues: TInt64Vector; FromIndex, ToIndex: Integer);
+  procedure VChangeIn(var V: TStrVector;   const NewValues: TStrVector; FromIndex, ToIndex: Integer);
+  procedure VChangeIn(var V: TDblVector;   const NewValues: TDblVector; FromIndex, ToIndex: Integer);
+  procedure VChangeIn(var V: TBoolVector;  const NewValues: TBoolVector; FromIndex, ToIndex: Integer);
+  procedure VChangeIn(var V: TColorVector; const NewValues: TColorVector; FromIndex, ToIndex: Integer);
+
   procedure VChangeNotIn(var V: TIntVector;   const NewValue: Integer; FromIndex, ToIndex: Integer);
   procedure VChangeNotIn(var V: TInt64Vector; const NewValue: Int64;   FromIndex, ToIndex: Integer);
   procedure VChangeNotIn(var V: TStrVector;   const NewValue: String;  FromIndex, ToIndex: Integer);
@@ -264,10 +271,14 @@ type
   function VCountIfNot(const V: TBoolVector;  const IfValue: Boolean; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIfNot(const V: TColorVector; const IfValue: TColor;  FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
 
+  {ПРЕОБРАЗОВНИЕ ИЗ СТРОКОВОГО ВЕКТОРА}
   function VStrToInt(const V: TStrVector): TIntVector;
   function VStrToInt64(const V: TStrVector): TInt64Vector;
   function VStrToDate(const V: TStrVector): TDateVector;
   function VStrToTime(const V: TStrVector): TTimeVector;
+
+  {BOOLEAN}
+  function VIntToBool(const V: TIntVector): TBoolVector;
 
   {ПРЕОБРАЗОВНИЕ К СТРОКОВОМУ ВЕКТОРУ}
   function VIntToStr(const V: TIntVector; const ZeroIsEmpty: Boolean = False): TStrVector;
@@ -757,6 +768,60 @@ var
 begin
   if CheckFromToIndexes(High(V), FromIndex, ToIndex) then
     for i:= FromIndex to ToIndex do V[i]:= NewValue;
+end;
+
+procedure VChangeIn(var V: TIntVector; const NewValues: TIntVector; FromIndex, ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  if Length(NewValues)<>(ToIndex-FromIndex+1) then Exit;
+  for i:= FromIndex to ToIndex do V[i]:= NewValues[i-FromIndex];
+end;
+
+procedure VChangeIn(var V: TInt64Vector; const NewValues: TInt64Vector; FromIndex, ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  if Length(NewValues)<>(ToIndex-FromIndex+1) then Exit;
+  for i:= FromIndex to ToIndex do V[i]:= NewValues[i-FromIndex];
+end;
+
+procedure VChangeIn(var V: TStrVector; const NewValues: TStrVector; FromIndex, ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  if Length(NewValues)<>(ToIndex-FromIndex+1) then Exit;
+  for i:= FromIndex to ToIndex do V[i]:= NewValues[i-FromIndex];
+end;
+
+procedure VChangeIn(var V: TDblVector; const NewValues: TDblVector; FromIndex, ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  if Length(NewValues)<>(ToIndex-FromIndex+1) then Exit;
+  for i:= FromIndex to ToIndex do V[i]:= NewValues[i-FromIndex];
+end;
+
+procedure VChangeIn(var V: TBoolVector;  const NewValues: TBoolVector; FromIndex, ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  if Length(NewValues)<>(ToIndex-FromIndex+1) then Exit;
+  for i:= FromIndex to ToIndex do V[i]:= NewValues[i-FromIndex];
+end;
+
+procedure VChangeIn(var V: TColorVector; const NewValues: TColorVector; FromIndex, ToIndex: Integer);
+var
+  i: Integer;
+begin
+  if not CheckFromToIndexes(High(V), FromIndex, ToIndex) then Exit;
+  if Length(NewValues)<>(ToIndex-FromIndex+1) then Exit;
+  for i:= FromIndex to ToIndex do V[i]:= NewValues[i-FromIndex];
 end;
 
 //VChangeIf
@@ -3205,6 +3270,17 @@ begin
   for i:=0 to High(V) do
     if not SEmpty(V[i]) then
       Result[i]:= StrToTime(V[i]);
+end;
+
+function VIntToBool(const V: TIntVector): TBoolVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V), False);
+  for i:= 0 to High(V) do
+    Result[i]:= V[i]=1;
 end;
 
 {ПРЕОБРАЗОВНИЕ К СТРОКОВОМУ ВЕКТОРУ}
