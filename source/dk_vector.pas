@@ -279,6 +279,7 @@ type
 
   {BOOLEAN}
   function VIntToBool(const V: TIntVector): TBoolVector;
+  function VBoolToInt(const V: TBoolVector): TIntVector;
 
   {ПРЕОБРАЗОВНИЕ К СТРОКОВОМУ ВЕКТОРУ}
   function VIntToStr(const V: TIntVector; const ZeroIsEmpty: Boolean = False): TStrVector;
@@ -3281,6 +3282,17 @@ begin
   VDim(Result, Length(V), False);
   for i:= 0 to High(V) do
     Result[i]:= V[i]=1;
+end;
+
+function VBoolToInt(const V: TBoolVector): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V), 0);
+  for i:= 0 to High(V) do
+    Result[i]:= Ord(V[i]);
 end;
 
 {ПРЕОБРАЗОВНИЕ К СТРОКОВОМУ ВЕКТОРУ}
