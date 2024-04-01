@@ -404,6 +404,11 @@ type
   function VSameIndexValue(const FindValue: Integer; const SearchVector: TIntVector; const SourceVector: TInt64Vector; out Value: Int64): Boolean;
   function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector; const SourceVector: TIntVector; out Value: Integer): Boolean;
   function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector; const SourceVector: TInt64Vector; out Value: Int64): Boolean;
+  function VSameIndexValue(const FindValue: String; const SearchVector: TStrVector; const SourceVector: TIntVector; out Value: Integer;
+                           const ACaseSensitivity: Boolean = False): Boolean;
+  function VSameIndexValue(const FindValue: String; const SearchVector: TStrVector; const SourceVector: TInt64Vector; out Value: Int64;
+                           const ACaseSensitivity: Boolean = False): Boolean;
+
 
   {ЗАМЕНА КЛЮЧЕЙ НА ЗНАЧЕНИЕ}
   function VPickFromKey(const Values: TIntVector; const Keys: TIntVector; const Picks: TIntVector): TIntVector;
@@ -3881,6 +3886,32 @@ var
 begin
   Value:= VECTOR_INT64_DEFAULT_VALUE;
   Index:= VIndexOf(SearchVector, FindValue);
+  Result:= Index>=0;
+  if not Result then Exit;
+  Value:= SourceVector[Index];
+end;
+
+function VSameIndexValue(const FindValue: String; const SearchVector: TStrVector;
+                         const SourceVector: TIntVector; out Value: Integer;
+                         const ACaseSensitivity: Boolean = False): Boolean;
+var
+  Index: Integer;
+begin
+  Value:= VECTOR_INT_DEFAULT_VALUE;
+  Index:= VIndexOf(SearchVector, FindValue, ACaseSensitivity);
+  Result:= Index>=0;
+  if not Result then Exit;
+  Value:= SourceVector[Index];
+end;
+
+function VSameIndexValue(const FindValue: String; const SearchVector: TStrVector;
+                         const SourceVector: TInt64Vector; out Value: Int64;
+                         const ACaseSensitivity: Boolean): Boolean;
+var
+  Index: Integer;
+begin
+  Value:= VECTOR_INT_DEFAULT_VALUE;
+  Index:= VIndexOf(SearchVector, FindValue, ACaseSensitivity);
   Result:= Index>=0;
   if not Result then Exit;
   Value:= SourceVector[Index];
