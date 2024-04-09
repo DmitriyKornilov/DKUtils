@@ -48,6 +48,7 @@ type
   function VCreateStr(const V: array of String): TStrVector;
   function VCreateDbl(const V: array of Double): TDblVector;
   function VCreateDate(const V: array of TDate): TDateVector;
+  function VCreateDate(const ABeginDate, AEndDate: TDate): TDateVector;
   function VCreateTime(const V: array of TTime): TTimeVector;
   function VCreateBool(const V: array of Boolean): TBoolVector;
   function VCreateColor(const V: array of TColor): TColorVector;
@@ -692,6 +693,16 @@ begin
   Result:= nil;
   for i:= Low(V) to High(V) do
     VAppend(Result, V[i]);
+end;
+
+function VCreateDate(const ABeginDate, AEndDate: TDate): TDateVector;
+var
+  i, n: Integer;
+begin
+  Result:= nil;
+  n:= DaysBetweenDates(ABeginDate, AEndDate);
+  for i:= 0 to n do
+    VAppend(Result, IncDay(ABeginDate, i));
 end;
 
 function VCreateTime(const V: array of TTime): TTimeVector;
