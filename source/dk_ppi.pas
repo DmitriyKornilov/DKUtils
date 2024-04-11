@@ -14,8 +14,8 @@ const
 
   function SizeFromPPIToPPI(const ASize, AFromPPI, AToPPI: Integer): Integer;
 
-  function SizeFromDefaultToDesignTime(const AHeight, ADesignTimePPI: Integer): Integer;
-  function SizeFromDesignTimeToDefault(const AHeight, ADesignTimePPI: Integer): Integer;
+  function SizeFromDefaultToDesignTime(const ASize, ADesignTimePPI: Integer): Integer;
+  function SizeFromDesignTimeToDefault(const ASize, ADesignTimePPI: Integer): Integer;
 
   //Height --------------------------------------------------------------------
 
@@ -58,14 +58,14 @@ begin
   Result:= MulDiv(ASize, AToPPI, AFromPPI);
 end;
 
-function SizeFromDefaultToDesignTime(const AHeight, ADesignTimePPI: Integer): Integer;
+function SizeFromDefaultToDesignTime(const ASize, ADesignTimePPI: Integer): Integer;
 begin
-  Result:= SizeFromPPIToPPI(AHeight, DEFAULT_PPI, ADesignTimePPI);
+  Result:= SizeFromPPIToPPI(ASize, DEFAULT_PPI, ADesignTimePPI);
 end;
 
-function SizeFromDesignTimeToDefault(const AHeight, ADesignTimePPI: Integer): Integer;
+function SizeFromDesignTimeToDefault(const ASize, ADesignTimePPI: Integer): Integer;
 begin
-  Result:= SizeFromPPIToPPI(AHeight, ADesignTimePPI, DEFAULT_PPI);
+  Result:= SizeFromPPIToPPI(ASize, ADesignTimePPI, DEFAULT_PPI);
 end;
 
 //Height -----------------------------------------------------------------------

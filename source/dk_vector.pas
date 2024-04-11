@@ -373,6 +373,7 @@ type
   function VCountIn(const V: TDateVector; const ABeginDate, AEndDate: TDate): Integer;
   function VCountBefore(const V: TDateVector; const ADate: TDate): Integer;
   function VCountAfter(const V: TDateVector; const ADate: TDate): Integer;
+  procedure VDel(var V: TDateVector; const ADate: TDate);
 
   {ОБРАЩЕНИЕ ПОРЯДКА ЭЛЕМЕНТОВ}
   function VReverse(const V: TIntVector): TIntVector;
@@ -3616,7 +3617,17 @@ begin
   end;
 end;
 
-
+procedure VDel(var V: TDateVector; const ADate: TDate);
+var
+  i: Integer;
+begin
+  i:= VIndexOfDate(V, ADate);
+  while i>=0 do
+  begin
+    VDel(V, i);
+    i:= VIndexOfDate(V, ADate);
+  end;
+end;
 
 //VSort
 
