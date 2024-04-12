@@ -42,6 +42,7 @@ const
   SYMBOL_BREAK        = LineEnding;
   SYMBOL_EMPTY        = '';
   SYMBOL_COMMA        = ',';
+  SYMBOL_DOT          = '.';
   SYMBOL_OPENBRACKET  = '(';
   SYMBOL_CLOSEBRACKET = ')';
   SYMBOL_SPACE        = ' ';                      //пробел
