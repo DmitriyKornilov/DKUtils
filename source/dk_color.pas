@@ -7,6 +7,20 @@ interface
 uses
   Classes, SysUtils, Graphics, GraphUtil;
 
+const
+  COLOR_AQUA       = $00E3E2A8;
+  COLOR_PURPLE     = $00D8BFD8;
+  COLOR_BEIGE      = $00C0EDED;
+  COLOR_RED        = $00CECEFF;
+  COLOR_GRAY       = $00E0E0E0;
+  COLOR_BLACK      = $00000000;
+  COLOR_WHITE      = $00FFFFFF;
+  COLOR_ORANGE     = $0097CBFF;
+  COLOR_GREEN      = $00CCE3CC;
+  COLOR_YELLOW     = $00B3FFFF;
+  COLOR_BLUE       = $00FBD69B;
+  COLOR_BROWN      = $00B4B4D9;
+
 var
   DefaultSelectionBGColor: TColor;
 
