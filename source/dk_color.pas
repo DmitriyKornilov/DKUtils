@@ -9,7 +9,7 @@ uses
 
 const
   COLOR_AQUA       = $00E3E2A8;
-  COLOR_PURPLE     = $00D8BFD8;
+  COLOR_PURPLE     = $00E6D5E6;
   COLOR_BEIGE      = $00C0EDED;
   COLOR_RED        = $00CECEFF;
   COLOR_GRAY       = $00E0E0E0;
