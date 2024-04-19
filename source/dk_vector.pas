@@ -315,6 +315,10 @@ type
                           const ANeedThousandSeparator: Boolean = False;
                           const AEmptyIfZero: Boolean = False): TStrVector;
 
+  {COLOR}
+  function VColorFromVector(const AColorVector: TColorVector; const AIndex: Integer;
+                            const ASortIndexes: TIntVector = nil): TColor;
+
 
   {СУММА/КОНКАТЕНАЦИЯ}
   function VSum(const V: TStrVector; const S: String): TStrVector;
@@ -3553,6 +3557,19 @@ begin
   VDim(Result, Length(APrices));
   for i:= 0 to High(APrices) do
     Result[i]:= PriceIntToStr(APrices[i], ANeedThousandSeparator, AEmptyIfZero);
+end;
+
+function VColorFromVector(const AColorVector: TColorVector; const AIndex: Integer;
+                          const ASortIndexes: TIntVector = nil): TColor;
+var
+  k, n: Integer;
+begin
+  n:= Length(ASortIndexes);
+  if n>0 then
+    k:= ASortIndexes[AIndex mod n]
+  else
+    k:= AIndex;
+  Result:= AColorVector[k mod Length(AColorVector)];
 end;
 
 {ДЛЯ ВЕКТОРА ДАТ}
