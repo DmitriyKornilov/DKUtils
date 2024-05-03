@@ -23,6 +23,7 @@ const
 
 var
   DefaultSelectionBGColor: TColor;
+  DefaultSelectionBGExtraColor: TColor;
 
   function ColorIncLightness(const AColor: TColor; const LightnessIncrement: Integer): TColor;
 
@@ -47,6 +48,7 @@ end;
 initialization
 
 DefaultSelectionBGColor:= ColorIncLightness(clHighlight, 110);
+DefaultSelectionBGExtraColor:= ColorIncLightness(clHighlight, 90);
 
 end.
 
