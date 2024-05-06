@@ -202,6 +202,8 @@ type
   function VIndexOf(const V: TBoolVector;  const FindValue: Boolean): Integer;
   function VIndexOf(const V: TColorVector; const FindValue: TColor):  Integer;
 
+  function VIndexOf(const V1, V2: TIntVector; const FindValue1, FindValue2: Integer): Integer;
+
   {ПОИСК В ДИАПАЗОНЕ}
   function VIndexOf(const VMin, VMax: TIntVector; const FindValue: Integer): Integer;
 
@@ -251,8 +253,12 @@ type
                 const ACaseSensitivity: Boolean = True):   String;
   function VMaxDate(const V: TDateVector):  TDate;
   function VMaxTime(const V: TTimeVector):  TTime;
+  function VMaxWidth(const V: TStrVector; const AFont: TFont; const ADefaultValue: Integer = 0): Integer;
+  function VMaxWidth(const V: TStrVector; const AFontName: String; const AFontSize: Single;
+                     const AFontStyle: TFontStyles=[];
+                     const ADefaultValue: Integer = 0): Integer;
 
-  {КОЛ-ВО ЗНАЧЕНИЙ, РАВНЫХ ЗАДАННОМУ}
+                {КОЛ-ВО ЗНАЧЕНИЙ, РАВНЫХ ЗАДАННОМУ}
   function VCountIf(const V: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIf(const V: TInt64Vector; const IfValue: Int64;   FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
   function VCountIf(const V: TStrVector;   const IfValue: String;  FromIndex: Integer=-1; ToIndex: Integer=-1;
@@ -1984,6 +1990,22 @@ begin
   end;
 end;
 
+function VIndexOf(const V1, V2: TIntVector; const FindValue1, FindValue2: Integer): Integer;
+var
+  i: Integer;
+begin
+  Result:= -1;
+  if Length(V1)<>Length(V2) then Exit;
+  for i:= 0 to High(V1) do
+  begin
+    if (V1[i]=FindValue1) and (V2[i]=FindValue2) then
+    begin
+      Result:= i;
+      break;
+    end;
+  end;
+end;
+
 function VIndexOf(const VMin, VMax: TIntVector; const FindValue: Integer): Integer;
 var
   i: Integer;
@@ -2555,6 +2577,33 @@ begin
   for i:=1 to High(V) do
     if CompareTime(V[i], Result)>0 then
       Result:= V[i];
+end;
+
+function VMaxWidth(const V: TStrVector; const AFont: TFont; const ADefaultValue: Integer = 0): Integer;
+var
+  i, w: Integer;
+begin
+  Result:= ADefaultValue;
+  for i:= 0 to High(V) do
+  begin
+    w:= SWidth(V[i], AFont);
+    if w>Result then
+      Result:= w;
+  end;
+end;
+
+function VMaxWidth(const V: TStrVector; const AFontName: String; const AFontSize: Single;
+                     const AFontStyle: TFontStyles=[];
+                     const ADefaultValue: Integer = 0): Integer;
+var
+  F: TFont;
+begin
+  F:= SFont(AFontName, AFontSize, AFontStyle);
+  try
+    Result:= VMaxWidth(V, F, ADefaultValue);
+  finally
+    FreeAndNil(F);
+  end;
 end;
 
 //VCountIf

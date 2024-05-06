@@ -48,7 +48,7 @@ end;
 initialization
 
 DefaultSelectionBGColor:= ColorIncLightness(clHighlight, 110);
-DefaultSelectionBGExtraColor:= ColorIncLightness(clHighlight, 90);
+DefaultSelectionBGExtraColor:= ColorIncLightness(clHighlight, 70);
 
 end.
 
