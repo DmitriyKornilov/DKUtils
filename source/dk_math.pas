@@ -7,8 +7,6 @@ interface
 uses
   Classes, SysUtils;
 
-
-
   function Min(const AValue1, AValue2: Double): Double;
   function Min(const AValue1, AValue2: Integer): Integer;
 
