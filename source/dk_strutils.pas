@@ -62,6 +62,7 @@ type
   function SFromStrings(const AStrings: TStrings; const ADelimiter: String = SYMBOL_SPACE): String;
   procedure SToStrings(const AStr: String; const AStrings: TStrings; const ADelimiter: String);
   function SDate(const AStr: String): String;
+  function SFit(const AStr, AEnd: String; const AWidth: Integer; const AFont: TFont): String;
 
 implementation
 
@@ -499,6 +500,30 @@ begin
       Result:= RegExpr.Match[0];
   finally
     FreeAndNil(RegExpr);
+  end;
+end;
+
+function SFit(const AStr, AEnd: String; const AWidth: Integer; const AFont: TFont): String;
+var
+  MaxWidth, i: Integer;
+  CutStr, NextSymbol: String;
+begin
+  MaxWidth:= AWidth;
+
+  if SWidth(AStr, AFont)<=MaxWidth then
+    Result:= AStr
+  else begin
+    MaxWidth:= MaxWidth - SWidth(AEnd, AFont);
+    CutStr:= SSymbol(AStr, 1);
+    for i:=2 to SLength(AStr) do
+    begin
+      NextSymbol:= SSymbol(AStr, i);
+      if SWidth(CutStr+NextSymbol, AFont)>MaxWidth then
+        break
+      else
+        CutStr:= CutStr + NextSymbol;
+    end;
+    Result:= CutStr + AEnd;
   end;
 end;
 
