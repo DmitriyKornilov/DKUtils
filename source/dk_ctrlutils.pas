@@ -11,8 +11,10 @@ uses
 
 const
   //sizes for 96 PPI
-  TOOL_PANEL_HEIGHT_DEFAULT = 34;
-  TOOL_BUTTON_WIDTH_DEFAULT = TOOL_PANEL_HEIGHT_DEFAULT;// - 2;
+  TOOL_PANEL_HEIGHT_DEFAULT  = 34;
+  TOOL_BUTTON_WIDTH_DEFAULT  = TOOL_PANEL_HEIGHT_DEFAULT;
+  EDIT_BUTTON_HEIGHT_DEFAULT = TOOL_PANEL_HEIGHT_DEFAULT - 2;
+  EDIT_BUTTON_WIDTH_EXTRA    = 6;
 
 type
 
@@ -36,7 +38,7 @@ begin
   AControl.Constraints.MinHeight:= 0;
   AControl.Constraints.MaxWidth:= 0;
   AControl.Constraints.MinWidth:= 0;
-  Result:= SizeFromDefaultToDesignTime(ADefaultSize, ControlDesignTimePPI(AControl));
+  Result:= AControl.Scale96ToForm(ADefaultSize);
 end;
 
 procedure ControlHeight(const AControl: TControl; const ADefaultHeight: Integer);
