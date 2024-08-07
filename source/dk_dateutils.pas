@@ -84,6 +84,7 @@ uses
   function IsPeriodIntersect(const ABegin1, AEnd1, ABegin2, AEnd2: TDate): Boolean;
   function IsPeriodIntersect(const ABegin1, AEnd1, ABegin2, AEnd2: TDate;
                              out ABegin, AEnd: TDate): Boolean;
+  function DateIndexInPeriod(const ADate, ADate1, ADate2: TDate; out AIndex: Integer): Boolean;
 
   {ОПЕРАЦИИ С ДАТАМИ}
   function IncMonthExt(const ADate: TDate; const ADeltaMonth: Extended): TDate;
@@ -447,6 +448,15 @@ begin
     ABegin:= ABegin1;
     AEnd:= AEnd1;
   end;
+end;
+
+function DateIndexInPeriod(const ADate, ADate1, ADate2: TDate;
+                           out AIndex: Integer): Boolean;
+begin
+  AIndex:= -1;
+  Result:= IsDateInPeriod(ADate, ADate1, ADate2);
+  if not Result then Exit;
+  AIndex:= DaysBetweenDates(ADate1, ADate);
 end;
 
 {ОПЕРАЦИИ С ДАТАМИ}
