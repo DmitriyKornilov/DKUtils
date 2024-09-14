@@ -47,8 +47,14 @@ end;
 
 initialization
 
+{$IFDEF WINDOWS}
 DefaultSelectionBGColor:= ColorIncLightness(clHighlight, 110);
 DefaultSelectionBGExtraColor:= ColorIncLightness(clHighlight, 70);
+{$ENDIF}
+{$IFDEF LINUX}
+DefaultSelectionBGColor:= ColorIncLightness(clHighlight, 60);
+DefaultSelectionBGExtraColor:= ColorIncLightness(clHighlight, 25);
+{$ENDIF}
 
 end.
 
