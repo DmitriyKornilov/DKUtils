@@ -25,17 +25,18 @@ var
   DefaultSelectionBGColor: TColor;
   DefaultSelectionBGExtraColor: TColor;
 
-  function ColorIncLightness(const AColor: TColor; const LightnessIncrement: Integer): TColor;
+  function ColorIncLightness(const AColor: TColor; const ALightnessIncrement: Integer): TColor;
+  function ColorSetLightness(const AColor: TColor; const ALightnessValue: Integer): TColor;
 
 implementation
 
-function ColorIncLightness(const AColor: TColor; const LightnessIncrement: Integer): TColor;
+function ColorIncLightness(const AColor: TColor; const ALightnessIncrement: Integer): TColor;
 var
   H, L, S: Byte;
   Lightness: Integer;
 begin
   ColorToHLS(AColor, H, L, S);
-  Lightness:= L + LightnessIncrement;
+  Lightness:= L + ALightnessIncrement;
   if Lightness<0 then
     L:= 0
   else if Lightness>255 then
@@ -45,16 +46,24 @@ begin
   Result:= HLSToColor(H, L, S);
 end;
 
+function ColorSetLightness(const AColor: TColor; const ALightnessValue: Integer): TColor;
+var
+  H, L, S: Byte;
+begin
+  ColorToHLS(AColor, H, L, S);
+  if ALightnessValue<0 then
+    L:= 0
+  else if ALightnessValue>255 then
+    L:= 255
+  else
+    L:= ALightnessValue;
+  Result:= HLSToColor(H, L, S);
+end;
+
 initialization
 
-{$IFDEF WINDOWS}
-DefaultSelectionBGColor:= ColorIncLightness(clHighlight, 110);
-DefaultSelectionBGExtraColor:= ColorIncLightness(clHighlight, 70);
-{$ENDIF}
-{$IFDEF LINUX}
-DefaultSelectionBGColor:= ColorIncLightness(clHighlight, 60);
-DefaultSelectionBGExtraColor:= ColorIncLightness(clHighlight, 25);
-{$ENDIF}
+DefaultSelectionBGColor:= ColorSetLightness(clHighlight, 220);
+DefaultSelectionBGExtraColor:= ColorSetLightness(clHighlight, 180);
 
 end.
 
