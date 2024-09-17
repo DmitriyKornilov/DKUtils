@@ -5,9 +5,9 @@ unit DK_CtrlUtils;
 interface
 
 uses
-  Classes, SysUtils, Controls, ExtCtrls, Menus, Forms,
+  Classes, SysUtils, Graphics, Controls, ExtCtrls, Menus, Forms,
 
-  DK_PPI;
+  DK_PPI, DK_Color;
 
 const
   //sizes for 96 PPI
@@ -28,6 +28,11 @@ procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
 procedure FormToScreenCenter(const AForm: TForm);
 function FormModalShow(AFormClass: TFormClass): Integer;
 function FormOnPanelCreate(AFormClass: TFormClass; APanel: TPanel): TForm;
+
+procedure SetToolPanels(const AControls: array of TControl);
+procedure SetCaptionPanels(const AControls: array of TControl);
+procedure SetToolButtons(const AControls: array of TControl);
+
 
 implementation
 
@@ -90,6 +95,36 @@ begin
   Result.Top:= 0;
   Result.Align:= alClient;
   Result.MakeFullyVisible();
+end;
+
+procedure SetToolPanels(const AControls: array of TControl);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AControls) do
+    ControlHeight(AControls[i], TOOL_PANEL_HEIGHT_DEFAULT);
+end;
+
+procedure SetCaptionPanels(const AControls: array of TControl);
+var
+  i, h: Integer;
+  c: TColor;
+begin
+  h:= Round(TOOL_PANEL_HEIGHT_DEFAULT*0.65);
+  c:= ColorIncLightness(clBtnFace, -15);
+  for i:= 0 to High(AControls) do
+  begin
+    ControlHeight(AControls[i], h);
+    AControls[i].Color:= c;
+  end;
+end;
+
+procedure SetToolButtons(const AControls: array of TControl);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AControls) do
+    ControlWidth(AControls[i], TOOL_BUTTON_WIDTH_DEFAULT);
 end;
 
 end.
