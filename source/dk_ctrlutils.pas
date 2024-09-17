@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Graphics, Controls, ExtCtrls, Menus, Forms,
 
-  DK_PPI, DK_Color;
+  DK_Color;
 
 const
   //sizes for 96 PPI
@@ -33,6 +33,8 @@ procedure SetToolPanels(const AControls: array of TControl);
 procedure SetCaptionPanels(const AControls: array of TControl);
 procedure SetToolButtons(const AControls: array of TControl);
 
+function ChooseImageListForScreenPPI(const AImageList100, AImageList125,
+                                           AImageList150, AImageList175: TImageList): TImageList;
 
 implementation
 
@@ -125,6 +127,21 @@ var
 begin
   for i:= 0 to High(AControls) do
     ControlWidth(AControls[i], TOOL_BUTTON_WIDTH_DEFAULT);
+end;
+
+function ChooseImageListForScreenPPI(const AImageList100, AImageList125, AImageList150, AImageList175: TImageList): TImageList;
+var
+  PPI: Integer;
+begin
+  PPI:= Screen.PixelsPerInch;
+  if PPI<108 then
+    Result:= AImageList100
+  else if PPI<132 then
+    Result:= AImageList125
+  else if PPI<156 then
+    Result:= AImageList150
+  else
+    Result:= AImageList175;
 end;
 
 end.
