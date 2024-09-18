@@ -5,7 +5,7 @@ unit DK_HeapTrace;
 interface
 
 uses
-  {Classes, }SysUtils, HeapTRC;
+  SysUtils, HeapTRC;
 
 procedure HeapTraceOutputFile(const AFileName: String);
 
@@ -13,12 +13,10 @@ implementation
 
 procedure HeapTraceOutputFile(const AFileName: String);
 begin
-  {$if declared(useHeapTrace)}
-    if FileExists(AFileName) then
-      DeleteFile(AFileName);
-    GlobalSkipIfNoLeaks := True;     // отчет об утечках только при их наличии
-    setHeapTraceOutput(AFileName);   // отчет в отдельном файле
-  {$endIf}
+  if FileExists(AFileName) then
+    DeleteFile(AFileName);
+  GlobalSkipIfNoLeaks := True;     // отчет об утечках только при их наличии
+  setHeapTraceOutput(AFileName);   // отчет в отдельном файле
 end;
 
 end.

@@ -28,6 +28,8 @@ procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
 procedure FormToScreenCenter(const AForm: TForm);
 function FormModalShow(AFormClass: TFormClass): Integer;
 function FormOnPanelCreate(AFormClass: TFormClass; APanel: TPanel): TForm;
+procedure FormKeepMinSize(const AForm: TForm;
+                          const AAutosizeBefore: Boolean = True); //use in TForm.OnShow
 
 procedure SetToolPanels(const AControls: array of TControl);
 procedure SetCaptionPanels(const AControls: array of TControl);
@@ -97,6 +99,15 @@ begin
   Result.Top:= 0;
   Result.Align:= alClient;
   Result.MakeFullyVisible();
+end;
+
+procedure FormKeepMinSize(const AForm: TForm;
+                          const AAutosizeBefore: Boolean = True);
+begin
+  AForm.Autosize:= AAutosizeBefore;
+  AForm.Constraints.MinHeight:= AForm.Height;
+  AForm.Constraints.MinWidth:= AForm.Width;
+  AForm.Autosize:= False;
 end;
 
 procedure SetToolPanels(const AControls: array of TControl);
