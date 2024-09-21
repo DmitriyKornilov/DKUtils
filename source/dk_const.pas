@@ -40,6 +40,7 @@ const
   SYMBOL_SPACE_NONBREAK_STR = ' '; //неразрывный пробел: U+00A0
 
   SYMBOL_DROPDOWN     = '▼';
+  SYMBOL_DASH         = '—';
   SYMBOL_BREAK        = LineEnding;
   SYMBOL_EMPTY        = '';
   SYMBOL_COMMA        = ',';
