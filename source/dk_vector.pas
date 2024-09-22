@@ -315,6 +315,9 @@ type
                           const ACaseSensitivity: Boolean = True;
                           const AMaxReplaceCount: Integer = 0 {replace all}): TStrVector;
 
+  {ВЕКТОР ЧИСЕЛ ИЗ СТРОКИ}
+  function VStrToNumbers(const Str: String): TIntVector;
+
   {PRICE}
   function VPriceStrToInt(const APrices: TStrVector): TInt64Vector;
   function VPriceIntToStr(const APrices: TInt64Vector;
@@ -3582,6 +3585,28 @@ begin
   VDim(Result, Length(V));
   for i:= 0 to High(V) do
     Result[i]:= SReplace(V[i], OldString, NewString, ACaseSensitivity, AMaxReplaceCount);
+end;
+
+function VStrToNumbers(const Str: String): TIntVector;
+var
+  i: Integer;
+  Symbol, Number: String;
+begin
+  Result:= nil;
+  if SEmpty(Str) then Exit;
+
+  Number:= EmptyStr;
+  for i:= 1 to SLength(Str) do
+  begin
+    Symbol:= SSymbol(Str, i);
+    if SIsDigit(Symbol) then
+      Number:= Number + Symbol
+    else if not SEmpty(Number) then
+    begin
+      VAppend(Result, StrToInt(Number));
+      Number:= EmptyStr
+    end;
+  end;
 end;
 
 function VPriceStrToInt(const APrices: TStrVector): TInt64Vector;

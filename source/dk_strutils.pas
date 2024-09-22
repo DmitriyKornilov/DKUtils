@@ -39,6 +39,7 @@ type
   function SSymbolLast(const AStr: String): String;
   function SDigit(const AStr: String; const ASymbolPos: Integer): Byte;
   function SIsDigit(const ASymbol: String): Boolean;
+  function SDigits(const AStr: String): String;
   function SRepeat(const ACount: Integer; const AStr: String): String;
   function SRedLine(const ASpacesCount: Integer): String;
   function SFillRight(const AStr: String; const ANeedLength: Integer; const AFillStr: String = SYMBOL_SPACE): String;
@@ -240,6 +241,20 @@ begin
   Result:= SFind(SYMBOLS_DIGITS, ASymbol);
 end;
 
+function SDigits(const AStr: String): String;
+var
+  i: Integer;
+  S: String;
+begin
+  Result:= EmptyStr;
+  for i:= 1 to SLength(AStr) do
+  begin
+    S:= SSymbol(AStr, i);
+    if SIsDigit(S) then
+      Result:= Result + S;
+  end;
+end;
+
 function SRepeat(const ACount: Integer; const AStr: String): String;
 var
   i: Integer;
@@ -259,9 +274,9 @@ var
   n, k: Integer;
 begin
   Result:= EmptyStr;
-  n:= ANeedLength - Length(AStr);
+  n:= ANeedLength - SLength(AStr);
   if (n<=0) or SEmpty(AFillStr) then Exit;
-  k:= Ceil(n/Length(AFillStr));
+  k:= Ceil(n/SLength(AFillStr));
   Result:= SRepeat(k, AFillStr);
   if SLength(Result)>n then
     Result:= SCopyCount(Result, 1, n);
@@ -408,7 +423,7 @@ var
   S: String;
 begin
   Result:= AFileName;
-  N:= Length(AExtention);
+  N:= SLength(AExtention);
   S:= SRight(AFileName, N);
   if not SSame(S, AExtention) then
     Result:= Result + '.' + AExtention;
@@ -420,7 +435,7 @@ var
 begin
   Result:= EmptyStr;
   if SEmpty(AFileName) then Exit;
-  n:= Length(SYMBOLS_BADFILENAME);
+  n:= SLength(SYMBOLS_BADFILENAME);
   Result:= AFileName;
   for i:= 1 to n do
     Result:= SReplace(Result, SSymbol(SYMBOLS_BADFILENAME, i), ASymbolInsteadBad);
