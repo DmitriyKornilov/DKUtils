@@ -42,6 +42,8 @@ const
   SYMBOL_DROPDOWN     = '▼';
   SYMBOL_LONGDASH     = '—';
   SYMBOL_MIDDASH      = '–';
+  SYMBOL_QUOTELEFT    = '«';
+  SYMBOL_QUOTERIGHT   = '»';
   SYMBOL_BREAK        = LineEnding;
   SYMBOL_EMPTY        = '';
   SYMBOL_COMMA        = ',';

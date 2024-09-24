@@ -55,6 +55,7 @@ type
   function SMetric(const AFont: TFont): TLCLTextMetric;
   function SNameLong(const AFamily, AName, APatronymic: String): String;
   function SNameShort(const AFamily, AName, APatronymic: String): String;
+  function SRusQuoted(const AStr: String): String;
   function SNameShort(const AFullName: String): String;
   function SFileName(const AFileName, AExtention: String): String;
   function SFileNameCheck(const AFileName, ASymbolInsteadBad: String): String;
@@ -401,6 +402,13 @@ begin
     Result:= Result + ' ' + SCopy(AName, 1, 1) + '.';
   if not SEmpty(APatronymic) then
     Result:= Result + SCopy(APatronymic, 1, 1) + '.';
+end;
+
+function SRusQuoted(const AStr: String): String;
+begin
+  Result:= EmptyStr;
+  if SEmpty(AStr) then Exit;
+  Result:= SYMBOL_QUOTELEFT + AStr + SYMBOL_QUOTERIGHT;
 end;
 
 function SNameShort(const AFullName: String): String;
