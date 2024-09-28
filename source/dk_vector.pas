@@ -3607,6 +3607,9 @@ begin
       Number:= EmptyStr
     end;
   end;
+
+  if not SEmpty(Number) then
+    VAppend(Result, StrToInt(Number));
 end;
 
 function VPriceStrToInt(const APrices: TStrVector): TInt64Vector;
