@@ -40,6 +40,7 @@ const
   SYMBOL_SPACE_NONBREAK_STR = ' '; //неразрывный пробел: U+00A0
 
   SYMBOL_DROPDOWN     = '▼';
+  SYMBOL_COLLAPSE     = '▲';
   SYMBOL_LONGDASH     = '—';
   SYMBOL_MIDDASH      = '–';
   SYMBOL_QUOTELEFT    = '«';
