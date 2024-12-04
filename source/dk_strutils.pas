@@ -65,6 +65,7 @@ type
   procedure SToStrings(const AStr: String; const AStrings: TStrings; const ADelimiter: String);
   function SDate(const AStr: String): String;
   function SFit(const AStr, AEnd: String; const AWidth: Integer; const AFont: TFont): String;
+  function SSymbolFromUnicode(const ACode: Integer): String;
 
 implementation
 
@@ -548,6 +549,11 @@ begin
     end;
     Result:= CutStr + AEnd;
   end;
+end;
+
+function SSymbolFromUnicode(const ACode: Integer): String;
+begin
+  Result:= UnicodeToUTF8(ACode);
 end;
 
 end.
