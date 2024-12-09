@@ -304,6 +304,8 @@ type
   function VFormat(const FormatStr: String; const V: TStrVector): TStrVector;
   function VTrim(const V: TStrVector): TStrVector;
   function VSymbolFromUnicode(const ACodes: TIntVector): TStrVector;
+  function VSymbolToUnicode(const ASymbols: TStrVector): TIntVector;
+  function VSymbolsFromString(const AString: String): TStrVector;
 
   {СТРОКОВЫЙ ВЕКТОР И СПИСОК}
   function VFromStrings(const S: TStrings): TStrVector;
@@ -3514,6 +3516,25 @@ begin
   Result:= nil;
   for i:= 0 to High(ACodes) do
     VAppend(Result, SSymbolFromUnicode(ACodes[i]));
+end;
+
+function VSymbolToUnicode(const ASymbols: TStrVector): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(ASymbols) do
+    VAppend(Result, SSymbolToUnicode(ASymbols[i]));
+end;
+
+function VSymbolsFromString(const AString: String): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if SEmpty(AString) then Exit;
+  for i:= 1 to SLength(AString) do
+    VAppend(Result, SSymbol(AString, i));
 end;
 
 {СТРОКОВЫЙ ВЕКТОР И СПИСОК}

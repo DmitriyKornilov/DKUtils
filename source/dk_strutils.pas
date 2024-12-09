@@ -66,6 +66,7 @@ type
   function SDate(const AStr: String): String;
   function SFit(const AStr, AEnd: String; const AWidth: Integer; const AFont: TFont): String;
   function SSymbolFromUnicode(const ACode: Integer): String;
+  function SSymbolToUnicode(const ASymbol: String): Integer;
 
 implementation
 
@@ -554,6 +555,15 @@ end;
 function SSymbolFromUnicode(const ACode: Integer): String;
 begin
   Result:= UnicodeToUTF8(ACode);
+end;
+
+function SSymbolToUnicode(const ASymbol: String): Integer;
+var
+  n: Integer;
+begin
+  Result:= 0;
+  if UTF8Length(ASymbol)<>1 then Exit;
+  Result:= UTF8CodepointToUnicode(PChar(ASymbol), n);
 end;
 
 end.
