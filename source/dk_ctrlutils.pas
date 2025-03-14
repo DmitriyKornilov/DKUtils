@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Graphics, Controls, ExtCtrls, Menus, Forms,
 
-  DK_Color;
+  DK_Color, DK_Const;
 
 const
   //sizes for 96 PPI
@@ -34,6 +34,13 @@ procedure FormKeepMinSize(const AForm: TForm;
 procedure SetToolPanels(const AControls: array of TControl);
 procedure SetCaptionPanels(const AControls: array of TControl);
 procedure SetToolButtons(const AControls: array of TControl);
+
+function ToggleCaptionPanel(const AExpanded: Boolean;
+                            const ATopAllClientControl,
+                                  ASplitterControl,
+                                  ABottomParentControl,
+                                  ASymbolControl,
+                                  AToggleControl: TControl): Boolean;
 
 function ChooseImageListForScreenPPI(const AImageList100, AImageList125,
                                            AImageList150, AImageList175: TImageList): TImageList;
@@ -138,6 +145,46 @@ var
 begin
   for i:= 0 to High(AControls) do
     ControlWidth(AControls[i], TOOL_BUTTON_WIDTH_DEFAULT);
+end;
+
+function ToggleCaptionPanel(const AExpanded: Boolean;
+                            const ATopAllClientControl,
+                                  ASplitterControl,
+                                  ABottomParentControl,
+                                  ASymbolControl,
+                                  AToggleControl: TControl): Boolean;
+begin
+  if Assigned(ATopAllClientControl) then
+    ATopAllClientControl.Align:= alTop;
+  if Assigned(ABottomParentControl) then
+    ABottomParentControl.Visible:= False;
+  if Assigned(ASplitterControl) then
+    ASplitterControl.Align:= alTop;
+
+  try
+
+    AToggleControl.Visible:= AExpanded;
+    if AToggleControl.Visible then
+    begin
+      if Assigned(ABottomParentControl) then
+        ABottomParentControl.Height:= ABottomParentControl.Height + AToggleControl.Height;
+      ASymbolControl.Caption:= SYMBOL_COLLAPSE;
+    end
+    else begin
+      if Assigned(ABottomParentControl) then
+        ABottomParentControl.Height:= ABottomParentControl.Height - AToggleControl.Height;
+      ASymbolControl.Caption:= SYMBOL_DROPDOWN;
+    end;
+    Result:= AToggleControl.Visible;
+
+  finally
+    if Assigned(ABottomParentControl) then
+      ABottomParentControl.Visible:= True;
+    if Assigned(ASplitterControl) then
+      ASplitterControl.Align:= alBottom;
+    if Assigned(ATopAllClientControl) then
+      ATopAllClientControl.Align:= alClient;
+  end;
 end;
 
 function ChooseImageListForScreenPPI(const AImageList100, AImageList125, AImageList150, AImageList175: TImageList): TImageList;
