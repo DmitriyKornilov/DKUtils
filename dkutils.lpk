@@ -25,10 +25,6 @@
         <UnitName Value="DK_DateUtils"/>
       </Item>
       <Item>
-        <Filename Value="source\dk_dialogs.pas"/>
-        <UnitName Value="DK_Dialogs"/>
-      </Item>
-      <Item>
         <Filename Value="source\dk_lclstrrus.pas"/>
         <UnitName Value="DK_LCLStrRus"/>
       </Item>
@@ -90,11 +86,11 @@
       </Item>
       <Item>
         <Filename Value="source\dk_ctrlutils.pas"/>
-        <UnitName Value="dk_ctrlutils"/>
+        <UnitName Value="DK_CtrlUtils"/>
       </Item>
       <Item>
         <Filename Value="source\dk_color.pas"/>
-        <UnitName Value="dk_color"/>
+        <UnitName Value="DK_Color"/>
       </Item>
     </Files>
     <RequiredPkgs>

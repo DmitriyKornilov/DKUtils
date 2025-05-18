@@ -8,10 +8,9 @@ unit DKUtils;
 interface
 
 uses
-  DK_Const, DK_DateUtils, DK_Dialogs, DK_LCLStrRus, DK_Matrix, DK_PriceUtils, 
-  DK_SQLUtils, DK_StrUtils, DK_TextUtils, DK_Vector, DK_VMShow, DK_Fonts, 
-  DK_Math, DK_PPI, DK_HeapTrace, DK_PDF, DK_CtrlUtils, DK_Color, 
-  LazarusPackageIntf;
+  DK_Const, DK_DateUtils, DK_LCLStrRus, DK_Matrix, DK_PriceUtils, DK_SQLUtils, 
+  DK_StrUtils, DK_TextUtils, DK_Vector, DK_VMShow, DK_Fonts, DK_Math, DK_PPI, 
+  DK_HeapTrace, DK_PDF, DK_CtrlUtils, DK_Color, LazarusPackageIntf;
 
 implementation
 

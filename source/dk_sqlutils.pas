@@ -5,13 +5,12 @@ unit DK_SQLUtils;
 interface
 
 uses
-  Classes, SysUtils, SqlDB, db, DK_Dialogs, DK_Const, DK_StrUtils;
+  Classes, SysUtils, SqlDB, db, DK_Const, DK_StrUtils;
 
 
   {Query Utils}
   procedure QSetQuery(AQuery: TSQLQuery);
   procedure QSetSQL(const ASQLText: String);
-  procedure QShowSQL; //debug util
   procedure QOpen;
   procedure QExec;
   procedure QClose;
@@ -98,11 +97,6 @@ begin
     SQL.Text:= ASQLText;
     Params.ParseSQL(SQL.Text, True);
   end;
-end;
-
-procedure QShowSQL;
-begin
-  ShowInfo(SqlUtilsQuery.SQL.Text);
 end;
 
 procedure QOpen;
