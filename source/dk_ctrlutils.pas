@@ -5,7 +5,7 @@ unit DK_CtrlUtils;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, ExtCtrls, Menus, Forms,
+  Classes, SysUtils, Graphics, Controls, ExtCtrls, Menus, Forms, Buttons,
 
   DK_Color, DK_Const;
 
@@ -42,8 +42,12 @@ function ToggleCaptionPanel(const AExpanded: Boolean;
                                   ASymbolControl,
                                   AToggleControl: TControl): Boolean;
 
-function ChooseImageListForScreenPPI(const AImageList100, AImageList125,
-                                           AImageList150, AImageList175: TImageList): TImageList;
+function ChooseImageListForScreenPPI(const AImages100, AImages125,
+                                           AImages150, AImages175: TImageList): TImageList;
+procedure SetSpeedButtonImagesForScreenPPI(const AImages100, AImages125,
+                                           AImages150, AImages175: TImageList;
+                                           const AButtons: array of TSpeedButton);
+
 
 implementation
 
@@ -187,19 +191,31 @@ begin
   end;
 end;
 
-function ChooseImageListForScreenPPI(const AImageList100, AImageList125, AImageList150, AImageList175: TImageList): TImageList;
+function ChooseImageListForScreenPPI(const AImages100, AImages125, AImages150, AImages175: TImageList): TImageList;
 var
   PPI: Integer;
 begin
   PPI:= Screen.PixelsPerInch;
   if PPI<108 then
-    Result:= AImageList100
+    Result:= AImages100
   else if PPI<132 then
-    Result:= AImageList125
+    Result:= AImages125
   else if PPI<156 then
-    Result:= AImageList150
+    Result:= AImages150
   else
-    Result:= AImageList175;
+    Result:= AImages175;
+end;
+
+procedure SetSpeedButtonImagesForScreenPPI(const AImages100, AImages125,
+                                           AImages150, AImages175: TImageList;
+                                           const AButtons: array of TSpeedButton);
+var
+  i: Integer;
+  L: TImageList;
+begin
+  L:= ChooseImageListForScreenPPI(AImages100, AImages125, AImages150, AImages175);
+  for i:= 0 to High(AButtons) do
+    AButtons[i].Images:= L;
 end;
 
 end.
