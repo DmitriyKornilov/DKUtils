@@ -33,7 +33,8 @@ procedure FormKeepMinSize(const AForm: TForm;
 
 procedure SetToolPanels(const AControls: array of TControl);
 procedure SetCaptionPanels(const AControls: array of TControl);
-procedure SetToolButtons(const AControls: array of TControl);
+procedure SetToolButtons(const AControls: array of TControl); //without captions
+procedure SetEventButtons(const AControls: array of TControl); //with captions
 
 function ToggleCaptionPanel(const AExpanded: Boolean;
                             const ATopAllClientControl,
@@ -149,6 +150,14 @@ var
 begin
   for i:= 0 to High(AControls) do
     ControlWidth(AControls[i], TOOL_BUTTON_WIDTH_DEFAULT);
+end;
+
+procedure SetEventButtons(const AControls: array of TControl);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AControls) do
+    ControlHeight(AControls[i], TOOL_PANEL_HEIGHT_DEFAULT - 2);
 end;
 
 function ToggleCaptionPanel(const AExpanded: Boolean;
