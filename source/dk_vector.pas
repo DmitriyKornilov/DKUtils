@@ -193,14 +193,14 @@ type
   procedure VInsDescTime(var V: TTimeVector; const Value: TTime);
 
   {ПОИСК ИНДЕКСА ЗНАЧЕНИЯ В ВЕКТОРЕ}
-  function VIndexOf(const V: TIntVector;   const FindValue: Integer): Integer;
-  function VIndexOf(const V: TInt64Vector; const FindValue: Int64):   Integer;
+  function VIndexOf(const V: TIntVector;   const FindValue: Integer; const SkipIndex: Integer = -1): Integer;
+  function VIndexOf(const V: TInt64Vector; const FindValue: Int64; const SkipIndex: Integer = -1):   Integer;
   function VIndexOf(const V: TStrVector;   const FindValue: String;
-                    const ACaseSensitivity: Boolean = True):  Integer;
-  function VIndexOfDate(const V: TDateVector;  const FindValue: TDate):   Integer;
-  function VIndexOfTime(const V: TTimeVector;  const FindValue: TTime):   Integer;
-  function VIndexOf(const V: TBoolVector;  const FindValue: Boolean): Integer;
-  function VIndexOf(const V: TColorVector; const FindValue: TColor):  Integer;
+                    const ACaseSensitivity: Boolean = True; const SkipIndex: Integer = -1):  Integer;
+  function VIndexOfDate(const V: TDateVector;  const FindValue: TDate; const SkipIndex: Integer = -1):   Integer;
+  function VIndexOfTime(const V: TTimeVector;  const FindValue: TTime; const SkipIndex: Integer = -1):   Integer;
+  function VIndexOf(const V: TBoolVector;  const FindValue: Boolean; const SkipIndex: Integer = -1): Integer;
+  function VIndexOf(const V: TColorVector; const FindValue: TColor; const SkipIndex: Integer = -1):  Integer;
 
   function VIndexOf(const V1, V2: TIntVector; const FindValue1, FindValue2: Integer): Integer;
 
@@ -1890,14 +1890,14 @@ end;
 
 //VIndexOf
 
-function VIndexOf(const V: TIntVector; const FindValue: Integer): Integer;
+function VIndexOf(const V: TIntVector; const FindValue: Integer; const SkipIndex: Integer = -1): Integer;
 var
   i: Integer;
 begin
   Result:= -1;
   for i := 0 to High(V) do
   begin
-    if V[i]=FindValue then
+    if (V[i]=FindValue) and (i<>SkipIndex) then
     begin
       Result:= i;
       Exit;
@@ -1905,14 +1905,14 @@ begin
   end;
 end;
 
-function VIndexOf(const V: TInt64Vector; const FindValue: Int64): Integer;
+function VIndexOf(const V: TInt64Vector; const FindValue: Int64; const SkipIndex: Integer = -1): Integer;
 var
   i: Integer;
 begin
   Result:= -1;
   for i := 0 to High(V) do
   begin
-    if V[i]=FindValue then
+    if (V[i]=FindValue) and (i<>SkipIndex) then
     begin
       Result:= i;
       Exit;
@@ -1921,14 +1921,14 @@ begin
 end;
 
 function VIndexOf(const V: TStrVector; const FindValue: String;
-                  const ACaseSensitivity: Boolean = True): Integer;
+                  const ACaseSensitivity: Boolean = True; const SkipIndex: Integer = -1): Integer;
 var
   i: Integer;
 begin
   Result:= -1;
   for i := 0 to High(V) do
   begin
-    if SSame(V[i], FindValue, ACaseSensitivity) then
+    if SSame(V[i], FindValue, ACaseSensitivity) and (i<>SkipIndex) then
     begin
       Result:= i;
       Exit;
@@ -1936,14 +1936,14 @@ begin
   end;
 end;
 
-function VIndexOfDate(const V: TDateVector; const FindValue: TDate): Integer;
+function VIndexOfDate(const V: TDateVector; const FindValue: TDate; const SkipIndex: Integer = -1): Integer;
 var
   i: Integer;
 begin
   Result:= -1;
   for i := 0 to High(V) do
   begin
-    if SameDate(V[i], FindValue) then
+    if SameDate(V[i], FindValue) and (i<>SkipIndex) then
     begin
       Result:= i;
       Exit;
@@ -1951,14 +1951,14 @@ begin
   end;
 end;
 
-function VIndexOfTime(const V: TTimeVector; const FindValue: TTime): Integer;
+function VIndexOfTime(const V: TTimeVector; const FindValue: TTime; const SkipIndex: Integer = -1): Integer;
 var
   i: Integer;
 begin
   Result:= -1;
   for i := 0 to High(V) do
   begin
-    if SameTime(V[i], FindValue) then
+    if SameTime(V[i], FindValue) and (i<>SkipIndex) then
     begin
       Result:= i;
       Exit;
@@ -1966,14 +1966,14 @@ begin
   end;
 end;
 
-function VIndexOf(const V: TBoolVector; const FindValue: Boolean): Integer;
+function VIndexOf(const V: TBoolVector; const FindValue: Boolean; const SkipIndex: Integer = -1): Integer;
 var
   i: Integer;
 begin
   Result:= -1;
   for i := 0 to High(V) do
   begin
-    if V[i]=FindValue then
+    if (V[i]=FindValue) and (i<>SkipIndex) then
     begin
       Result:= i;
       Exit;
@@ -1981,14 +1981,14 @@ begin
   end;
 end;
 
-function VIndexOf(const V: TColorVector; const FindValue: TColor):  Integer;
+function VIndexOf(const V: TColorVector; const FindValue: TColor; const SkipIndex: Integer = -1):  Integer;
 var
   i: Integer;
 begin
   Result:= -1;
   for i := 0 to High(V) do
   begin
-    if V[i]=FindValue then
+    if (V[i]=FindValue) and (i<>SkipIndex) then
     begin
       Result:= i;
       Exit;
