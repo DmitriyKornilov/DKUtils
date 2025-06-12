@@ -313,7 +313,10 @@ type
 
   {СТРОКОВЫЙ ВЕКТОР И СТРОКА}
   function VStrToVector(const Str, Delimiter: String; const ACaseSensitivity: Boolean = True): TStrVector;
-  function VVectorToStr(const V: TStrVector; const Delimiter: String): String;
+  function VVectorToStr(const V: TStrVector;
+                        const Delimiter: String;
+                        const Prefix: String = '';
+                        const PostFix: String = ''): String;
   function VStringReplace(const V: TStrVector; const OldString, NewString: String;
                           const ACaseSensitivity: Boolean = True;
                           const AMaxReplaceCount: Integer = 0 {replace all}): TStrVector;
@@ -3594,15 +3597,18 @@ begin
     VAppend(Result, S);
 end;
 
-function VVectorToStr(const V: TStrVector; const Delimiter: String): String;
+function VVectorToStr(const V: TStrVector;
+                        const Delimiter: String;
+                        const Prefix: String = '';
+                        const PostFix: String = ''): String;
 var
   i: Integer;
 begin
   Result:= EmptyStr;
   if VIsNil(V) then Exit;
-  Result:= V[0];
+  Result:= Prefix + V[0] + PostFix;
   for i:= 1 to High(V) do
-    Result:= Result + Delimiter + V[i];
+    Result:= Result + Delimiter + Prefix + V[i] + PostFix;
 end;
 
 function VStringReplace(const V: TStrVector; const OldString, NewString: String;
