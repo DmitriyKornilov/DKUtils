@@ -45,7 +45,7 @@ const
   SYMBOL_MIDDASH      = '–';
   SYMBOL_QUOTELEFT    = '«';
   SYMBOL_QUOTERIGHT   = '»';
-  SYMBOL_BREAK        = LineEnding;
+  SYMBOL_BREAK        = #10;//LineEnding;
   SYMBOL_EMPTY        = '';
   SYMBOL_COMMA        = ',';
   SYMBOL_DOT          = '.';

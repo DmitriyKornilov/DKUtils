@@ -243,7 +243,8 @@ var
   procedure DoWrapWord(const AWord: String; const ARowWidth: Integer;
                        out ARowValues: TStrVector;
                        const ANeedWritePartIfNotFit: Boolean = True;
-                       const ANeedCarrySymbolAfterFirst: Boolean = True);
+                       const ANeedCarrySymbolAfterFirst: Boolean = True;
+                       const AHyphenSymbol: String = SYMBOL_HYPHEN);
   var
     n: Integer;
     WordParts: TStrVector;
@@ -257,7 +258,7 @@ var
     while n<=High(WordParts) do
     begin
       NewValue:= NewValue + WordParts[n];
-      if SWidth(NewValue + SYMBOL_HYPHEN, AFont)<ARowWidth then
+      if SWidth(NewValue + AHyphenSymbol, AFont)<ARowWidth then
       begin
         OldValue:= NewValue;
         n:= n + 1;
@@ -275,7 +276,7 @@ var
           n:= n + 1;
         end;
         if VIsNil(ARowValues) or ANeedCarrySymbolAfterFirst then
-          VAppend(ARowValues, OldValue + SYMBOL_HYPHEN)
+          VAppend(ARowValues, OldValue + AHyphenSymbol)
         else
           VAppend(ARowValues, OldValue);
         NewValue:= EmptyStr;
