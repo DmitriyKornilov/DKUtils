@@ -231,6 +231,15 @@ type
   function VUniqueTime(const V: TTimeVector): TTimeVector;
   function VUnique(const V: TColorVector): TColorVector;
 
+  {ПРОВЕРКА НА ОДИНАКОВЫЕ ЗНАЧЕНИЯ ВСЕХ ЭЛЕМЕНТОВ}
+  function VSame(const V: TIntVector): Boolean;
+  function VSame(const V: TInt64Vector): Boolean;
+  function VSame(const V: TStrVector;
+                   const ACaseSensitivity: Boolean = True): Boolean;
+  function VSameDate(const V: TDateVector): Boolean;
+  function VSameTime(const V: TTimeVector): Boolean;
+  function VSame(const V: TColorVector): Boolean;
+
   {ОБЪЕДИНЕНИЕ}
   function VUnion(const V1,V2: TIntVector): TIntVector;
   function VUnion(const V1,V2: TInt64Vector): TInt64Vector;
@@ -2347,6 +2356,104 @@ begin
   begin
     if VIndexOf(Result, V[i])=-1 then
       VAppend(Result, V[i]);
+  end;
+end;
+
+//Same
+
+function VSame(const V: TIntVector): Boolean;
+var
+  i: Integer;
+begin
+  Result:= True;
+  if Length(V)<=1 then Exit;
+  for i:= 1 to High(V) do
+  begin
+    if V[i]<>V[0] then
+    begin
+      Result:= False;
+      Exit;
+    end;
+  end;
+end;
+
+function VSame(const V: TInt64Vector): Boolean;
+var
+  i: Integer;
+begin
+  Result:= True;
+  if Length(V)<=1 then Exit;
+  for i:= 1 to High(V) do
+  begin
+    if V[i]<>V[0] then
+    begin
+      Result:= False;
+      Exit;
+    end;
+  end;
+end;
+
+function VSame(const V: TStrVector; const ACaseSensitivity: Boolean): Boolean;
+var
+  i: Integer;
+begin
+  Result:= True;
+  if Length(V)<=1 then Exit;
+  for i:= 1 to High(V) do
+  begin
+    if not SSame(V[i], V[0], ACaseSensitivity) then
+    begin
+      Result:= False;
+      Exit;
+    end;
+  end;
+end;
+
+function VSameDate(const V: TDateVector): Boolean;
+var
+  i: Integer;
+begin
+  Result:= True;
+  if Length(V)<=1 then Exit;
+  for i:= 1 to High(V) do
+  begin
+    if not SameDate(V[i], V[0]) then
+    begin
+      Result:= False;
+      Exit;
+    end;
+  end;
+end;
+
+function VSameTime(const V: TTimeVector): Boolean;
+var
+  i: Integer;
+begin
+  Result:= True;
+  if Length(V)<=1 then Exit;
+  for i:= 1 to High(V) do
+  begin
+    if not SameTime(V[i], V[0]) then
+    begin
+      Result:= False;
+      Exit;
+    end;
+  end;
+end;
+
+function VSame(const V: TColorVector): Boolean;
+var
+  i: Integer;
+begin
+  Result:= True;
+  if Length(V)<=1 then Exit;
+  for i:= 1 to High(V) do
+  begin
+    if V[i]<>V[0] then
+    begin
+      Result:= False;
+      Exit;
+    end;
   end;
 end;
 
