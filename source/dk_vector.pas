@@ -2570,6 +2570,8 @@ function VMin(const V: TIntVector): Integer;
 var
   i: Integer;
 begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
   Result:= V[0];
   for i:=1 to High(V) do
     if V[i]<Result then
@@ -2580,6 +2582,8 @@ function VMin(const V: TInt64Vector): Int64;
 var
   i: Integer;
 begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
   Result:= V[0];
   for i:=1 to High(V) do
     if V[i]<Result then
@@ -2592,9 +2596,8 @@ var
   i: Integer;
   S1, S2: String;
 begin
-  //Result:= V[0];
-  //for i:=1 to High(V) do
-  //  if V[i]<Result then Result:= V[i];
+  Result:= EmptyStr;
+  if VIsNil(V) then Exit;
   Result:= V[0];
   for i:=1 to High(V) do
   begin
@@ -2614,6 +2617,8 @@ function VMinDate(const V: TDateVector): TDate;
 var
   i: Integer;
 begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
   Result:= V[0];
   for i:=1 to High(V) do
     if CompareDate(V[i], Result)<0 then
@@ -2624,6 +2629,8 @@ function VMinTime(const V: TTimeVector): TTime;
 var
   i: Integer;
 begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
   Result:= V[0];
   for i:=1 to High(V) do
     if CompareTime(V[i], Result)<0 then
@@ -2636,6 +2643,8 @@ function VMax(const V: TIntVector): Integer;
 var
   i: Integer;
 begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
   Result:= V[0];
   for i:=1 to High(V) do
     if V[i]>Result then
@@ -2646,6 +2655,8 @@ function VMax(const V: TInt64Vector): Int64;
 var
   i: Integer;
 begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
   Result:= V[0];
   for i:=1 to High(V) do
     if V[i]>Result then
@@ -2657,9 +2668,8 @@ var
   i: Integer;
   S1, S2: String;
 begin
-  //Result:= V[0];
-  //for i:=1 to High(V) do
-  //  if V[i]>Result then Result:= V[i];
+  Result:= EmptyStr;
+  if VIsNil(V) then Exit;
   Result:= V[0];
   for i:=1 to High(V) do
   begin
@@ -2679,6 +2689,8 @@ function VMaxDate(const V: TDateVector): TDate;
 var
   i: Integer;
 begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
   Result:= V[0];
   for i:=1 to High(V) do
     if CompareDate(V[i], Result)>0 then
@@ -2689,6 +2701,8 @@ function VMaxTime(const V: TTimeVector): TTime;
 var
   i: Integer;
 begin
+  Result:= 0;
+  if VIsNil(V) then Exit;
   Result:= V[0];
   for i:=1 to High(V) do
     if CompareTime(V[i], Result)>0 then
