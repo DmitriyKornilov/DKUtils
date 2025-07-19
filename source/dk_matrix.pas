@@ -160,6 +160,12 @@ type
   function MToVector(const M: TBoolMatrix) : TBoolVector;
 
   {ПРЕОБРАЗОВАНИЕ МАТРИЦЫ В ВЕКТОР ПОСЛЕДОВАТЕЛЬНО ИДУЩИХ ЗНАЧЕНИЙ С УСЛОВИЕМ ВХОЖДЕНИЯ ЭЛЕМЕНТОВ}
+  function MToVector(const M: TIntMatrix;   const Used: TBoolVector): TIntVector;
+  function MToVector(const M: TInt64Matrix; const Used: TBoolVector): TInt64Vector;
+  function MToVector(const M: TStrMatrix;   const Used: TBoolVector): TStrVector;
+  function MToVector(const M: TDblMatrix;   const Used: TBoolVector): TDblVector;
+  function MToVector(const M: TBoolVector;  const Used: TBoolVector): TBoolVector;
+
   function MToVector(const M: TIntMatrix;   const Used: TBoolMatrix): TIntVector;
   function MToVector(const M: TInt64Matrix; const Used: TBoolMatrix): TInt64Vector;
   function MToVector(const M: TStrMatrix;   const Used: TBoolMatrix): TStrVector;
@@ -1544,6 +1550,56 @@ begin
   for i:= 0 to High(M) do
     for j:= 0 to High(M[i]) do
       VAppend(Result, M[i,j]);
+end;
+
+function MToVector(const M: TIntMatrix; const Used: TBoolVector): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      VAdd(Result, M[i]);
+end;
+
+function MToVector(const M: TInt64Matrix; const Used: TBoolVector): TInt64Vector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      VAdd(Result, M[i]);
+end;
+
+function MToVector(const M: TStrMatrix; const Used: TBoolVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      VAdd(Result, M[i]);
+end;
+
+function MToVector(const M: TDblMatrix; const Used: TBoolVector): TDblVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      VAdd(Result, M[i]);
+end;
+
+function MToVector(const M: TBoolVector; const Used: TBoolVector): TBoolVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      VAdd(Result, M[i]);
 end;
 
 function MToVector(const M: TIntMatrix; const Used: TBoolMatrix): TIntVector;
