@@ -104,6 +104,13 @@ type
   function MCut(const M: TStrMatrix;   FromIndex: Integer=-1; ToIndex: Integer=-1): TStrMatrix;
   function MCut(const M: TDblMatrix;   FromIndex: Integer=-1; ToIndex: Integer=-1): TDblMatrix;
   function MCut(const M: TBoolMatrix;  FromIndex: Integer=-1; ToIndex: Integer=-1): TBoolMatrix;
+
+  function MCut(const M: TIntMatrix;   const Used: TBoolVector): TIntMatrix;
+  function MCut(const M: TInt64Matrix; const Used: TBoolVector): TInt64Matrix;
+  function MCut(const M: TStrMatrix;   const Used: TBoolVector): TStrMatrix;
+  function MCut(const M: TDblMatrix;   const Used: TBoolVector): TDblMatrix;
+  function MCut(const M: TBoolMatrix;  const Used: TBoolVector): TBoolMatrix;
+
   function MCut(const M: TIntMatrix3D;   FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix3D;
   function MCut(const M: TInt64Matrix3D; FromIndex: Integer=-1; ToIndex: Integer=-1): TInt64Matrix3D;
   function MCut(const M: TStrMatrix3D;   FromIndex: Integer=-1; ToIndex: Integer=-1): TStrMatrix3D;
@@ -164,13 +171,24 @@ type
   function MToVector(const M: TInt64Matrix; const Used: TBoolVector): TInt64Vector;
   function MToVector(const M: TStrMatrix;   const Used: TBoolVector): TStrVector;
   function MToVector(const M: TDblMatrix;   const Used: TBoolVector): TDblVector;
-  function MToVector(const M: TBoolVector;  const Used: TBoolVector): TBoolVector;
+  function MToVector(const M: TBoolMatrix;  const Used: TBoolVector): TBoolVector;
 
   function MToVector(const M: TIntMatrix;   const Used: TBoolMatrix): TIntVector;
   function MToVector(const M: TInt64Matrix; const Used: TBoolMatrix): TInt64Vector;
   function MToVector(const M: TStrMatrix;   const Used: TBoolMatrix): TStrVector;
   function MToVector(const M: TDblMatrix;   const Used: TBoolMatrix): TDblVector;
   function MToVector(const M: TBoolMatrix;  const Used: TBoolMatrix): TBoolVector;
+
+  {ВЕКТОР ПЕРВЫХ ЭЛЕМЕНТОВ ВЕКТОРОВ МАТРИЦЫ}
+  function MFirsts(const M: TIntMatrix)  : TIntVector;
+  function MFirsts(const M: TInt64Matrix): TInt64Vector;
+  function MFirsts(const M: TStrMatrix)  : TStrVector;
+  function MFirsts(const M: TDblMatrix)  : TDblVector;
+
+  function MFirsts(const M: TIntMatrix;   const Used: TBoolVector): TIntVector;
+  function MFirsts(const M: TInt64Matrix; const Used: TBoolVector): TInt64Vector;
+  function MFirsts(const M: TStrMatrix;   const Used: TBoolVector): TStrVector;
+  function MFirsts(const M: TDblMatrix;   const Used: TBoolVector): TDblVector;
 
   {НАИМЕНЬШЕЕ ЗНАЧЕНИЕ ЭЛЕМЕНТА}
   function MMin(const M: TIntMatrix)  : Integer;
@@ -1067,6 +1085,56 @@ begin
   for i:= 0 to x do Result[i]:= VCut(M[FromIndex+i]);
 end;
 
+function MCut(const M: TIntMatrix; const Used: TBoolVector): TIntMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      MAppend(Result, M[i]);
+end;
+
+function MCut(const M: TInt64Matrix; const Used: TBoolVector): TInt64Matrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      MAppend(Result, M[i]);
+end;
+
+function MCut(const M: TStrMatrix; const Used: TBoolVector): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      MAppend(Result, M[i]);
+end;
+
+function MCut(const M: TDblMatrix; const Used: TBoolVector): TDblMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      MAppend(Result, M[i]);
+end;
+
+function MCut(const M: TBoolMatrix; const Used: TBoolVector): TBoolMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      MAppend(Result, M[i]);
+end;
+
 function MCut(const M: TIntMatrix3D;   FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix3D;
 var
   i, x: Integer;
@@ -1592,7 +1660,7 @@ begin
       VAdd(Result, M[i]);
 end;
 
-function MToVector(const M: TBoolVector; const Used: TBoolVector): TBoolVector;
+function MToVector(const M: TBoolMatrix; const Used: TBoolVector): TBoolVector;
 var
   i: Integer;
 begin
@@ -1655,6 +1723,99 @@ begin
     for j:= 0 to High(M[i]) do
       if Used[i,j] then
         VAppend(Result, M[i,j]);
+end;
+
+//MFirsts
+function MFirsts(const M: TIntMatrix): TIntVector;
+var
+  i: Integer;
+begin
+  VDim(Result{%H-}, Length(M));
+  for i:= 0 to High(M) do
+    if not VIsNil(M[i]) then
+      Result[i]:= M[i,0];
+end;
+
+function MFirsts(const M: TInt64Matrix): TInt64Vector;
+var
+  i: Integer;
+begin
+  VDim(Result{%H-}, Length(M));
+  for i:= 0 to High(M) do
+    if not VIsNil(M[i]) then
+      Result[i]:= M[i,0];
+end;
+
+function MFirsts(const M: TStrMatrix): TStrVector;
+var
+  i: Integer;
+begin
+  VDim(Result{%H-}, Length(M));
+  for i:= 0 to High(M) do
+    if not VIsNil(M[i]) then
+      Result[i]:= M[i,0];
+end;
+
+function MFirsts(const M: TDblMatrix): TDblVector;
+var
+  i: Integer;
+begin
+  VDim(Result{%H-}, Length(M));
+  for i:= 0 to High(M) do
+    if not VIsNil(M[i]) then
+      Result[i]:= M[i,0];
+end;
+
+function MFirsts(const M: TIntMatrix; const Used: TBoolVector): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      if not VIsNil(M[i]) then
+        VAppend(Result, M[i,0])
+      else
+        VAppend(Result, 0);
+end;
+
+function MFirsts(const M: TInt64Matrix; const Used: TBoolVector): TInt64Vector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      if not VIsNil(M[i]) then
+        VAppend(Result, M[i,0])
+      else
+        VAppend(Result, 0);
+end;
+
+function MFirsts(const M: TStrMatrix; const Used: TBoolVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      if not VIsNil(M[i]) then
+        VAppend(Result, M[i,0])
+      else
+        VAppend(Result, EmptyStr);
+end;
+
+function MFirsts(const M: TDblMatrix; const Used: TBoolVector): TDblVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    if Used[i] then
+      if not VIsNil(M[i]) then
+        VAppend(Result, M[i,0])
+      else
+        VAppend(Result, 0);
 end;
 
 //MMax
