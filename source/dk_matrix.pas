@@ -230,6 +230,20 @@ type
   function MLengths(const M: TDblMatrix): TIntVector;
   function MLengths(const M: TBoolMatrix): TIntVector;
 
+  {ПЕРВЫЕ ВЕКТОРЫ МАТРИЦЫ}
+  function MFirst( M: TIntMatrix): TIntVector;
+  function MFirst( M: TInt64Matrix): TInt64Vector;
+  function MFirst( M: TStrMatrix): TStrVector;
+  function MFirst( M: TDblMatrix): TDblVector;
+  function MFirst( M: TBoolMatrix): TBoolVector;
+
+  {ПОСЛЕДНИЕ ВЕКТОРЫ МАТРИЦЫ}
+  function MLast( M: TIntMatrix): TIntVector;
+  function MLast( M: TInt64Matrix): TInt64Vector;
+  function MLast( M: TStrMatrix): TStrVector;
+  function MLast( M: TDblMatrix): TDblVector;
+  function MLast( M: TBoolMatrix): TBoolVector;
+
   {ПРЕОБРАЗОВНИЕ К СТРОКОВОЙ МАТРИЦЕ}
   function MIntToStr(const M: TIntMatrix; const ZeroIsEmpty: Boolean = False): TStrMatrix;
   function MIntToStr(const M: TInt64Matrix; const ZeroIsEmpty: Boolean = False): TStrMatrix;
@@ -2112,6 +2126,76 @@ begin
   Result:= nil;
   for i:= 0 to High(M) do
     VAppend(Result, Length(M[i]));
+end;
+
+function MFirst(M: TIntMatrix): TIntVector;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Result:= VCut(M[0]);
+end;
+
+function MFirst(M: TInt64Matrix): TInt64Vector;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Result:= VCut(M[0]);
+end;
+
+function MFirst(M: TStrMatrix): TStrVector;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Result:= VCut(M[0]);
+end;
+
+function MFirst(M: TDblMatrix): TDblVector;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Result:= VCut(M[0]);
+end;
+
+function MFirst(M: TBoolMatrix): TBoolVector;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Result:= VCut(M[0]);
+end;
+
+function MLast(M: TIntMatrix): TIntVector;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Result:= VCut(M[Length(M)]);
+end;
+
+function MLast(M: TInt64Matrix): TInt64Vector;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Result:= VCut(M[Length(M)]);
+end;
+
+function MLast(M: TStrMatrix): TStrVector;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Result:= VCut(M[Length(M)]);
+end;
+
+function MLast(M: TDblMatrix): TDblVector;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Result:= VCut(M[Length(M)]);
+end;
+
+function MLast(M: TBoolMatrix): TBoolVector;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+  Result:= VCut(M[Length(M)]);
 end;
 
 function MIntToStr(const M: TIntMatrix; const ZeroIsEmpty: Boolean = False): TStrMatrix;
