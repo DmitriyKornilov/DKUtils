@@ -158,13 +158,18 @@ type
   function MIndexOfTime(const M: TTimeMatrix3D;  const FindValue: TTime;   out Index1, Index2, Index3: Integer): Boolean;
   function MIndexOf(const M: TBoolMatrix3D;  const FindValue: Boolean; out Index1, Index2, Index3: Integer): Boolean;
 
-
   {ПРЕОБРАЗОВАНИЕ МАТРИЦЫ В ВЕКТОР ПОСЛЕДОВАТЕЛЬНО ИДУЩИХ ЗНАЧЕНИЙ}
   function MToVector(const M: TIntMatrix)  : TIntVector;
   function MToVector(const M: TInt64Matrix): TInt64Vector;
   function MToVector(const M: TStrMatrix)  : TStrVector;
   function MToVector(const M: TDblMatrix)  : TDblVector;
   function MToVector(const M: TBoolMatrix) : TBoolVector;
+
+  function MToVector(const M: TIntMatrix3D)  : TIntVector;
+  function MToVector(const M: TInt64Matrix3D): TInt64Vector;
+  function MToVector(const M: TStrMatrix3D)  : TStrVector;
+  function MToVector(const M: TDblMatrix3D)  : TDblVector;
+  function MToVector(const M: TBoolMatrix3D) : TBoolVector;
 
   {ПРЕОБРАЗОВАНИЕ МАТРИЦЫ В ВЕКТОР ПОСЛЕДОВАТЕЛЬНО ИДУЩИХ ЗНАЧЕНИЙ С УСЛОВИЕМ ВХОЖДЕНИЯ ЭЛЕМЕНТОВ}
   function MToVector(const M: TIntMatrix;   const Used: TBoolVector): TIntVector;
@@ -178,6 +183,18 @@ type
   function MToVector(const M: TStrMatrix;   const Used: TBoolMatrix): TStrVector;
   function MToVector(const M: TDblMatrix;   const Used: TBoolMatrix): TDblVector;
   function MToVector(const M: TBoolMatrix;  const Used: TBoolMatrix): TBoolVector;
+
+  function MToVector(const M: TIntMatrix3D;   const Used: TBoolMatrix): TIntVector;
+  function MToVector(const M: TInt64Matrix3D; const Used: TBoolMatrix): TInt64Vector;
+  function MToVector(const M: TStrMatrix3D;   const Used: TBoolMatrix): TStrVector;
+  function MToVector(const M: TDblMatrix3D;   const Used: TBoolMatrix): TDblVector;
+  function MToVector(const M: TBoolMatrix3D;  const Used: TBoolMatrix): TBoolVector;
+
+  function MToVector(const M: TIntMatrix3D;   const Used: TBoolMatrix3D): TIntVector;
+  function MToVector(const M: TInt64Matrix3D; const Used: TBoolMatrix3D): TInt64Vector;
+  function MToVector(const M: TStrMatrix3D;   const Used: TBoolMatrix3D): TStrVector;
+  function MToVector(const M: TDblMatrix3D;   const Used: TBoolMatrix3D): TDblVector;
+  function MToVector(const M: TBoolMatrix3D;  const Used: TBoolMatrix3D): TBoolVector;
 
   {ВЕКТОР ПЕРВЫХ ЭЛЕМЕНТОВ ВЕКТОРОВ МАТРИЦЫ}
   function MFirsts(const M: TIntMatrix)  : TIntVector;
@@ -1634,6 +1651,61 @@ begin
       VAppend(Result, M[i,j]);
 end;
 
+function MToVector(const M: TIntMatrix3D): TIntVector;
+var
+  i,j,k: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        VAppend(Result, M[i,j,k]);
+end;
+
+function MToVector(const M: TInt64Matrix3D): TInt64Vector;
+var
+  i,j,k: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        VAppend(Result, M[i,j,k]);
+end;
+
+function MToVector(const M: TStrMatrix3D): TStrVector;
+var
+  i,j,k: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        VAppend(Result, M[i,j,k]);
+end;
+
+function MToVector(const M: TDblMatrix3D): TDblVector;
+var
+  i,j,k: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        VAppend(Result, M[i,j,k]);
+end;
+
+function MToVector(const M: TBoolMatrix3D): TBoolVector;
+var
+  i,j,k: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        VAppend(Result, M[i,j,k]);
+end;
+
 function MToVector(const M: TIntMatrix; const Used: TBoolVector): TIntVector;
 var
   i: Integer;
@@ -1641,7 +1713,7 @@ begin
   Result:= nil;
   for i:= 0 to High(M) do
     if Used[i] then
-      VAdd(Result, M[i]);
+      Result:= VAdd(Result, M[i]);
 end;
 
 function MToVector(const M: TInt64Matrix; const Used: TBoolVector): TInt64Vector;
@@ -1651,7 +1723,7 @@ begin
   Result:= nil;
   for i:= 0 to High(M) do
     if Used[i] then
-      VAdd(Result, M[i]);
+      Result:= VAdd(Result, M[i]);
 end;
 
 function MToVector(const M: TStrMatrix; const Used: TBoolVector): TStrVector;
@@ -1661,7 +1733,7 @@ begin
   Result:= nil;
   for i:= 0 to High(M) do
     if Used[i] then
-      VAdd(Result, M[i]);
+      Result:= VAdd(Result, M[i]);
 end;
 
 function MToVector(const M: TDblMatrix; const Used: TBoolVector): TDblVector;
@@ -1671,7 +1743,7 @@ begin
   Result:= nil;
   for i:= 0 to High(M) do
     if Used[i] then
-      VAdd(Result, M[i]);
+      Result:= VAdd(Result, M[i]);
 end;
 
 function MToVector(const M: TBoolMatrix; const Used: TBoolVector): TBoolVector;
@@ -1681,7 +1753,7 @@ begin
   Result:= nil;
   for i:= 0 to High(M) do
     if Used[i] then
-      VAdd(Result, M[i]);
+      Result:= VAdd(Result, M[i]);
 end;
 
 function MToVector(const M: TIntMatrix; const Used: TBoolMatrix): TIntVector;
@@ -1737,6 +1809,111 @@ begin
     for j:= 0 to High(M[i]) do
       if Used[i,j] then
         VAppend(Result, M[i,j]);
+end;
+
+function MToVector(const M: TIntMatrix3D; const Used: TBoolMatrix): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    Result:= VAdd(Result, MToVector(M[i], Used[i]));
+end;
+
+function MToVector(const M: TInt64Matrix3D; const Used: TBoolMatrix): TInt64Vector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    Result:= VAdd(Result, MToVector(M[i], Used[i]));
+end;
+
+function MToVector(const M: TStrMatrix3D; const Used: TBoolMatrix): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    Result:= VAdd(Result, MToVector(M[i], Used[i]));
+end;
+
+function MToVector(const M: TDblMatrix3D; const Used: TBoolMatrix): TDblVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    Result:= VAdd(Result, MToVector(M[i], Used[i]));
+end;
+
+function MToVector(const M: TBoolMatrix3D; const Used: TBoolMatrix): TBoolVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    Result:= VAdd(Result, MToVector(M[i], Used[i]));
+end;
+
+function MToVector(const M: TIntMatrix3D; const Used: TBoolMatrix3D): TIntVector;
+var
+  i,j,k: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if Used[i,j,k] then
+          VAppend(Result, M[i,j,k]);
+end;
+
+function MToVector(const M: TInt64Matrix3D; const Used: TBoolMatrix3D): TInt64Vector;
+var
+  i,j,k: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if Used[i,j,k] then
+          VAppend(Result, M[i,j,k]);
+end;
+
+function MToVector(const M: TStrMatrix3D; const Used: TBoolMatrix3D): TStrVector;
+var
+  i,j,k: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if Used[i,j,k] then
+          VAppend(Result, M[i,j,k]);
+end;
+
+function MToVector(const M: TDblMatrix3D; const Used: TBoolMatrix3D): TDblVector;
+var
+  i,j,k: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if Used[i,j,k] then
+          VAppend(Result, M[i,j,k]);
+end;
+
+function MToVector(const M: TBoolMatrix3D; const Used: TBoolMatrix3D): TBoolVector;
+var
+  i,j,k: Integer;
+begin
+  Result:= nil;
+  for i:= 0 to High(M) do
+    for j:= 0 to High(M[i]) do
+      for k:= 0 to High(M[i,j]) do
+        if Used[i,j,k] then
+          VAppend(Result, M[i,j,k]);
 end;
 
 //MFirsts
@@ -2167,35 +2344,35 @@ function MLast(M: TIntMatrix): TIntVector;
 begin
   Result:= nil;
   if MIsNil(M) then Exit;
-  Result:= VCut(M[Length(M)]);
+  Result:= VCut(M[High(M)]);
 end;
 
 function MLast(M: TInt64Matrix): TInt64Vector;
 begin
   Result:= nil;
   if MIsNil(M) then Exit;
-  Result:= VCut(M[Length(M)]);
+  Result:= VCut(M[High(M)]);
 end;
 
 function MLast(M: TStrMatrix): TStrVector;
 begin
   Result:= nil;
   if MIsNil(M) then Exit;
-  Result:= VCut(M[Length(M)]);
+  Result:= VCut(M[High(M)]);
 end;
 
 function MLast(M: TDblMatrix): TDblVector;
 begin
   Result:= nil;
   if MIsNil(M) then Exit;
-  Result:= VCut(M[Length(M)]);
+  Result:= VCut(M[High(M)]);
 end;
 
 function MLast(M: TBoolMatrix): TBoolVector;
 begin
   Result:= nil;
   if MIsNil(M) then Exit;
-  Result:= VCut(M[Length(M)]);
+  Result:= VCut(M[High(M)]);
 end;
 
 function MIntToStr(const M: TIntMatrix; const ZeroIsEmpty: Boolean = False): TStrMatrix;
