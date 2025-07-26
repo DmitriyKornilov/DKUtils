@@ -69,7 +69,6 @@ type
   procedure MReDim(var M: TDblMatrix3D;   const Size: Integer; const DefaultMatrix: TDblMatrix = nil);
   procedure MReDim(var M: TBoolMatrix3D;  const Size: Integer; const DefaultMatrix: TBoolMatrix = nil);
 
-
   {ПЕРЕСТАНОВКА МЕСТАМИ ДВУХ ВЕКТОРОВ}
   procedure MSwap(var M: TIntMatrix;   const Index1, Index2: Integer);
   procedure MSwap(var M: TInt64Matrix; const Index1, Index2: Integer);
@@ -117,13 +116,13 @@ type
   function MCut(const M: TDblMatrix3D;   FromIndex: Integer=-1; ToIndex: Integer=-1): TDblMatrix3D;
   function MCut(const M: TBoolMatrix3D;  FromIndex: Integer=-1; ToIndex: Integer=-1): TBoolMatrix3D;
 
-
   {СЦЕПЛЕНИЕ}
   function MAdd(var M1,M2: TIntMatrix)  : TIntMatrix;
   function MAdd(var M1,M2: TInt64Matrix): TInt64Matrix;
   function MAdd(var M1,M2: TStrMatrix)  : TStrMatrix;
   function MAdd(var M1,M2: TDblMatrix)  : TDblMatrix;
   function MAdd(var M1,M2: TBoolMatrix) : TBoolMatrix;
+
   function MAdd(var M1,M2: TIntMatrix3D)  : TIntMatrix3D;
   function MAdd(var M1,M2: TInt64Matrix3D): TInt64Matrix3D;
   function MAdd(var M1,M2: TStrMatrix3D)  : TStrMatrix3D;
@@ -151,6 +150,7 @@ type
   function MIndexOfDate(const M: TDateMatrix;  const FindValue: TDate;   out Index1, Index2: Integer): Boolean;
   function MIndexOfTime(const M: TTimeMatrix;  const FindValue: TTime;   out Index1, Index2: Integer): Boolean;
   function MIndexOf(const M: TBoolMatrix;  const FindValue: Boolean; out Index1, Index2: Integer): Boolean;
+
   function MIndexOf(const M: TIntMatrix3D;   const FindValue: Integer; out Index1, Index2, Index3: Integer): Boolean;
   function MIndexOf(const M: TInt64Matrix3D; const FindValue: Int64;   out Index1, Index2, Index3: Integer): Boolean;
   function MIndexOf(const M: TStrMatrix3D;   const FindValue: String;  out Index1, Index2, Index3: Integer): Boolean;
@@ -196,17 +196,6 @@ type
   function MToVector(const M: TDblMatrix3D;   const Used: TBoolMatrix3D): TDblVector;
   function MToVector(const M: TBoolMatrix3D;  const Used: TBoolMatrix3D): TBoolVector;
 
-  {ВЕКТОР ПЕРВЫХ ЭЛЕМЕНТОВ ВЕКТОРОВ МАТРИЦЫ}
-  function MFirsts(const M: TIntMatrix)  : TIntVector;
-  function MFirsts(const M: TInt64Matrix): TInt64Vector;
-  function MFirsts(const M: TStrMatrix)  : TStrVector;
-  function MFirsts(const M: TDblMatrix)  : TDblVector;
-
-  function MFirsts(const M: TIntMatrix;   const Used: TBoolVector): TIntVector;
-  function MFirsts(const M: TInt64Matrix; const Used: TBoolVector): TInt64Vector;
-  function MFirsts(const M: TStrMatrix;   const Used: TBoolVector): TStrVector;
-  function MFirsts(const M: TDblMatrix;   const Used: TBoolVector): TDblVector;
-
   {НАИМЕНЬШЕЕ ЗНАЧЕНИЕ ЭЛЕМЕНТА}
   function MMin(const M: TIntMatrix)  : Integer;
   function MMin(const M: TInt64Matrix): Int64;
@@ -227,6 +216,7 @@ type
   function MIsNil(const M: TStrMatrix): Boolean;
   function MIsNil(const M: TDblMatrix): Boolean;
   function MIsNil(const M: TBoolMatrix): Boolean;
+
   function MIsNil(const M: TIntMatrix3D): Boolean;
   function MIsNil(const M: TInt64Matrix3D): Boolean;
   function MIsNil(const M: TStrMatrix3D): Boolean;
@@ -246,6 +236,17 @@ type
   function MLengths(const M: TStrMatrix): TIntVector;
   function MLengths(const M: TDblMatrix): TIntVector;
   function MLengths(const M: TBoolMatrix): TIntVector;
+
+  {ВЕКТОР ПЕРВЫХ ЭЛЕМЕНТОВ ВЕКТОРОВ МАТРИЦЫ}
+  function MFirsts(const M: TIntMatrix)  : TIntVector;
+  function MFirsts(const M: TInt64Matrix): TInt64Vector;
+  function MFirsts(const M: TStrMatrix)  : TStrVector;
+  function MFirsts(const M: TDblMatrix)  : TDblVector;
+
+  function MFirsts(const M: TIntMatrix;   const Used: TBoolVector): TIntVector;
+  function MFirsts(const M: TInt64Matrix; const Used: TBoolVector): TInt64Vector;
+  function MFirsts(const M: TStrMatrix;   const Used: TBoolVector): TStrVector;
+  function MFirsts(const M: TDblMatrix;   const Used: TBoolVector): TDblVector;
 
   {ПЕРВЫЕ ВЕКТОРЫ МАТРИЦЫ}
   function MFirst( M: TIntMatrix): TIntVector;
@@ -281,6 +282,17 @@ type
   function MFormatDateTime(const FormatStr: String; const M: TDblMatrix3D;
                            const BoundaryIsEmpty: Boolean = False;
                            Options: TFormatDateTimeOptions = []): TStrMatrix3D;
+
+  function MFormat(const FormatStr: String; const M: TIntMatrix): TStrMatrix;
+  function MFormat(const FormatStr: String; const M: TInt64Matrix): TStrMatrix;
+  function MFormat(const FormatStr: String; const M: TDblMatrix): TStrMatrix;
+  function MFormat(const FormatStr: String; const M: TStrMatrix): TStrMatrix;
+
+  function MFormat(const FormatStr: String; const M: TIntMatrix3D): TStrMatrix3D;
+  function MFormat(const FormatStr: String; const M: TInt64Matrix3D): TStrMatrix3D;
+  function MFormat(const FormatStr: String; const M: TDblMatrix3D): TStrMatrix3D;
+  function MFormat(const FormatStr: String; const M: TStrMatrix3D): TStrMatrix3D;
+
   {ЗАМЕНА ЗНАЧЕНИЙ}
   procedure MChangeIf(var M: TIntMatrix;   const IfValue, NewValue: Integer);
   procedure MChangeIf(var M: TInt64Matrix; const IfValue, NewValue: Int64);
@@ -2380,7 +2392,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, VIntToStr(M[i], ZeroIsEmpty));
 end;
@@ -2390,7 +2402,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, VIntToStr(M[i], ZeroIsEmpty));
 end;
@@ -2401,7 +2413,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, VBoolToStr(M[i], StrTrue, StrFalse));
 end;
@@ -2411,7 +2423,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, VFloatToStr(M[i]));
 end;
@@ -2421,7 +2433,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, VDateToStr(M[i], BoundaryIsEmpty));
 end;
@@ -2431,7 +2443,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, VTimeToStr(M[i]));
 end;
@@ -2443,7 +2455,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, VFormatDateTime(FormatStr, M[i], BoundaryIsEmpty, Options));
 end;
@@ -2453,7 +2465,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, MIntToStr(M[i], ZeroIsEmpty));
 end;
@@ -2463,7 +2475,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, MIntToStr(M[i], ZeroIsEmpty));
 end;
@@ -2473,7 +2485,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, MBoolToStr(M[i]));
 end;
@@ -2483,7 +2495,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, MFloatToStr(M[i]));
 end;
@@ -2493,7 +2505,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, MDateToStr(M[i], BoundaryIsEmpty));
 end;
@@ -2503,7 +2515,7 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, MTimeToStr(M[i]));
 end;
@@ -2515,9 +2527,89 @@ var
   i: Integer;
 begin
   Result:= nil;
-  if Length(M)>0 then
+  if not MIsNil(M) then
     for i:=0 to High(M) do
       MAppend(Result, MFormatDateTime(FormatStr, M[i], BoundaryIsEmpty, Options));
+end;
+
+function MFormat(const FormatStr: String; const M: TIntMatrix): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not MIsNil(M) then
+    for i:=0 to High(M) do
+      MAppend(Result, VFormat(FormatStr, M[i]));
+end;
+
+function MFormat(const FormatStr: String; const M: TInt64Matrix): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not MIsNil(M) then
+    for i:=0 to High(M) do
+      MAppend(Result, VFormat(FormatStr, M[i]));
+end;
+
+function MFormat(const FormatStr: String; const M: TDblMatrix): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not MIsNil(M) then
+    for i:=0 to High(M) do
+      MAppend(Result, VFormat(FormatStr, M[i]));
+end;
+
+function MFormat(const FormatStr: String; const M: TStrMatrix): TStrMatrix;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not MIsNil(M) then
+    for i:=0 to High(M) do
+      MAppend(Result, VFormat(FormatStr, M[i]));
+end;
+
+function MFormat(const FormatStr: String; const M: TIntMatrix3D): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not MIsNil(M) then
+    for i:=0 to High(M) do
+      MAppend(Result, MFormat(FormatStr, M[i]));
+end;
+
+function MFormat(const FormatStr: String; const M: TInt64Matrix3D): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not MIsNil(M) then
+    for i:=0 to High(M) do
+      MAppend(Result, MFormat(FormatStr, M[i]));
+end;
+
+function MFormat(const FormatStr: String; const M: TDblMatrix3D): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not MIsNil(M) then
+    for i:=0 to High(M) do
+      MAppend(Result, MFormat(FormatStr, M[i]));
+end;
+
+function MFormat(const FormatStr: String; const M: TStrMatrix3D): TStrMatrix3D;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if not MIsNil(M) then
+    for i:=0 to High(M) do
+      MAppend(Result, MFormat(FormatStr, M[i]));
 end;
 
 procedure MChangeIf(var M: TIntMatrix; const IfValue, NewValue: Integer);
@@ -3216,7 +3308,6 @@ begin
     MAppend(Result, VCut(M[i, Index1], Used1, FromIndex1, ToIndex1));
   end;
 end;
-
 
 end.
 
