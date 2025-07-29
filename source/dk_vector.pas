@@ -206,6 +206,7 @@ type
 
   {ПОИСК В ДИАПАЗОНЕ}
   function VIndexOf(const VMin, VMax: TIntVector; const FindValue: Integer): Integer;
+  function VIndexOfDate(const VMin, VMax: TDateVector; const FindValue: TDate): Integer;
 
   {ПОЗИЦИЯ ДЛЯ ВСТАВКИ В УПОРЯДОЧЕННОМ ВЕКТОРЕ}
   function VIndexOfAsc(const V: TIntVector;   const InsValue: Integer): Integer;
@@ -2032,7 +2033,25 @@ begin
   if Length(VMin)<>Length(VMax) then Exit;
   for i:= 0 to High(VMin) do
   begin
-    if (FindValue>=VMin[i]) and (FindValue<=VMax[i]) then
+    if (FindValue>=VMin[i]) and
+       (FindValue<=VMax[i]) then
+    begin
+      Result:= i;
+      break;
+    end;
+  end;
+end;
+
+function VIndexOfDate(const VMin, VMax: TDateVector; const FindValue: TDate): Integer;
+var
+  i: Integer;
+begin
+  Result:= -1;
+  if Length(VMin)<>Length(VMax) then Exit;
+  for i:= 0 to High(VMin) do
+  begin
+    if (CompareDate(FindValue, VMin[i])>=0) and
+       (CompareDate(FindValue, VMax[i])<=0) then
     begin
       Result:= i;
       break;
