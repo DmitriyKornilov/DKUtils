@@ -2733,6 +2733,8 @@ var
   i, w: Integer;
 begin
   Result:= ADefaultValue;
+  if VIsNil(V) then Exit;
+  Result:= 0;
   for i:= 0 to High(V) do
   begin
     w:= SWidth(V[i], AFont);
