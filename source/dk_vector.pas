@@ -263,10 +263,13 @@ type
                 const ACaseSensitivity: Boolean = True):   String;
   function VMaxDate(const V: TDateVector):  TDate;
   function VMaxTime(const V: TTimeVector):  TTime;
-  function VMaxWidth(const V: TStrVector; const AFont: TFont; const ADefaultValue: Integer = 0): Integer;
+  function VMaxWidth(const V: TStrVector; const AFont: TFont;
+                     const ADefaultValue: Integer = 0;
+                     const ACanBeLessThanDefault: Boolean = True): Integer;
   function VMaxWidth(const V: TStrVector; const AFontName: String; const AFontSize: Single;
                      const AFontStyle: TFontStyles=[];
-                     const ADefaultValue: Integer = 0): Integer;
+                     const ADefaultValue: Integer = 0;
+                     const ACanBeLessThanDefault: Boolean = True): Integer;
 
                 {КОЛ-ВО ЗНАЧЕНИЙ, РАВНЫХ ЗАДАННОМУ}
   function VCountIf(const V: TIntVector;   const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1): Integer;
@@ -2728,30 +2731,37 @@ begin
       Result:= V[i];
 end;
 
-function VMaxWidth(const V: TStrVector; const AFont: TFont; const ADefaultValue: Integer = 0): Integer;
+function VMaxWidth(const V: TStrVector; const AFont: TFont;
+                   const ADefaultValue: Integer = 0;
+                   const ACanBeLessThanDefault: Boolean = True): Integer;
 var
-  i, w: Integer;
+  i, W: Integer;
 begin
   Result:= ADefaultValue;
   if VIsNil(V) then Exit;
+
   Result:= 0;
   for i:= 0 to High(V) do
   begin
-    w:= SWidth(V[i], AFont);
-    if w>Result then
-      Result:= w;
+    W:= SWidth(V[i], AFont);
+    if W>Result then
+      Result:= W;
   end;
+
+  if (Result<ADefaultValue) and (not ACanBeLessThanDefault) then
+    Result:= ADefaultValue;
 end;
 
 function VMaxWidth(const V: TStrVector; const AFontName: String; const AFontSize: Single;
                      const AFontStyle: TFontStyles=[];
-                     const ADefaultValue: Integer = 0): Integer;
+                     const ADefaultValue: Integer = 0;
+                     const ACanBeLessThanDefault: Boolean = True): Integer;
 var
   F: TFont;
 begin
   F:= SFont(AFontName, AFontSize, AFontStyle);
   try
-    Result:= VMaxWidth(V, F, ADefaultValue);
+    Result:= VMaxWidth(V, F, ADefaultValue, ACanBeLessThanDefault);
   finally
     FreeAndNil(F);
   end;
