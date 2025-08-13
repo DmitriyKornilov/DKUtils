@@ -68,6 +68,10 @@ type
   function SSymbolFromUnicode(const ACode: Integer): String;
   function SSymbolToUnicode(const ASymbol: String): Integer;
 
+  function SCounts(const ACount, AStr1, AStr2, AStr3: String; const ANeedCount: Boolean = True): String;
+  function SYears(const ACount: String; const ANeedCount: Boolean = True): String;
+  function SMonths(const ACount: String; const ANeedCount: Boolean = True): String;
+
 implementation
 
 uses DK_Vector;
@@ -564,6 +568,44 @@ begin
   Result:= 0;
   if UTF8Length(ASymbol)<>1 then Exit;
   Result:= UTF8CodepointToUnicode(PChar(ASymbol), n);
+end;
+
+function SCounts(const ACount, AStr1, AStr2, AStr3: String;
+                 const ANeedCount: Boolean): String;
+var
+  n: Integer;
+begin
+  Result:= EmptyStr;
+  if Sempty(ACount) then Exit;
+
+  n:= SLength(ACount);
+  if n>1 then
+  begin
+    n:= StrToInt(SCopy(ACount, n-1, n));
+    if n in [11..14] then
+      Result:= AStr1;
+  end
+  else begin
+    n:= SDigit(ACount, SLength(ACount));
+    case n of
+      0, 5..9: Result:= AStr1;
+      1: Result:= AStr2;
+      2..4: Result:= AStr3;
+    end;
+  end;
+
+  if ANeedCount then
+    Result:= ACount + SYMBOL_SPACE + Result;
+end;
+
+function SYears(const ACount: String; const ANeedCount: Boolean = True): String;
+begin
+  Result:= SCounts(ACount, 'лет', 'год', 'года', ANeedCount);
+end;
+
+function SMonths(const ACount: String; const ANeedCount: Boolean = True): String;
+begin
+  Result:= SCounts(ACount, 'месяцев', 'месяц', 'месяца', ANeedCount);
 end;
 
 end.

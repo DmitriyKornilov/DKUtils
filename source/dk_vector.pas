@@ -692,32 +692,32 @@ end;
 
 function VCreateInt(const Size: Integer; const DefaultValue: Integer = VECTOR_INT_DEFAULT_VALUE): TIntVector;
 begin
-  VDim(Result, Size, DefaultValue);
+  VDim(Result{%H-}, Size, DefaultValue);
 end;
 
 function VCreateInt64(const Size: Integer; const DefaultValue: Int64 = VECTOR_INT64_DEFAULT_VALUE): TInt64Vector;
 begin
-  VDim(Result, Size, DefaultValue);
+  VDim(Result{%H-}, Size, DefaultValue);
 end;
 
 function VCreateStr(const Size: Integer; const DefaultValue: String = VECTOR_STR_DEFAULT_VALUE): TStrVector;
 begin
-  VDim(Result, Size, DefaultValue);
+  VDim(Result{%H-}, Size, DefaultValue);
 end;
 
 function VCreateDbl(const Size: Integer; const DefaultValue: Double = VECTOR_DBL_DEFAULT_VALUE): TDblVector;
 begin
-  VDim(Result, Size, DefaultValue);
+  VDim(Result{%H-}, Size, DefaultValue);
 end;
 
 function VCreateBool(const Size: Integer; const DefaultValue: Boolean = VECTOR_BOOL_DEFAULT_VALUE): TBoolVector;
 begin
-  VDim(Result, Size, DefaultValue);
+  VDim(Result{%H-}, Size, DefaultValue);
 end;
 
 function VCreateColor(const Size: Integer; const DefaultValue: TColor = VECTOR_COLOR_DEFAULT_VALUE): TColorVector;
 begin
-  VDim(Result, Size, DefaultValue);
+  VDim(Result{%H-}, Size, DefaultValue);
 end;
 
 function VCreateInt(const V: array of Integer): TIntVector;
