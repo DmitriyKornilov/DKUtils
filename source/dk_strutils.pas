@@ -68,7 +68,12 @@ type
   function SSymbolFromUnicode(const ACode: Integer): String;
   function SSymbolToUnicode(const ASymbol: String): Integer;
 
-  function SCounts(const ACount, AStr1, AStr2, AStr3: String; const ANeedCount: Boolean = True): String;
+  function SCounts(const ACount,
+                   AStr1,         //мн.ч., род. падеж
+                   AStr2,         //ед.ч., им. падеж
+                   AStr3: String; //ед.ч., род. падеж
+                   const ANeedCount: Boolean = True): String;
+  function SDays(const ACount: String; const ANeedCount: Boolean = True): String;
   function SYears(const ACount: String; const ANeedCount: Boolean = True): String;
   function SMonths(const ACount: String; const ANeedCount: Boolean = True): String;
 
@@ -596,6 +601,11 @@ begin
 
   if ANeedCount then
     Result:= ACount + SYMBOL_SPACE + Result;
+end;
+
+function SDays(const ACount: String; const ANeedCount: Boolean): String;
+begin
+  Result:= SCounts(ACount, 'дней', 'день', 'дня', ANeedCount);
 end;
 
 function SYears(const ACount: String; const ANeedCount: Boolean = True): String;
