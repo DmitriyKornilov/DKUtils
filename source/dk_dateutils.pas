@@ -404,16 +404,13 @@ begin
 end;
 
 function DaysBetweenDates(const ADate1, ADate2: TDate): Integer;
-var
-  x: Integer;
 begin
-  x:= DateTimeToUnix(ADate2)-DateTimeToUnix(ADate1);
-  DaysBetweenDates:= Trunc(x/3600/24);
+  Result:= Trunc((DateTimeToUnix(ADate2)-DateTimeToUnix(ADate1))/3600/24);
 end;
 
 function DaysInPeriod(const ADate1, ADate2: TDate): Integer;
 begin
-  DaysInPeriod:= DaysBetweenDates(ADate1, ADate2) + 1;
+  Result:= DaysBetweenDates(ADate1, ADate2) + 1;
 end;
 
 function IsDateInPeriod(const ADate, ADate1, ADate2: TDate): Boolean;
