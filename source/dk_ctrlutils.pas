@@ -36,6 +36,7 @@ procedure SetCaptionPanels(const AControls: array of TControl);
 procedure SetToolButtons(const AControls: array of TControl); //without captions
 procedure SetSimpleButtons(const AControls: array of TControl); //tool buttons without panel
 procedure SetEventButtons(const AControls: array of TControl); //with captions
+procedure SetSpinEdits(const AControls: array of TControl);
 
 function ToggleCaptionPanel(const AExpanded: Boolean;
                             const ATopAllClientControl,
@@ -170,6 +171,19 @@ var
 begin
   for i:= 0 to High(AControls) do
     ControlHeight(AControls[i], TOOL_PANEL_HEIGHT_DEFAULT - 2);
+end;
+
+procedure SetSpinEdits(const AControls: array of TControl);
+var
+  i, W: Integer;
+begin
+  for i:= 0 to High(AControls) do
+  begin
+    AControls[i].AutoSize:= True;
+    W:= AControls[i].Width;
+    AControls[i].AutoSize:= False;
+    AControls[i].Width:= W + 5;
+  end;
 end;
 
 function ToggleCaptionPanel(const AExpanded: Boolean;
