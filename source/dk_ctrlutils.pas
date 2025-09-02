@@ -137,7 +137,7 @@ var
   i, h: Integer;
   c: TColor;
 begin
-  h:= Round(TOOL_PANEL_HEIGHT_DEFAULT*0.65);
+  h:= Round(TOOL_PANEL_HEIGHT_DEFAULT*0.70);
   c:= ColorIncLightness(clBtnFace, -15);
   for i:= 0 to High(AControls) do
   begin
