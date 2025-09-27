@@ -67,6 +67,7 @@ type
   function SFit(const AStr, AEnd: String; const AWidth: Integer; const AFont: TFont): String;
   function SSymbolFromUnicode(const ACode: Integer): String;
   function SSymbolToUnicode(const ASymbol: String): Integer;
+  function SFromUnicodes(const ACodes: array of Integer; const ADelimiter: String = ''): String;
 
   function SCounts(const ACount,
                    AStr1,         //мн.ч., род. падеж
@@ -580,6 +581,17 @@ begin
   Result:= 0;
   if UTF8Length(ASymbol)<>1 then Exit;
   Result:= UTF8CodepointToUnicode(PChar(ASymbol), n);
+end;
+
+function SFromUnicodes(const ACodes: array of Integer; const ADelimiter: String = ''): String;
+var
+  i: Integer;
+begin
+  Result:= EmptyStr;
+  if Length(ACodes)=0 then Exit;
+  Result:= SSymbolFromUnicode(ACodes[Low(ACodes)]);
+  for i:= Low(ACodes)+1 to High(ACodes) do
+    Result:= Result + ADelimiter +  SSymbolFromUnicode(ACodes[i]);
 end;
 
 function SCounts(const ACount, AStr1, AStr2, AStr3: String;

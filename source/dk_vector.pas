@@ -3964,8 +3964,7 @@ begin
   Vec:= nil;
   VCopy(V, Vec);
   //Ind - исходный вектор индексов
-  Ind:= nil;
-  for i:= 0 to High(Vec) do VAppend(Ind, i);
+  Ind:= VOrder(High(Vec), True);
 
   while Length(Vec)<>0 do
   begin
@@ -4001,9 +4000,7 @@ begin
   Indexes:= nil;
   Vec:= nil;
   VCopy(V, Vec);
-  Ind:= nil;
-
-  for i:= 0 to High(Vec) do VAppend(Ind, i);
+  Ind:= VOrder(High(Vec), True);
 
   while Length(Vec)<>0 do
   begin
@@ -4036,8 +4033,8 @@ begin
   Indexes:= nil;
   Vec:= nil;
   VCopy(V, Vec);
-  Ind:= nil;
-  for i:= 0 to High(Vec) do VAppend(Ind, i);
+  Ind:= VOrder(High(Vec), True);
+
   while Length(Vec)<>0 do
   begin
     if Desc then
@@ -4069,8 +4066,8 @@ begin
   Indexes:= nil;
   Vec:= nil;
   VCopy(V, Vec);
-  Ind:= nil;
-  for i:= 0 to High(Vec) do VAppend(Ind, i);
+  Ind:= VOrder(High(Vec), True);
+
   while Length(Vec)<>0 do
   begin
     if Desc then
@@ -4102,8 +4099,8 @@ begin
   Indexes:= nil;
   Vec:= nil;
   VCopy(V, Vec);
-  Ind:= nil;
-  for i:= 0 to High(Vec) do VAppend(Ind, i);
+  Ind:= VOrder(High(Vec), True);
+
   while Length(Vec)<>0 do
   begin
     if Desc then
