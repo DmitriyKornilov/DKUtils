@@ -32,6 +32,7 @@ procedure FormKeepMinSize(const AForm: TForm;
                           const AAutosizeBefore: Boolean = True); //use in TForm.OnShow
 
 procedure SetToolPanels(const AControls: array of TControl);
+procedure SetFlatToolPanels(const AControls: array of TControl);
 procedure SetCaptionPanels(const AControls: array of TControl);
 procedure SetToolButtons(const AControls: array of TControl); //without captions
 procedure SetSimpleButtons(const AControls: array of TControl); //tool buttons without panel
@@ -130,6 +131,14 @@ var
 begin
   for i:= 0 to High(AControls) do
     ControlHeight(AControls[i], TOOL_PANEL_HEIGHT_DEFAULT);
+end;
+
+procedure SetFlatToolPanels(const AControls: array of TControl);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AControls) do
+    ControlHeight(AControls[i], TOOL_PANEL_HEIGHT_DEFAULT-4);
 end;
 
 procedure SetCaptionPanels(const AControls: array of TControl);
