@@ -426,11 +426,14 @@ type
   procedure VSort(const V: TInt64Vector; out Indexes: TIntVector; const Desc: Boolean = False);
   procedure VSortDate(const V: TDateVector; out Indexes: TIntVector;  const Desc: Boolean = False);
   procedure VSortTime(const V: TTimeVector; out Indexes: TIntVector;  const Desc: Boolean = False);
+  procedure VSortNum(const V: TStrVector; out Indexes: TIntVector; const Desc: Boolean = False);
+
   function VSort(const V: TStrVector; const Desc: Boolean = False): TStrVector;
   function VSort(const V: TIntVector; const Desc: Boolean = False): TIntVector;
   function VSort(const V: TInt64Vector; const Desc: Boolean = False): TInt64Vector;
   function VSortDate(const V: TDateVector; const Desc: Boolean = False): TDateVector;
   function VSortTime(const V: TTimeVector; const Desc: Boolean = False): TTimeVector;
+  function VSortNum(const V: TStrVector; const Desc: Boolean = False): TStrVector;
 
   {ПЕРЕСТАНОВКА ПО ВЕКТОРУ ИНДЕКСОВ}
   function VReplace(const V: TStrVector; const Indexes: TIntVector): TStrVector;
@@ -4121,6 +4124,18 @@ begin
   end;
 end;
 
+procedure VSortNum(const V: TStrVector; out Indexes: TIntVector; const Desc: Boolean);
+var
+  Values: TInt64Vector;
+begin
+  try
+    Values:= VStrToInt64(V);
+    VSort(Values, Indexes, Desc);
+  except
+    VSort(V, Indexes, Desc);
+  end;
+end;
+
 function VSort(const V: TStrVector; const Desc: Boolean): TStrVector;
 var
   Indexes: TIntVector;
@@ -4158,6 +4173,14 @@ var
   Indexes: TIntVector;
 begin
   VSortTime(V, Indexes, Desc);
+  Result:= VReplace(V, Indexes);
+end;
+
+function VSortNum(const V: TStrVector; const Desc: Boolean): TStrVector;
+var
+  Indexes: TIntVector;
+begin
+  VSortNum(V, Indexes, Desc);
   Result:= VReplace(V, Indexes);
 end;
 
