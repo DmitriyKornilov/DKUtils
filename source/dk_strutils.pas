@@ -26,6 +26,7 @@ type
   function SLeft(const AStr: String; const ACount: Integer): String;
   function SSame(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Boolean;
   function SEmpty(const AStr: String): Boolean;
+  function SIfEmpty(const AStr, AValueIfEmpty: String): String;
   function SCompare(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Integer;
   function SPos(const AStr, AValue: String; const AStartPos: Integer = 1; const ACaseSensitivity: Boolean = True): Integer;
   function SFind(const AStr, AValue: String; const ACaseSensitivity: Boolean = True): Boolean;
@@ -172,6 +173,14 @@ end;
 function SEmpty(const AStr: String): Boolean;
 begin
   Result:= SSame(AStr, EmptyStr);
+end;
+
+function SIfEmpty(const AStr, AValueIfEmpty: String): String;
+begin
+  if SEmpty(AStr) then
+    Result:= AValueIfEmpty
+  else
+    Result:= AStr;
 end;
 
 function SCompare(const AStr1, AStr2: String; const ACaseSensitivity: Boolean = True): Integer;

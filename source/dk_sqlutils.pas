@@ -335,11 +335,9 @@ var
   S: String;
 begin
   if Length(AParamValues)=0 then Exit;
-  S:= AValueName;
-  if S=EmptyStr then
-    S:= 'Value';
+  S:= SIfEmpty(AValueName, 'Value');
   for i:= 0 to High(AParamValues) do
-      QParamInt(S + IntToStr(i+1), AParamValues[i]);
+    QParamInt(S + IntToStr(i+1), AParamValues[i]);
 end;
 
 procedure QParamsInt64(const AParamValues: array of Int64; const AValueName: String);
@@ -348,11 +346,9 @@ var
   S: String;
 begin
   if Length(AParamValues)=0 then Exit;
-  S:= AValueName;
-  if S=EmptyStr then
-    S:= 'Value';
+  S:= SIfEmpty(AValueName, 'Value');
   for i:= 0 to High(AParamValues) do
-      QParamInt64(S + IntToStr(i+1), AParamValues[i]);
+    QParamInt64(S + IntToStr(i+1), AParamValues[i]);
 end;
 
 procedure QParamsStr(const AParamValues: array of String; const AValueName: String);
@@ -361,11 +357,9 @@ var
   S: String;
 begin
   if Length(AParamValues)=0 then Exit;
-  S:= AValueName;
-  if S=EmptyStr then
-    S:= 'Value';
+  S:= SIfEmpty(AValueName, 'Value');
   for i:= 0 to High(AParamValues) do
-      QParamStr(S + IntToStr(i+1), AParamValues[i]);
+    QParamStr(S + IntToStr(i+1), AParamValues[i]);
 end;
 
 procedure QParamsDT(const AParamValues: array of TDateTime;  const AValueName: String);
@@ -374,11 +368,9 @@ var
   S: String;
 begin
   if Length(AParamValues)=0 then Exit;
-  S:= AValueName;
-  if S=EmptyStr then
-    S:= 'Value';
+  S:= SIfEmpty(AValueName, 'Value');
   for i:= 0 to High(AParamValues) do
-      QParamDT(S + IntToStr(i+1), AParamValues[i]);
+    QParamDT(S + IntToStr(i+1), AParamValues[i]);
 end;
 
 procedure QParamsFloat(const AParamValues: array of Double; const AValueName: String);
@@ -387,11 +379,9 @@ var
   S: String;
 begin
   if Length(AParamValues)=0 then Exit;
-  S:= AValueName;
-  if S=EmptyStr then
-    S:= 'Value';
+  S:= SIfEmpty(AValueName, 'Value');
   for i:= 0 to High(AParamValues) do
-      QParamFloat(S + IntToStr(i+1), AParamValues[i]);
+    QParamFloat(S + IntToStr(i+1), AParamValues[i]);
 end;
 
 function QFieldInt(const AFieldName: String): Integer;
@@ -588,7 +578,7 @@ var
   S: String;
 begin
   Result:= EmptyStr;
-  if (AValuesCount<=0) or (AFieldName=EmptyStr) then Exit;
+  if (AValuesCount<=0) or SEmpty(AFieldName) then Exit;
   S:= EmptyStr;
   if ATablePseud<>EmptyStr then
     S:= SqlEsc(ATablePseud, False) + '.';
@@ -596,9 +586,7 @@ begin
 
   Result:= ' (' + S;
 
-  S:= AValueName;
-  if S=EmptyStr then
-    S:= 'Value';
+  S:= SIfEmpty(AValueName, 'Value');
   Result:= Result + ' IN (:' + S + '1';
   for i:= 1 to AValuesCount-1 do
     Result:= Result + ', :' + S + IntToStr(i+1);
@@ -612,7 +600,7 @@ var
   S: String;
 begin
   Result:= EmptyStr;
-  if (AValuesCount<=0) or (AFieldName=EmptyStr) then Exit;
+  if (AValuesCount<=0) or SEmpty(AFieldName) then Exit;
   S:= EmptyStr;
   if ATablePseud<>EmptyStr then
     S:= SqlEsc(ATablePseud, False) + '.';
@@ -620,14 +608,11 @@ begin
 
   Result:= ' (' + S;
 
-  S:= AValueName;
-  if S=EmptyStr then
-    S:= 'Value';
+  S:= SIfEmpty(AValueName, 'Value');
   Result:= Result + ' NOT IN (:' + S + '1';
   for i:= 1 to AValuesCount-1 do
     Result:= Result + ', :' + S + IntToStr(i+1);
   Result:= Result + ')) ';
-
 end;
 
 function SqlEsc(const AStr: String; const ANeedSpaces: Boolean = True): String;
@@ -637,8 +622,6 @@ begin
   if ANeedSpaces then
     Result:= SqlSpaces(Result);
 end;
-
-
 
 end.
 
