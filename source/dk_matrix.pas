@@ -5,7 +5,7 @@ unit DK_Matrix;
 interface
 
 uses
-  Classes, SysUtils, DateUtils, DK_Const, DK_Vector;
+  Classes, SysUtils, Graphics, DateUtils, DK_Const, DK_Vector, DK_StrUtils;
 
 type
   TIntMatrix   = array of TIntVector;
@@ -328,6 +328,10 @@ type
   procedure MRowDel(var M: TDblMatrix;   const RowIndex: Integer);
   procedure MRowDel(var M: TBoolMatrix;  const RowIndex: Integer);
 
+  {ДЛИНЫ СТРОК В PX}
+  function MWidth(const M: TStrMatrix; const AFont: TFont): TIntMatrix;
+  function MMaxWidth(const M: TStrMatrix; const AFont: TFont): Integer;
+
   {МАТРИЦА ИЗ ВЕКТОРОВ ПО ИНДЕКСУ}
   function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;
                    FromIndex: Integer=-1; ToIndex: Integer=-1): TIntMatrix;
@@ -394,7 +398,6 @@ type
                    FromIndex1: Integer=-1; ToIndex1: Integer=-1): TBoolMatrix;
 
 implementation
-
 
 procedure MDim(var M: TIntMatrix; const Size1, Size2: Integer; const DefaultValue: Integer = VECTOR_INT_DEFAULT_VALUE);
 var
@@ -2897,6 +2900,38 @@ begin
   for i:=0 to High(M) do
     if RowIndex<=High(M[i]) then
       VDel(M[i], RowIndex);
+end;
+
+function MWidth(const M: TStrMatrix; const AFont: TFont): TIntMatrix;
+var
+  i, j: Integer;
+  BM: TBitmap;
+begin
+  Result:= nil;
+  if MIsNil(M) then Exit;
+
+  MDim(Result, Length(M));
+  BM:= TBitmap.Create;
+  try
+    BM.Canvas.Font.Assign(AFont);
+    for i:= 0 to High(M) do
+    begin
+      if VIsNil(M[i]) then
+        VDim(Result[i], 1, 0)
+      else begin
+        VDim(Result[i], Length(M[i]));
+        for j:=0 to High(M[i]) do
+          Result[i, j]:= BM.Canvas.TextWidth(M[i, j]) + STR_WIDTH_INC_PX;
+      end;
+    end;
+  finally
+    FreeAndNil(BM);
+  end;
+end;
+
+function MMaxWidth(const M: TStrMatrix; const AFont: TFont): Integer;
+begin
+  Result:= MMax(MWidth(M, AFont));
 end;
 
 function MIndex1(const M: TIntMatrix3D;   const Index1: Integer;

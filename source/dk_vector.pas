@@ -331,6 +331,10 @@ type
   function VFromStrings(const S: TStrings): TStrVector;
   procedure VToStrings(const V: TStrVector; const S: TStrings);
 
+  {ДЛИНЫ СТРОК В PX}
+  function VWidth(const V: TStrVector; const AFont: TFont): TIntVector;
+  function VMaxWidth(const V: TStrVector; const AFont: TFont): Integer;
+
   {СТРОКОВЫЙ ВЕКТОР И СТРОКА}
   function VStrToVector(const Str, Delimiter: String; const ACaseSensitivity: Boolean = True): TStrVector;
   function VVectorToStr(const V: TStrVector;
@@ -456,6 +460,7 @@ type
   function VNameLong(const AFs, ANs, APs: TStrVector): TStrVector;
   function VNameShort(const AFs, ANs, APs: TStrVector): TStrVector;
 
+  {СОПОСТАВЛЕНИЕ ЗНАЧЕНИЙ ВЕКТОРОВ}
   function VSameIndexValue(const FindValue: Integer; const SearchVector: TIntVector; const SourceVector: TIntVector; out Value: Integer): Boolean;
   function VSameIndexValue(const FindValue: Integer; const SearchVector: TIntVector; const SourceVector: TInt64Vector; out Value: Int64): Boolean;
   function VSameIndexValue(const FindValue: Int64; const SearchVector: TInt64Vector; const SourceVector: TIntVector; out Value: Integer): Boolean;
@@ -3750,6 +3755,32 @@ begin
   S.Clear;
   for i:= 0 to High(V) do
     S.Append(V[i]);
+end;
+
+{ДЛИНЫ СТРОК В PX}
+
+function VWidth(const V: TStrVector; const AFont: TFont): TIntVector;
+var
+  i: Integer;
+  BM: TBitmap;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+
+  VDim(Result, Length(V));
+  BM:= TBitmap.Create;
+  try
+    BM.Canvas.Font.Assign(AFont);
+    for i:= 0 to High(V) do
+      Result[i]:= BM.Canvas.TextWidth(V[i]) + STR_WIDTH_INC_PX;
+  finally
+    FreeAndNil(BM);
+  end;
+end;
+
+function VMaxWidth(const V: TStrVector; const AFont: TFont): Integer;
+begin
+  Result:= VMax(VWidth(V, AFont));
 end;
 
 {СТРОКОВЫЙ ВЕКТОР И СТРОКА}

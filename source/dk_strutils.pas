@@ -7,6 +7,10 @@ interface
 uses
   Classes, SysUtils, LazUTF8, Graphics, RegExpr, Math, DK_Const;
 
+const
+  STR_WIDTH_INC_PX = 2;
+  STR_HEIGHT_INC_PX = 2;
+
 type
   TSymbolType = (stUnknown, stPunctuation, stSeparator, stVowel, stConsonant, stSpecial);
 
@@ -358,7 +362,7 @@ begin
   BM:= TBitmap.Create;
   try
     BM.Canvas.Font.Assign(AFont);
-    Result:= BM.Canvas.TextWidth(AStr) + 2;
+    Result:= BM.Canvas.TextWidth(AStr) + STR_WIDTH_INC_PX;
   finally
     FreeAndNil(BM);
   end;
@@ -383,7 +387,7 @@ begin
   BM:= TBitmap.Create;
   try
     BM.Canvas.Font.Assign(AFont);
-    Result:= BM.Canvas.TextHeight('X') + 2;
+    Result:= BM.Canvas.TextHeight('X') + STR_HEIGHT_INC_PX;
   finally
     FreeAndNil(BM);
   end;
