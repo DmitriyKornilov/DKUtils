@@ -18,7 +18,7 @@ uses
 
   function Percent(const AValue, APercent: Double): Double;
   function Part(const AValue, ATotal: Double): Double;
-
+  function PartRound(const AValue, ATotal: Double): Integer;
 
   function RandomInRange(const AMinValue, AMaxValue: Integer): Integer;
   function RandomInRange(const AValue: Integer;
@@ -74,6 +74,11 @@ begin
   Result:= 0;
   if ATotal=0 then Exit;
   Result:= AValue/ATotal;
+end;
+
+function PartRound(const AValue, ATotal: Double): Integer;
+begin
+  Result:= Round(Part(AValue, ATotal));
 end;
 
 function RandomInRange(const AMinValue, AMaxValue: Integer): Integer;
