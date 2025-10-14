@@ -99,7 +99,6 @@ type
   procedure VChangeIf(var V: TBoolVector; const NewValue: Boolean;   const IfVector: TIntVector; const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1);
   procedure VChangeIf(var V: TColorVector; const NewValue: TColor;   const IfVector: TIntVector; const IfValue: Integer; FromIndex: Integer=-1; ToIndex: Integer=-1);
 
-
   {ПЕРВЫЙ И ПОСЛЕДНИЙ ЭЛЕМЕНТЫ ВЕКТОРА}
   function VFirst(const V: TIntVector): Integer;
   function VFirst(const V: TInt64Vector): Int64;
@@ -358,10 +357,12 @@ type
   function VColorFromVector(const AColorVector: TColorVector; const AIndex: Integer;
                             const ASortIndexes: TIntVector = nil): TColor;
 
-
   {СУММА/КОНКАТЕНАЦИЯ}
-  function VSum(const V: TStrVector; const S: String): TStrVector;
-  function VSum(const S: String; const V: TStrVector): TStrVector;
+  function VSumValue(const V: TStrVector; const S: String): TStrVector;
+  function VSumValue(const S: String; const V: TStrVector): TStrVector;
+  function VSumValue(const V: TIntVector; const Value: Integer): TIntVector;
+  function VSumValue(const V: TInt64Vector; const Value: Int64): TInt64Vector;
+  function VSumValue(const V: TDblVector; const Value: Double): TDblVector;
 
   function VSum(const V1,V2: TIntVector)  : TIntVector;
   function VSum(const V1,V2: TInt64Vector): TInt64Vector;
@@ -405,10 +406,16 @@ type
   function VMult(const V1,V2: TInt64Vector): TInt64Vector;
   function VMult(const V1: TStrVector; const V2: TIntVector): TStrVector;
 
+  function VMultValue(const V: TIntVector; const Value: Integer): TIntVector;
+  function VMultValue(const V: TInt64Vector; const Value: Int64): TInt64Vector;
+  function VMultValue(const V: TDblVector; const Value: Double): TDblVector;
+
   {ДЛЯ ЦЕЛОЧИСЛЕННОГО ВЕКТОРА}
   function VOrder(const MaxValue: Integer;
                   const AZeroFirst: Boolean = False): TIntVector; //{[0],1,2,3,...,MaxValue}
   function VRange(const AFirstValue, ALastValue: Integer): TIntVector; // {AFirstValue, AFirstValue+1, ..., ALastValue}
+  function VStep(const AFirstValue, ALimitValue, AStepValue: Integer): TIntVector; //{AFirstValue, AFirstValue+AStepValue, AFirstValue+2*AStepValue, ..., AFirstValue+N*AStepValue<=ALimitValue}
+  function VAccum(const V: TIntVector): TIntVector; //{V[0], V[0]+V[1], V[0]+V[1]+V[2],..., V[0]+V[1]+V[2]+...+V[n]}
 
   {ДЛЯ УПОРЯДОЧЕННОГО ВЕКТОРА ДАТ}
   function VCrossInd(const V: TDateVector; const ABeginDate, AEndDate: TDate; out I1,I2: Integer): Boolean;
@@ -2992,7 +2999,6 @@ begin
       Inc(Result);
 end;
 
-
 //VOrder
 
 function VOrder(const MaxValue: Integer; const AZeroFirst: Boolean = False): TIntVector;
@@ -3016,6 +3022,36 @@ begin
   VDim(Result, ALastValue-AFirstValue+1);
   for i:= AFirstValue to ALastValue do
     Result[i-AFirstValue]:= i;
+end;
+
+//VStep
+
+function VStep(const AFirstValue, ALimitValue, AStepValue: Integer): TIntVector;
+var
+  i, Value: Integer;
+begin
+  Result:= nil;
+  if ALimitValue<AFirstValue then Exit;
+  i:= -1;
+  repeat
+    Inc(i);
+    Value:= AFirstValue + i*AStepValue;
+    VAppend(Result, Value);
+  until Value>=ALimitValue;
+end;
+
+//VAccum
+
+function VAccum(const V: TIntVector): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  Result[0]:= V[0];
+  for i:= 1 to High(V) do
+    Result[i]:= Result[i-1] + V[i];
 end;
 
 //VMult
@@ -3056,6 +3092,39 @@ begin
     else
       Result[i]:= V1[i];
   end;
+end;
+
+function VMultValue(const V: TIntVector; const Value: Integer): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= V[i] * Value;
+end;
+
+function VMultValue(const V: TInt64Vector; const Value: Int64): TInt64Vector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= V[i] * Value;
+end;
+
+function VMultValue(const V: TDblVector; const Value: Double): TDblVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= V[i] * Value;
 end;
 
 //VSum
@@ -3122,7 +3191,7 @@ begin
     Result[i]:= V1[i] + V2[i];
 end;
 
-function VSum(const V: TStrVector; const S: String): TStrVector;
+function VSumValue(const V: TStrVector; const S: String): TStrVector;
 var
   Values: TStrVector;
 begin
@@ -3132,7 +3201,7 @@ begin
   Result:= VSum(V, Values);
 end;
 
-function VSum(const S: String; const V: TStrVector): TStrVector;
+function VSumValue(const S: String; const V: TStrVector): TStrVector;
 var
   Values: TStrVector;
 begin
@@ -3140,6 +3209,39 @@ begin
   if VIsNil(V) then Exit;
   VDim(Values{%H-}, Length(V), S);
   Result:= VSum(Values, V);
+end;
+
+function VSumValue(const V: TIntVector; const Value: Integer): TIntVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= V[i] + Value;
+end;
+
+function VSumValue(const V: TInt64Vector; const Value: Int64): TInt64Vector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= V[i] + Value;
+end;
+
+function VSumValue(const V: TDblVector; const Value: Double): TDblVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= V[i] + Value;
 end;
 
 function VSum(const V1,V2: TIntVector): TIntVector;
