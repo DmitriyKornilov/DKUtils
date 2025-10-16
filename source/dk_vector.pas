@@ -417,6 +417,11 @@ type
   function VStep(const AFirstValue, ALimitValue, AStepValue: Integer): TIntVector; //{AFirstValue, AFirstValue+AStepValue, AFirstValue+2*AStepValue, ..., AFirstValue+N*AStepValue<=ALimitValue}
   function VAccum(const V: TIntVector): TIntVector; //{V[0], V[0]+V[1], V[0]+V[1]+V[2],..., V[0]+V[1]+V[2]+...+V[n]}
 
+  {ДЛЯ ВЕКТОРА ДАТ}
+  function VIncYear(const V: TDateVector; const AIncValue: Integer): TDateVector;
+  function VIncMonth(const V: TDateVector; const AIncValue: Integer): TDateVector;
+  function VIncDay(const V: TDateVector; const AIncValue: Integer): TDateVector;
+
   {ДЛЯ УПОРЯДОЧЕННОГО ВЕКТОРА ДАТ}
   function VCrossInd(const V: TDateVector; const ABeginDate, AEndDate: TDate; out I1,I2: Integer): Boolean;
   function VCut(const V: TDateVector; const ABeginDate, AEndDate: TDate): TDateVector;
@@ -4012,6 +4017,41 @@ begin
 end;
 
 {ДЛЯ ВЕКТОРА ДАТ}
+
+function VIncYear(const V: TDateVector; const AIncValue: Integer): TDateVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    Result[i]:= IncYear(V[i], AIncValue);
+end;
+
+function VIncMonth(const V: TDateVector; const AIncValue: Integer): TDateVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    Result[i]:= IncMonth(V[i], AIncValue);
+end;
+
+function VIncDay(const V: TDateVector; const AIncValue: Integer): TDateVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    Result[i]:= IncDay(V[i], AIncValue);
+end;
+
+{ДЛЯ УПОРЯДОЧЕННОГО ВЕКТОРА ДАТ}
 
 function VCrossInd(const V: TDateVector; const ABeginDate, AEndDate: TDate; out I1,I2: Integer): Boolean;
 var
