@@ -5,7 +5,9 @@ unit DK_Fonts;
 interface
 
 uses
-  {Classes,} SysUtils, Forms, Controls, Graphics;
+  {$IFDEF WINDOWS} Windows, {$ENDIF}  FileUtil,
+  {$IFDEF LINUX} FileUtil, {$ENDIF}
+  SysUtils, Forms, Controls, Graphics;
 
 const
   ARIAL_FONTS: array [0..2] of String =
@@ -25,6 +27,9 @@ type
                               out AFontName: String; out AFontSize: Single);
   function GetFontHeight(const AFontName: String; const AFontSize: Integer;
                          const AFontStyle: TFontStyles = []): Integer;
+
+  function LoadExtraFont(const AFilePath, AFileName: String): Boolean;
+  function UnloadExtraFont(const AFilePath, AFileName: String): Boolean;
 
 implementation
 
@@ -84,6 +89,28 @@ begin
   finally
     FreeAndNil(Font);
   end;
+end;
+
+function LoadExtraFont(const AFilePath, AFileName: String): Boolean;
+begin
+  {$IFDEF WINDOWS}
+  Result:= AddFontResource(PChar(AFilePath + AFileName))<>0;
+  {$ENDIF}
+  {$IFDEF LINUX}
+  Result:= CopyFile(AFilePath + AFileName, GetUserDir + '.fonts/' + AFileName, [cffCreateDestDirectory]);
+  ExecuteProcess(Application.ExeName, []);
+  Application.Terminate;
+  {$ENDIF}
+end;
+
+function UnloadExtraFont(const AFilePath, AFileName: String): Boolean;
+begin
+  {$IFDEF WINDOWS}
+  Result:= RemoveFontResource(PChar(AFilePath + AFileName));
+  {$ENDIF}
+  {$IFDEF LINUX}
+  Result:= DeleteFile(GetUserDir + '.fonts/' + AFileName);
+  {$ENDIF}
 end;
 
 end.
