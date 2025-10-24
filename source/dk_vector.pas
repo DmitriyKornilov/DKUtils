@@ -17,6 +17,7 @@ type
   TDblVector   = array of Double;
   TDateVector  = type TDblVector;
   TTimeVector  = type TDblVector;
+  TDateTimeVector  = type TDblVector;
   TBoolVector  = array of Boolean;
   TColorVector = array of TColor;
 
@@ -300,8 +301,10 @@ type
   {ПРЕОБРАЗОВНИЕ ИЗ СТРОКОВОГО ВЕКТОРА}
   function VStrToInt(const V: TStrVector): TIntVector;
   function VStrToInt64(const V: TStrVector): TInt64Vector;
+  function VStrToFloat(const V: TStrVector): TDblVector;
   function VStrToDate(const V: TStrVector): TDateVector;
   function VStrToTime(const V: TStrVector): TTimeVector;
+  function VStrToDateTime(const V: TStrVector): TDateTimeVector;
 
   {BOOLEAN}
   function VIntToBool(const V: TIntVector): TBoolVector;
@@ -314,6 +317,7 @@ type
   function VFloatToStr(const V: TDblVector): TStrVector;
   function VDateToStr(const V: TDateVector; const BoundaryIsEmpty: Boolean = False): TStrVector;
   function VTimeToStr(const V: TTimeVector): TStrVector;
+  function VDateTimeToStr(const V: TDateTimeVector): TStrVector;
   function VFormatDateTime(const FormatStr: String; const V: TDblVector;
                            const BoundaryIsEmpty: Boolean = False;
                            Options: TFormatDateTimeOptions = []): TStrVector;
@@ -413,6 +417,8 @@ type
   {ДЛЯ ЦЕЛОЧИСЛЕННОГО ВЕКТОРА}
   function VOrder(const MaxValue: Integer;
                   const AZeroFirst: Boolean = False): TIntVector; //{[0],1,2,3,...,MaxValue}
+  function VOrderStr(const MaxValue: Integer;
+                  const AZeroFirst: Boolean = False): TStrVector;
   function VRange(const AFirstValue, ALastValue: Integer): TIntVector; // {AFirstValue, AFirstValue+1, ..., ALastValue}
   function VStep(const AFirstValue, ALimitValue, AStepValue: Integer): TIntVector; //{AFirstValue, AFirstValue+AStepValue, AFirstValue+2*AStepValue, ..., AFirstValue+N*AStepValue<=ALimitValue}
   function VAccum(const V: TIntVector): TIntVector; //{V[0], V[0]+V[1], V[0]+V[1]+V[2],..., V[0]+V[1]+V[2]+...+V[n]}
@@ -3016,6 +3022,16 @@ begin
     Result[i]:= i + Ord(not AZeroFirst);
 end;
 
+function VOrderStr(const MaxValue: Integer; const AZeroFirst: Boolean): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  VDim(Result, MaxValue + Ord(AZeroFirst));
+  for i:= 0 to High(Result) do
+    Result[i]:= IntToStr(i + Ord(not AZeroFirst));
+end;
+
 //VRange
 
 function VRange(const AFirstValue, ALastValue: Integer): TIntVector;
@@ -3627,6 +3643,18 @@ begin
       Result[i]:= StrToInt64(V[i]);
 end;
 
+function VStrToFloat(const V: TStrVector): TDblVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    if not SEmpty(V[i]) then
+      Result[i]:= StrToFloat(V[i]);
+end;
+
 function VStrToDate(const V: TStrVector): TDateVector;
 var
   i: Integer;
@@ -3649,6 +3677,18 @@ begin
   for i:=0 to High(V) do
     if not SEmpty(V[i]) then
       Result[i]:= StrToTime(V[i]);
+end;
+
+function VStrToDateTime(const V: TStrVector): TDateTimeVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    if not SEmpty(V[i]) then
+      Result[i]:= StrToDateTime(V[i]);
 end;
 
 function VIntToBool(const V: TIntVector): TBoolVector;
@@ -3745,6 +3785,17 @@ begin
   VDim(Result, Length(V));
   for i:=0 to High(V) do
     Result[i]:= TimeToStr(V[i]);
+end;
+
+function VDateTimeToStr(const V: TDateTimeVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:=0 to High(V) do
+    Result[i]:= DateTimeToStr(V[i]);
 end;
 
 function VFormatDateTime(const FormatStr: String; const V: TDblVector;
