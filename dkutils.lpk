@@ -92,6 +92,10 @@
         <Filename Value="source\dk_color.pas"/>
         <UnitName Value="DK_Color"/>
       </Item>
+      <Item>
+        <Filename Value="source\dk_msgdialogs.pas"/>
+        <UnitName Value="dk_msgdialogs"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
