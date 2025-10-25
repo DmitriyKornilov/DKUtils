@@ -20,16 +20,25 @@ type
 
 TFormClass = class of TForm;
 
-procedure ControlHeight(const AControl: TControl; const ADefaultHeight{PPI=96}: Integer);
-procedure ControlWidth(const AControl: TControl; const ADefaultWidth{PPI=96}: Integer);
+//control dimensions
 
-procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
+procedure SetControlHeight(const AControl: TControl; const AHeight: Integer);
+procedure SetControlWidth(const AControl: TControl; const AWidth: Integer);
+procedure SetControlSize(const AControl: TControl; const AWidth, AHeight: Integer);
 
-procedure FormToScreenCenter(const AForm: TForm);
-function FormModalShow(AFormClass: TFormClass): Integer;
-function FormOnPanelCreate(AFormClass: TFormClass; APanel: TPanel): TForm;
-procedure FormKeepMinSize(const AForm: TForm;
-                          const AAutosizeBefore: Boolean = True); //use in TForm.OnShow
+procedure SetControlHeight(const AControls: array of TControl; const AHeight: Integer);
+procedure SetControlWidth(const AControls: array of TControl; const AWidth: Integer);
+procedure SetControlSize(const AControls: array of TControl; const AWidth, AHeight: Integer);
+
+procedure SetControlHeightScaleToForm(const AControl: TControl; const AHeight{PPI=96}: Integer);
+procedure SetControlWidthScaleToForm(const AControl: TControl; const AWidth{PPI=96}: Integer);
+procedure SetControlSizeScaleToForm(const AControl: TControl; const AWidth, AHeight{PPI=96}: Integer);
+
+procedure SetControlHeightScaleToForm(const AControls: array of TControl; const AHeight{PPI=96}: Integer);
+procedure SetControlWidthScaleToForm(const AControls: array of TControl; const AWidth{PPI=96}: Integer);
+procedure SetControlSizeScaleToForm(const AControls: array of TControl; const AWidth, AHeight{PPI=96}: Integer);
+
+//custom control dimensions and properties
 
 procedure SetToolPanels(const AControls: array of TControl);
 procedure SetFlatToolPanels(const AControls: array of TControl);
@@ -39,12 +48,28 @@ procedure SetSimpleButtons(const AControls: array of TControl); //tool buttons w
 procedure SetEventButtons(const AControls: array of TControl); //with captions
 procedure SetSpinEdits(const AControls: array of TControl);
 
+//forms
+
+procedure FormToScreenCenter(const AForm: TForm);
+function FormModalShow(AFormClass: TFormClass): Integer;
+function FormOnPanelCreate(AFormClass: TFormClass; APanel: TPanel): TForm;
+procedure FormKeepMinSize(const AForm: TForm;
+                          const AAutosizeBefore: Boolean = True); //use in TForm.OnShow
+
+//menue
+
+procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
+
+//captionpanels
+
 function ToggleCaptionPanel(const AExpanded: Boolean;
                             const ATopAllClientControl,
                                   ASplitterControl,
                                   ABottomParentControl,
                                   ASymbolControl,
                                   AToggleControl: TControl): Boolean;
+
+//images
 
 function ChooseImageListForScreenPPI(const AImages100, AImages125,
                                            AImages150, AImages175: TImageList): TImageList;
@@ -55,24 +80,95 @@ procedure SetSpeedButtonImagesForScreenPPI(const AImages100, AImages125,
 
 implementation
 
-function ControlSize(const AControl: TControl; const ADefaultSize: Integer): Integer;
+procedure ControlSizeUnlock(const AControl: TControl);
 begin
   AControl.AutoSize:= False;
   AControl.Constraints.MaxHeight:= 0;
   AControl.Constraints.MinHeight:= 0;
   AControl.Constraints.MaxWidth:= 0;
   AControl.Constraints.MinWidth:= 0;
-  Result:= AControl.Scale96ToForm(ADefaultSize);
 end;
 
-procedure ControlHeight(const AControl: TControl; const ADefaultHeight: Integer);
+procedure SetControlHeight(const AControl: TControl; const AHeight: Integer);
 begin
-  AControl.Height:= ControlSize(AControl, ADefaultHeight);
+  ControlSizeUnlock(AControl);
+  AControl.Height:= AHeight;
 end;
 
-procedure ControlWidth(const AControl: TControl; const ADefaultWidth: Integer);
+procedure SetControlWidth(const AControl: TControl; const AWidth: Integer);
 begin
-  AControl.Width:= ControlSize(AControl, ADefaultWidth);
+  ControlSizeUnlock(AControl);
+  AControl.Width:= AWidth;
+end;
+
+procedure SetControlSize(const AControl: TControl; const AWidth, AHeight: Integer);
+begin
+  ControlSizeUnlock(AControl);
+  AControl.Width:= AWidth;
+  AControl.Height:= AHeight;
+end;
+
+procedure SetControlHeight(const AControls: array of TControl; const AHeight: Integer);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AControls) do
+    SetControlHeight(AControls[i], AHeight);
+end;
+
+procedure SetControlWidth(const AControls: array of TControl; const AWidth: Integer);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AControls) do
+    SetControlWidth(AControls[i], AWidth);
+end;
+
+procedure SetControlSize(const AControls: array of TControl; const AWidth, AHeight: Integer);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AControls) do
+    SetControlSize(AControls[i], AWidth, AHeight);
+end;
+
+procedure SetControlHeightScaleToForm(const AControl: TControl; const AHeight: Integer);
+begin
+  SetControlHeight(AControl, AControl.Scale96ToForm(AHeight));
+end;
+
+procedure SetControlWidthScaleToForm(const AControl: TControl; const AWidth: Integer);
+begin
+  SetControlWidth(AControl, AControl.Scale96ToForm(AWidth));
+end;
+
+procedure SetControlSizeScaleToForm(const AControl: TControl; const AWidth, AHeight: Integer);
+begin
+  SetControlSize(AControl, AControl.Scale96ToForm(AWidth), AControl.Scale96ToForm(AHeight));
+end;
+
+procedure SetControlHeightScaleToForm(const AControls: array of TControl; const AHeight: Integer);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AControls) do
+    SetControlHeightScaleToForm(AControls[i], AHeight);
+end;
+
+procedure SetControlWidthScaleToForm(const AControls: array of TControl; const AWidth: Integer);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AControls) do
+    SetControlWidthScaleToForm(AControls[i], AWidth);
+end;
+
+procedure SetControlSizeScaleToForm(const AControls: array of TControl; const AWidth, AHeight: Integer);
+var
+  i: Integer;
+begin
+  for i:= 0 to High(AControls) do
+    SetControlSizeScaleToForm(AControls[i], AWidth, AHeight);
 end;
 
 procedure ControlPopupMenuShow(AObject: TObject; AMenu: TPopupMenu);
@@ -126,19 +222,13 @@ begin
 end;
 
 procedure SetToolPanels(const AControls: array of TControl);
-var
-  i: Integer;
 begin
-  for i:= 0 to High(AControls) do
-    ControlHeight(AControls[i], TOOL_PANEL_HEIGHT_DEFAULT);
+  SetControlHeightScaleToForm(AControls, TOOL_PANEL_HEIGHT_DEFAULT);
 end;
 
 procedure SetFlatToolPanels(const AControls: array of TControl);
-var
-  i: Integer;
 begin
-  for i:= 0 to High(AControls) do
-    ControlHeight(AControls[i], TOOL_PANEL_HEIGHT_DEFAULT-4);
+  SetControlHeightScaleToForm(AControls, TOOL_PANEL_HEIGHT_DEFAULT-4);
 end;
 
 procedure SetCaptionPanels(const AControls: array of TControl);
@@ -150,36 +240,24 @@ begin
   c:= ColorIncLightness(clBtnFace, -15);
   for i:= 0 to High(AControls) do
   begin
-    ControlHeight(AControls[i], h);
+    SetControlHeightScaleToForm(AControls[i], h);
     AControls[i].Color:= c;
   end;
 end;
 
 procedure SetToolButtons(const AControls: array of TControl);
-var
-  i: Integer;
 begin
-  for i:= 0 to High(AControls) do
-    ControlWidth(AControls[i], TOOL_BUTTON_WIDTH_DEFAULT);
+  SetControlWidthScaleToForm(AControls, TOOL_BUTTON_WIDTH_DEFAULT);
 end;
 
 procedure SetSimpleButtons(const AControls: array of TControl);
-var
-  i: Integer;
 begin
-  for i:= 0 to High(AControls) do
-  begin
-    ControlWidth(AControls[i], TOOL_BUTTON_WIDTH_DEFAULT);
-    ControlHeight(AControls[i], TOOL_PANEL_HEIGHT_DEFAULT - 2);
-  end;
+  SetControlSizeScaleToForm(AControls, TOOL_BUTTON_WIDTH_DEFAULT, TOOL_PANEL_HEIGHT_DEFAULT - 2);
 end;
 
 procedure SetEventButtons(const AControls: array of TControl);
-var
-  i: Integer;
 begin
-  for i:= 0 to High(AControls) do
-    ControlHeight(AControls[i], TOOL_PANEL_HEIGHT_DEFAULT - 2);
+  SetControlHeightScaleToForm(AControls, TOOL_PANEL_HEIGHT_DEFAULT - 2);
 end;
 
 procedure SetSpinEdits(const AControls: array of TControl);
