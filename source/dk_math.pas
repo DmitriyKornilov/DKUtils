@@ -7,16 +7,31 @@ interface
 uses
   Classes, SysUtils;
 
+  //Min - меньшее из двух значений}
   function Min(const AValue1, AValue2: Double): Double;
   function Min(const AValue1, AValue2: Integer): Integer;
+  function Min(const AValue1, AValue2: Int64): Int64;
 
+  //Max - большее из двух значений
   function Max(const AValue1, AValue2: Double): Double;
   function Max(const AValue1, AValue2: Integer): Integer;
+  function Max(const AValue1, AValue2: Int64): Int64;
 
+  //IsInRange - проверка вхождения значения в диапазон (включая значения границ)
   function IsInRange(const AValue, AMinValue, AMaxValue: Double): Boolean;
-  function IsValidPercent(const APercent: Double): Boolean;
+  function IsInRange(const AValue, AMinValue, AMaxValue: Integer): Boolean;
+  function IsInRange(const AValue, AMinValue, AMaxValue: Int64): Boolean;
 
+  //CastInRange - приведение значения к диапазону
+  //если AValue выходит за диапазон, то Result присваивается значение ближайшей границы
+  //иначе AValue
+  function CastInRange(const AValue, AMinValue, AMaxValue: Double): Double;
+  function CastInRange(const AValue, AMinValue, AMaxValue: Integer): Integer;
+  function CastInRange(const AValue, AMinValue, AMaxValue: Int64): Int64;
+
+  function IsValidPercent(const APercent: Double): Boolean;
   function Percent(const AValue, APercent: Double): Double;
+
   function Part(const AValue, ATotal: Double): Double;
   function PartRound(const AValue, ATotal: Double): Integer;
 
@@ -40,6 +55,13 @@ begin
     Result:= AValue2;
 end;
 
+function Min(const AValue1, AValue2: Int64): Int64;
+begin
+  Result:= AValue1;
+  if AValue2<AValue1 then
+    Result:= AValue2;
+end;
+
 function Max(const AValue1, AValue2: Double): Double;
 begin
   Result:= AValue1;
@@ -54,9 +76,56 @@ begin
     Result:= AValue2;
 end;
 
+function Max(const AValue1, AValue2: Int64): Int64;
+begin
+  Result:= AValue1;
+  if AValue2>AValue1 then
+    Result:= AValue2;
+end;
+
 function IsInRange(const AValue, AMinValue, AMaxValue: Double): Boolean;
 begin
   Result:= (AValue>=AMinValue) and (AValue<=AMaxValue);
+end;
+
+function IsInRange(const AValue, AMinValue, AMaxValue: Integer): Boolean;
+begin
+  Result:= (AValue>=AMinValue) and (AValue<=AMaxValue);
+end;
+
+function IsInRange(const AValue, AMinValue, AMaxValue: Int64): Boolean;
+begin
+  Result:= (AValue>=AMinValue) and (AValue<=AMaxValue);
+end;
+
+function CastInRange(const AValue, AMinValue, AMaxValue: Double): Double;
+begin
+  if AValue<AMinValue then
+    Result:= AMinValue
+  else if AValue>AMaxValue then
+    Result:= AMaxValue
+  else
+    Result:= AValue;
+end;
+
+function CastInRange(const AValue, AMinValue, AMaxValue: Integer): Integer;
+begin
+  if AValue<AMinValue then
+    Result:= AMinValue
+  else if AValue>AMaxValue then
+    Result:= AMaxValue
+  else
+    Result:= AValue;
+end;
+
+function CastInRange(const AValue, AMinValue, AMaxValue: Int64): Int64;
+begin
+  if AValue<AMinValue then
+    Result:= AMinValue
+  else if AValue>AMaxValue then
+    Result:= AMaxValue
+  else
+    Result:= AValue;
 end;
 
 function IsValidPercent(const APercent: Double): Boolean;
