@@ -80,6 +80,7 @@ uses
   function DaysBetweenDates(const ADate1, ADate2: TDate): Integer; //кол-во дней между двумя датами
   function DaysInPeriod(const ADate1, ADate2: TDate): Integer;  //кол-во дней в указанном периоде
   function IsDateInPeriod(const ADate, ADate1, ADate2: TDate): Boolean;
+  function CastDateInPeriod(const ADate, ADate1, ADate2: TDate): TDate;
   function IsEqualPeriods(const ABegin1, AEnd1, ABegin2, AEnd2: TDate): Boolean;
   function IsPeriodIntersect(const ABegin1, AEnd1, ABegin2, AEnd2: TDate): Boolean;
   function IsPeriodIntersect(const ABegin1, AEnd1, ABegin2, AEnd2: TDate;
@@ -417,6 +418,16 @@ function IsDateInPeriod(const ADate, ADate1, ADate2: TDate): Boolean;
 begin
   Result:= (CompareDate(ADate, ADate1)>=0) and
            (CompareDate(ADate, ADate2)<=0);
+end;
+
+function CastDateInPeriod(const ADate, ADate1, ADate2: TDate): TDate;
+begin
+  if CompareDate(ADate, ADate1)<0 then
+    Result:= ADate1
+  else if CompareDate(ADate, ADate2)>0 then
+    Result:= ADate2
+  else
+    Result:= ADate;
 end;
 
 function IsEqualPeriods(const ABegin1, AEnd1, ABegin2, AEnd2: TDate): Boolean; //true, если ABegin1=ABegin2 и AEnd1=AEnd2
