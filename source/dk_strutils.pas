@@ -44,7 +44,7 @@ type
   function SSymbolLast(const AStr: String): String;
   function SDigit(const AStr: String; const ASymbolPos: Integer): Byte;
   function SIsDigit(const ASymbol: String): Boolean;
-  function SDigits(const AStr: String): String;
+  function SDigits(const AStr: String; const AInStringStartOnly: Boolean = False): String;
   function SRepeat(const ACount: Integer; const AStr: String): String;
   function SRedLine(const ASpacesCount: Integer): String;
   function SFillRight(const AStr: String; const ANeedLength: Integer; const AFillStr: String = SYMBOL_SPACE): String;
@@ -274,7 +274,7 @@ begin
   Result:= SFind(SYMBOLS_DIGITS, ASymbol);
 end;
 
-function SDigits(const AStr: String): String;
+function SDigits(const AStr: String; const AInStringStartOnly: Boolean = False): String;
 var
   i: Integer;
   S: String;
@@ -284,7 +284,9 @@ begin
   begin
     S:= SSymbol(AStr, i);
     if SIsDigit(S) then
-      Result:= Result + S;
+      Result:= Result + S
+    else if AInStringStartOnly then
+      break;
   end;
 end;
 

@@ -4350,14 +4350,52 @@ end;
 
 procedure VSortNum(const V: TStrVector; out Indexes: TIntVector; const Desc: Boolean);
 var
-  Values: TInt64Vector;
+  i: Integer;
+  N: Int64;
+  S: String;
+  IntIndexes, StrIndexes, TmpIndexes: TIntVector;
+  IntValues: TInt64Vector;
+  StrValues: TStrVector;
 begin
-  try
-    Values:= VStrToInt64(V);
-    VSort(Values, Indexes, Desc);
-  except
-    VSort(V, Indexes, Desc);
+  Indexes:= nil;
+  if VIsNil(V) then Exit;
+
+  IntValues:= nil;
+  StrValues:= nil;
+  IntIndexes:= nil;
+  StrIndexes:= nil;
+  TmpIndexes:= nil;
+
+  for i:= 0 to High(V) do
+  begin
+    if TryStrToInt64(V[i], N) then  //если число, записываем в числа
+    begin
+      VAppend(IntValues, N);
+      VAppend(IntIndexes, i);
+    end
+    else begin
+      //берем число из цифр в начале строки
+      S:= SDigits(V[i], True);
+      if not SEmpty(S) then // и записываем в числа
+      begin
+        VAppend(IntValues, StrToInt64(S));
+        VAppend(IntIndexes, i);
+      end
+      else begin //остальное записываем в строки
+        VAppend(StrValues, V[i]);
+        VAppend(StrIndexes, i);
+      end;
+    end;
   end;
+
+  //сортируем числа
+  VSort(IntValues, TmpIndexes, Desc);
+  Indexes:= VReplace(IntIndexes, TmpIndexes);
+  //сортируем строки
+  VSort(StrValues, TmpIndexes, Desc);
+  TmpIndexes:= VReplace(StrIndexes, TmpIndexes);
+  //записываем сортированные индексы строк в конец сортированных индексов чисел
+  Indexes:= VAdd(Indexes, TmpIndexes);
 end;
 
 function VSort(const V: TStrVector; const Desc: Boolean): TStrVector;
