@@ -325,6 +325,11 @@ type
   function VFormat(const FormatStr: String; const V: TInt64Vector): TStrVector;
   function VFormat(const FormatStr: String; const V: TDblVector): TStrVector;
   function VFormat(const FormatStr: String; const V: TStrVector): TStrVector;
+
+  function VFormatFloat(const FormatStr: String; const V: TIntVector): TStrVector;
+  function VFormatFloat(const FormatStr: String; const V: TInt64Vector): TStrVector;
+  function VFormatFloat(const FormatStr: String; const V: TDblVector): TStrVector;
+
   function VTrim(const V: TStrVector): TStrVector;
   function VSymbolFromUnicode(const ACodes: TIntVector): TStrVector;
   function VSymbolToUnicode(const ASymbols: TStrVector): TIntVector;
@@ -3820,7 +3825,7 @@ begin
   if VIsNil(V) then Exit;
   VDim(Result, Length(V));
   for i:= 0 to High(V) do
-    Result[i]:= Format(FormatStr, [V[i]]);
+    Result[i]:= Format(FormatStr, [V[i]], DefaultFormatSettingsRus);
 end;
 
 function VFormat(const FormatStr: String; const V: TInt64Vector): TStrVector;
@@ -3831,7 +3836,7 @@ begin
   if VIsNil(V) then Exit;
   VDim(Result, Length(V));
   for i:= 0 to High(V) do
-    Result[i]:= Format(FormatStr, [V[i]]);
+    Result[i]:= Format(FormatStr, [V[i]], DefaultFormatSettingsRus);
 end;
 
 function VFormat(const FormatStr: String; const V: TDblVector): TStrVector;
@@ -3842,7 +3847,40 @@ begin
   if VIsNil(V) then Exit;
   VDim(Result, Length(V));
   for i:= 0 to High(V) do
-    Result[i]:= Format(FormatStr, [V[i]]);
+    Result[i]:= Format(FormatStr, [V[i]], DefaultFormatSettingsRus);
+end;
+
+function VFormatFloat(const FormatStr: String; const V: TIntVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= FormatFloat(FormatStr, V[i], DefaultFormatSettingsRus);
+end;
+
+function VFormatFloat(const FormatStr: String; const V: TInt64Vector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= FormatFloat(FormatStr, V[i], DefaultFormatSettingsRus);
+end;
+
+function VFormatFloat(const FormatStr: String; const V: TDblVector): TStrVector;
+var
+  i: Integer;
+begin
+  Result:= nil;
+  if VIsNil(V) then Exit;
+  VDim(Result, Length(V));
+  for i:= 0 to High(V) do
+    Result[i]:= FormatFloat(FormatStr, V[i], DefaultFormatSettingsRus);
 end;
 
 function VFormat(const FormatStr: String; const V: TStrVector): TStrVector;
@@ -3853,7 +3891,7 @@ begin
   if VIsNil(V) then Exit;
   VDim(Result, Length(V));
   for i:= 0 to High(V) do
-    Result[i]:= Format(FormatStr, [V[i]]);
+    Result[i]:= Format(FormatStr, [V[i]], DefaultFormatSettingsRus);
 end;
 
 function VTrim(const V: TStrVector): TStrVector;
