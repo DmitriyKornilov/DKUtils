@@ -90,7 +90,7 @@ uses
   {ОПЕРАЦИИ С ДАТАМИ}
   function IncMonthExt(const ADate: TDate; const ADeltaMonth: Extended): TDate;
   function IsBoundaryDate(const ADate: TDate): Boolean;
-
+  function DateToText(const ADate: TDate; const AResultIfBoundary: String = ''): String;
 
 implementation
 
@@ -487,6 +487,14 @@ begin
            (CompareDate(ADate, INFDATE)=0)     or
            (CompareDate(ADate, MaxDateTime)=0) or
            (CompareDate(ADate, MinDateTime)=0);
+end;
+
+function DateToText(const ADate: TDate; const AResultIfBoundary: String = ''): String;
+begin
+  if IsBoundaryDate(ADate) then
+    Result:= AResultIfBoundary
+  else
+    Result:= FormatDateTime('dd.mm.yyyy', ADate);
 end;
 
 
