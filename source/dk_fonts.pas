@@ -5,7 +5,7 @@ unit DK_Fonts;
 interface
 
 uses
-  {$IFDEF WINDOWS} Windows, {$ENDIF}  FileUtil,
+  {$IFDEF WINDOWS} Windows, {$ENDIF}
   {$IFDEF LINUX} FileUtil, {$ENDIF}
   SysUtils, Forms, Controls, Graphics;
 
@@ -28,8 +28,11 @@ type
   function GetFontHeight(const AFontName: String; const AFontSize: Integer;
                          const AFontStyle: TFontStyles = []): Integer;
 
-  function LoadExtraFont(const AFilePath, AFileName: String): Boolean;
-  function UnloadExtraFont(const AFilePath, AFileName: String): Boolean;
+  function LoadExtraFont(const AFilePath, AFileName: String;
+                         out ANeedFontUnload: Boolean): Boolean;
+  function UnloadExtraFont(const {%H-}AFilePath, AFileName: String): Boolean;
+
+  function IsFontInstalled(const AFontName: String): Boolean;
 
 implementation
 
@@ -91,13 +94,17 @@ begin
   end;
 end;
 
-function LoadExtraFont(const AFilePath, AFileName: String): Boolean;
+function LoadExtraFont(const AFilePath, AFileName: String;
+                       out ANeedFontUnload: Boolean): Boolean;
 begin
   {$IFDEF WINDOWS}
   Result:= AddFontResource(PChar(AFilePath + AFileName))<>0;
+  ARequireFontUnload:= True;
   {$ENDIF}
+
   {$IFDEF LINUX}
   Result:= CopyFile(AFilePath + AFileName, GetUserDir + '.fonts/' + AFileName, [cffCreateDestDirectory]);
+  ANeedFontUnload:= False;
   ExecuteProcess(Application.ExeName, []);
   Application.Terminate;
   {$ENDIF}
@@ -108,9 +115,15 @@ begin
   {$IFDEF WINDOWS}
   Result:= RemoveFontResource(PChar(AFilePath + AFileName));
   {$ENDIF}
+
   {$IFDEF LINUX}
   Result:= DeleteFile(GetUserDir + '.fonts/' + AFileName);
   {$ENDIF}
+end;
+
+function IsFontInstalled(const AFontName: String): Boolean;
+begin
+  Result:= Screen.Fonts.IndexOf(AFontName)>=0;
 end;
 
 end.
