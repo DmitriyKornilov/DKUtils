@@ -99,7 +99,7 @@ function LoadExtraFont(const AFilePath, AFileName: String;
 begin
   {$IFDEF WINDOWS}
   Result:= AddFontResource(PChar(AFilePath + AFileName))<>0;
-  ARequireFontUnload:= True;
+  ANeedFontUnload:= True;
   {$ENDIF}
 
   {$IFDEF LINUX}
