@@ -2801,50 +2801,50 @@ procedure MRowIns(var M: TIntMatrix; const RowIndex: Integer; const RowValues: T
 var
   i: Integer;
 begin
-  if VIsNil(RowValues) then Exit;
   for i:=0 to High(M) do
     VIns(M[i], RowIndex);
-  MRowSet(M, RowIndex, RowValues);
+  if not VIsNil(RowValues) then
+    MRowSet(M, RowIndex, RowValues);
 end;
 
 procedure MRowIns(var M: TInt64Matrix; const RowIndex: Integer; const RowValues: TInt64Vector);
 var
   i: Integer;
 begin
-  if VIsNil(RowValues) then Exit;
   for i:=0 to High(M) do
     VIns(M[i], RowIndex);
-  MRowSet(M, RowIndex, RowValues);
+  if not VIsNil(RowValues) then
+    MRowSet(M, RowIndex, RowValues);
 end;
 
 procedure MRowIns(var M: TStrMatrix; const RowIndex: Integer; const RowValues: TStrVector);
 var
   i: Integer;
 begin
-  if VIsNil(RowValues) then Exit;
   for i:=0 to High(M) do
     VIns(M[i], RowIndex);
-  MRowSet(M, RowIndex, RowValues);
+  if not VIsNil(RowValues) then
+    MRowSet(M, RowIndex, RowValues);
 end;
 
 procedure MRowIns(var M: TDblMatrix; const RowIndex: Integer; const RowValues: TDblVector);
 var
   i: Integer;
 begin
-  if VIsNil(RowValues) then Exit;
   for i:=0 to High(M) do
     VIns(M[i], RowIndex);
-  MRowSet(M, RowIndex, RowValues);
+  if not VIsNil(RowValues) then
+    MRowSet(M, RowIndex, RowValues);
 end;
 
 procedure MRowIns(var M: TBoolMatrix; const RowIndex: Integer; const RowValues: TBoolVector);
 var
   i: Integer;
 begin
-  if VIsNil(RowValues) then Exit;
   for i:=0 to High(M) do
     VIns(M[i], RowIndex);
-  MRowSet(M, RowIndex, RowValues);
+  if not VIsNil(RowValues) then
+    MRowSet(M, RowIndex, RowValues);
 end;
 
 procedure MRowDel(var M: TIntMatrix; const RowIndex: Integer);
